@@ -165,3 +165,34 @@
 - [ ] Implement SOP download as PDF/DOCX
 - [ ] Show SOP history and versions
 - [ ] Add navigation from dashboard to SOP writer
+
+
+## Continuation: Complete Remaining MVP Features
+
+### SOP Writer UI
+- [ ] Create SOP questionnaire page (/sop/new) with multi-step form
+- [ ] Build SOP display page (/sop/:id) with markdown rendering
+- [ ] Add SOP refinement interface with feedback input
+- [ ] Implement SOP list page showing all user SOPs
+- [ ] Add navigation links from dashboard to SOP writer
+- [ ] Show loading states during generation
+
+### Stripe Payment Integration
+- [ ] Create pricing page with tier comparison
+- [ ] Implement checkout session creation
+- [ ] Build webhook handler for payment events
+- [ ] Add subscription status display in dashboard
+- [ ] Create subscription management page
+- [ ] Handle upgrade/downgrade flows
+
+### Usage Tracking & Limits
+- [ ] Add usage tracking for chat messages
+- [ ] Add usage tracking for SOP generations
+- [ ] Enforce tier limits with error messages
+- [ ] Display usage stats in dashboard
+- [ ] Show upgrade prompts when limits reached
+- [ ] Add monthly usage reset logic
+
+
+## Bug Fixes
+- [x] Fix nested anchor tag error in Home page

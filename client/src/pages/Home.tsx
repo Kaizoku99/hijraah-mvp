@@ -199,11 +199,11 @@ export default function Home() {
               </p>
             </div>
             <div className="flex gap-6 text-sm text-muted-foreground">
-              <Link href="/guides">
-                <a className="hover:text-foreground transition-colors">{t("nav.guides")}</a>
+              <Link href="/guides" className="hover:text-foreground transition-colors">
+                {t("nav.guides")}
               </Link>
-              <Link href="/support">
-                <a className="hover:text-foreground transition-colors">{t("nav.support")}</a>
+              <Link href="/support" className="hover:text-foreground transition-colors">
+                {t("nav.support")}
               </Link>
             </div>
           </div>
