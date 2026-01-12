@@ -198,3 +198,5 @@
 - [x] Fix nested anchor tag error in Home page
 - [x] Fix profile.get query returning undefined
 - [x] Fix nested anchor tag in Dashboard page
+- [x] Fix invalid hook call in Chat page mutation callback
+- [x] Fix nested anchor tag in Chat page
