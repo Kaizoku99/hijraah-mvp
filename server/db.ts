@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
+import { InsertUser, users, userProfiles, InsertUserProfile, UserProfile } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -89,4 +89,64 @@ export async function getUserByOpenId(openId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
-// TODO: add feature queries here as your schema grows.
+export async function getUserProfile(userId: number): Promise<UserProfile | undefined> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get user profile: database not available");
+    return undefined;
+  }
+
+  const result = await db.select().from(userProfiles).where(eq(userProfiles.userId, userId)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function createUserProfile(profile: InsertUserProfile) {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  await db.insert(userProfiles).values(profile);
+}
+
+export async function updateUserProfile(userId: number, updates: Partial<InsertUserProfile>) {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  await db.update(userProfiles).set(updates).where(eq(userProfiles.userId, userId));
+}
+
+export async function updateUserLanguagePreference(userId: number, language: "ar" | "en") {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  await db.update(users).set({ preferredLanguage: language }).where(eq(users.id, userId));
+}
+
+export async function updateUserSubscription(
+  userId: number,
+  subscription: {
+    tier: "free" | "essential" | "premium" | "vip";
+    status: "active" | "canceled" | "expired";
+    expiresAt?: Date;
+    stripeCustomerId?: string;
+    stripeSubscriptionId?: string;
+  }
+) {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  await db.update(users).set({
+    subscriptionTier: subscription.tier,
+    subscriptionStatus: subscription.status,
+    subscriptionExpiresAt: subscription.expiresAt,
+    stripeCustomerId: subscription.stripeCustomerId,
+    stripeSubscriptionId: subscription.stripeSubscriptionId,
+  }).where(eq(users.id, userId));
+}

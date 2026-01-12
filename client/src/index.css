@@ -1,6 +1,9 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* Import Arabic font */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap');
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -119,6 +122,14 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: 'Noto Sans Arabic', ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  }
+  /* RTL support */
+  [dir="rtl"] {
+    direction: rtl;
+  }
+  [dir="ltr"] {
+    direction: ltr;
   }
   button:not(:disabled),
   [role="button"]:not([aria-disabled="true"]),
