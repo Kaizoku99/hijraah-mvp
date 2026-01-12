@@ -77,6 +77,7 @@ const translations: Record<Language, Record<string, string>> = {
     "common.sort": "Sort",
     "common.view": "View",
     "common.language": "Language",
+    "common.send": "Send",
     
     // Dashboard
     "dashboard.welcome": "Welcome back",
@@ -187,6 +188,7 @@ const translations: Record<Language, Record<string, string>> = {
     "common.sort": "ترتيب",
     "common.view": "عرض",
     "common.language": "اللغة",
+    "common.send": "إرسال",
     
     // Dashboard
     "dashboard.welcome": "مرحبًا بعودتك",

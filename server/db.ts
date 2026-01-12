@@ -1,6 +1,18 @@
-import { eq } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users, userProfiles, InsertUserProfile, UserProfile } from "../drizzle/schema";
+import {
+  InsertUser,
+  users,
+  userProfiles,
+  InsertUserProfile,
+  UserProfile,
+  conversations,
+  Conversation,
+  InsertConversation,
+  messages,
+  Message,
+  InsertMessage,
+} from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -149,4 +161,92 @@ export async function updateUserSubscription(
     stripeCustomerId: subscription.stripeCustomerId,
     stripeSubscriptionId: subscription.stripeSubscriptionId,
   }).where(eq(users.id, userId));
+}
+
+// Chat conversation functions
+export async function createConversation(conversation: InsertConversation): Promise<number> {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  const result: any = await db.insert(conversations).values(conversation);
+  // insertId is a BigInt, convert to number
+  const id = result[0]?.insertId || result.insertId;
+  return Number(id);
+}
+
+export async function getUserConversations(userId: number): Promise<Conversation[]> {
+  const db = await getDb();
+  if (!db) {
+    return [];
+  }
+
+  return await db
+    .select()
+    .from(conversations)
+    .where(eq(conversations.userId, userId))
+    .orderBy(desc(conversations.updatedAt));
+}
+
+export async function getConversation(conversationId: number): Promise<Conversation | undefined> {
+  const db = await getDb();
+  if (!db) {
+    return undefined;
+  }
+
+  const result = await db
+    .select()
+    .from(conversations)
+    .where(eq(conversations.id, conversationId))
+    .limit(1);
+
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function updateConversationTitle(conversationId: number, title: string) {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  await db
+    .update(conversations)
+    .set({ title, updatedAt: new Date() })
+    .where(eq(conversations.id, conversationId));
+}
+
+export async function deleteConversation(conversationId: number) {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  await db.delete(conversations).where(eq(conversations.id, conversationId));
+}
+
+// Chat message functions
+export async function createMessage(message: InsertMessage): Promise<number> {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  const result: any = await db.insert(messages).values(message);
+  // insertId is a BigInt, convert to number
+  const id = result[0]?.insertId || result.insertId;
+  return Number(id);
+}
+
+export async function getConversationMessages(conversationId: number): Promise<Message[]> {
+  const db = await getDb();
+  if (!db) {
+    return [];
+  }
+
+  return await db
+    .select()
+    .from(messages)
+    .where(eq(messages.conversationId, conversationId))
+    .orderBy(messages.createdAt);
 }
