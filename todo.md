@@ -213,3 +213,18 @@
 - [x] Auto-populate calculator fields from profile
 - [x] Show indicator when fields are pre-filled
 - [x] Allow users to override pre-filled values
+
+## Feature: SOP Writer UI
+- [x] Create /sop/new page with guided questionnaire
+- [x] Multi-step form for background, goals, and motivation
+- [x] Create /sop/:id page to display generated SOP
+- [x] Add refinement/regeneration options
+- [x] Show SOP generation progress indicator
+- [x] Add download SOP button (copy to clipboard for now)
+
+## Enhancement: Dashboard Widgets
+- [ ] Display most recent CRS score with trend
+- [ ] Show document completion progress
+- [ ] Add quick action buttons (Calculate CRS, Upload Documents, Chat with AI)
+- [ ] Display profile completion percentage
+- [ ] Show recent chat conversations

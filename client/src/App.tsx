@@ -11,6 +11,8 @@ import Chat from "./pages/Chat";
 import Calculator from "./pages/Calculator";
 import Documents from "./pages/Documents";
 import Profile from "./pages/Profile";
+import SopNew from "./pages/SopNew";
+import SopDisplay from "./pages/SopDisplay";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -22,6 +24,8 @@ function Router() {
       <Route path="/calculator" component={Calculator} />
       <Route path="/documents" component={Documents} />
       <Route path="/profile" component={Profile} />
+      <Route path="/sop/new" component={SopNew} />
+      <Route path="/sop/:id" component={SopDisplay} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

@@ -616,12 +616,37 @@ Provide the SOP as a complete, ready-to-use document.`;
           version: 1,
           status: "generated",
         });
-
         return {
           sopId,
           content: generatedContent,
         };
       }),
+
+    // Get SOP by ID
+    get: protectedProcedure
+      .input(z.object({ sopId: z.number() }))
+      .query(async ({ ctx, input }) => {
+        const sop = await getSopGeneration(input.sopId);
+        if (!sop || sop.userId !== ctx.user.id) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "SOP not found",
+          });
+        }
+        return {
+          ...sop,
+          content: sop.generatedSop,
+        };
+      }),
+
+    // List user's SOPs
+    list: protectedProcedure.query(async ({ ctx }) => {
+      const sops = await getUserSopGenerations(ctx.user.id);
+      return sops.map((sop) => ({
+        ...sop,
+        content: sop.generatedSop,
+      }));
+    }),
 
     // Refine/improve existing SOP
     refine: protectedProcedure
@@ -677,23 +702,7 @@ Provide the complete refined SOP.`;
         };
       }),
 
-    // Get user's SOPs
-    list: protectedProcedure.query(async ({ ctx }) => {
-      return await getUserSopGenerations(ctx.user.id);
-    }),
 
-    // Get specific SOP
-    get: protectedProcedure
-      .input(z.object({ sopId: z.number() }))
-      .query(async ({ ctx, input }) => {
-        const sop = await getSopGeneration(input.sopId);
-
-        if (!sop || sop.userId !== ctx.user.id) {
-          throw new TRPCError({ code: "NOT_FOUND", message: "SOP not found" });
-        }
-
-        return sop;
-      }),
 
     // Delete SOP
     delete: protectedProcedure
