@@ -207,3 +207,9 @@
 - [x] Implement profile creation and update functionality
 - [x] Add bilingual labels and placeholders
 - [x] Show profile completion progress
+
+## Enhancement: Pre-fill Calculator from Profile
+- [x] Update Calculator page to fetch user profile data
+- [x] Auto-populate calculator fields from profile
+- [x] Show indicator when fields are pre-filled
+- [x] Allow users to override pre-filled values
