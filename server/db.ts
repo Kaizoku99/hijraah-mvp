@@ -12,6 +12,9 @@ import {
   messages,
   Message,
   InsertMessage,
+  crsAssessments,
+  CrsAssessment,
+  InsertCrsAssessment,
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -249,4 +252,45 @@ export async function getConversationMessages(conversationId: number): Promise<M
     .from(messages)
     .where(eq(messages.conversationId, conversationId))
     .orderBy(messages.createdAt);
+}
+
+// CRS Assessment functions
+export async function createCrsAssessment(assessment: InsertCrsAssessment): Promise<number> {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  const result: any = await db.insert(crsAssessments).values(assessment);
+  const id = result[0]?.insertId || result.insertId;
+  return Number(id);
+}
+
+export async function getUserCrsAssessments(userId: number): Promise<CrsAssessment[]> {
+  const db = await getDb();
+  if (!db) {
+    return [];
+  }
+
+  return await db
+    .select()
+    .from(crsAssessments)
+    .where(eq(crsAssessments.userId, userId))
+    .orderBy(desc(crsAssessments.createdAt));
+}
+
+export async function getLatestCrsAssessment(userId: number): Promise<CrsAssessment | undefined> {
+  const db = await getDb();
+  if (!db) {
+    return undefined;
+  }
+
+  const result = await db
+    .select()
+    .from(crsAssessments)
+    .where(eq(crsAssessments.userId, userId))
+    .orderBy(desc(crsAssessments.createdAt))
+    .limit(1);
+
+  return result.length > 0 ? result[0] : undefined;
 }

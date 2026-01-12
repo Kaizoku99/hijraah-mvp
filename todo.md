@@ -41,12 +41,12 @@
 - [ ] Policy update tracking and versioning
 
 ## Phase 6: Express Entry Calculator
-- [ ] CRS score calculation logic (official formula)
-- [ ] Multi-step questionnaire form
-- [ ] Score breakdown visualization
-- [ ] Improvement recommendations engine
+- [x] CRS score calculation logic (official formula)
+- [x] Multi-step questionnaire form
+- [x] Score breakdown visualization
+- [x] Improvement recommendations engine
 - [ ] Recent draw cutoff comparison
-- [ ] Calculator results page with detailed analysis
+- [x] Calculator results page with detailed analysis
 
 ## Phase 7: Document Management System
 - [ ] Country-specific document checklist templates (Tunisia, Jordan, Lebanon, Morocco)

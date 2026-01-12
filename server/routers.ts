@@ -15,8 +15,12 @@ import {
   deleteConversation,
   createMessage,
   getConversationMessages,
+  createCrsAssessment,
+  getUserCrsAssessments,
+  getLatestCrsAssessment,
 } from "./db";
 import { generateChatResponse, generateChatResponseStream, GeminiMessage } from "./_core/gemini";
+import { calculateCRS, CrsInput } from "./crs-calculator";
 import { TRPCError } from "@trpc/server";
 
 export const appRouter = router({
@@ -264,6 +268,95 @@ Guidelines:
         await deleteConversation(input.conversationId);
         return { success: true };
       }),
+  }),
+
+  crs: router({
+    // Calculate CRS score
+    calculate: protectedProcedure
+      .input(
+        z.object({
+          age: z.number().min(18).max(60),
+          educationLevel: z.enum(["none", "high_school", "one_year", "two_year", "bachelor", "two_or_more", "master", "phd"]),
+          firstLanguageTest: z.object({
+            speaking: z.number().min(0).max(10),
+            listening: z.number().min(0).max(10),
+            reading: z.number().min(0).max(10),
+            writing: z.number().min(0).max(10),
+          }),
+          secondLanguageTest: z.object({
+            speaking: z.number().min(0).max(10),
+            listening: z.number().min(0).max(10),
+            reading: z.number().min(0).max(10),
+            writing: z.number().min(0).max(10),
+          }).optional(),
+          canadianWorkExperience: z.number().min(0).max(10),
+          hasSpouse: z.boolean(),
+          spouseEducation: z.enum(["none", "high_school", "one_year", "two_year", "bachelor", "two_or_more", "master", "phd"]).optional(),
+          spouseLanguageTest: z.object({
+            speaking: z.number().min(0).max(10),
+            listening: z.number().min(0).max(10),
+            reading: z.number().min(0).max(10),
+            writing: z.number().min(0).max(10),
+          }).optional(),
+          spouseCanadianWorkExperience: z.number().min(0).max(10).optional(),
+          foreignWorkExperience: z.number().min(0).max(20),
+          hasCertificateOfQualification: z.boolean(),
+          hasCanadianSiblings: z.boolean(),
+          hasFrenchLanguageSkills: z.boolean(),
+          hasProvincialNomination: z.boolean(),
+          hasValidJobOffer: z.boolean(),
+          jobOfferNOC: z.enum(["00", "0", "A", "B", "none"]),
+          hasCanadianEducation: z.boolean(),
+          canadianEducationLevel: z.enum(["one_two_year", "three_year_plus", "master_phd"]).optional(),
+          saveAssessment: z.boolean().optional(),
+        })
+      )
+      .mutation(async ({ ctx, input }) => {
+        const { saveAssessment, ...crsInput } = input;
+        
+        // Calculate CRS score
+        const result = calculateCRS(crsInput as CrsInput);
+
+        // Save assessment if requested
+        if (saveAssessment) {
+          await createCrsAssessment({
+            userId: ctx.user.id,
+            totalScore: result.totalScore,
+            coreScore: result.breakdown.coreHumanCapital,
+            spouseScore: result.breakdown.spouseFactors,
+            skillTransferabilityScore: result.breakdown.skillTransferability,
+            additionalScore: result.breakdown.additionalPoints,
+            recommendations: result.recommendations,
+            age: crsInput.age,
+            educationLevel: crsInput.educationLevel,
+            firstLanguageScore: crsInput.firstLanguageTest,
+            secondLanguageScore: crsInput.secondLanguageTest,
+            canadianWorkExperience: crsInput.canadianWorkExperience,
+            foreignWorkExperience: crsInput.foreignWorkExperience,
+            hasSpouse: crsInput.hasSpouse,
+            spouseEducation: crsInput.spouseEducation,
+            spouseLanguageScore: crsInput.spouseLanguageTest,
+            spouseCanadianWorkExperience: crsInput.spouseCanadianWorkExperience,
+            hasSiblingInCanada: crsInput.hasCanadianSiblings,
+            hasFrenchLanguageSkills: crsInput.hasFrenchLanguageSkills,
+            hasProvincialNomination: crsInput.hasProvincialNomination,
+            hasJobOffer: crsInput.hasValidJobOffer,
+            hasCanadianStudyExperience: crsInput.hasCanadianEducation,
+          });
+        }
+
+        return result;
+      }),
+
+    // Get user's assessment history
+    history: protectedProcedure.query(async ({ ctx }) => {
+      return await getUserCrsAssessments(ctx.user.id);
+    }),
+
+    // Get latest assessment
+    latest: protectedProcedure.query(async ({ ctx }) => {
+      return await getLatestCrsAssessment(ctx.user.id);
+    }),
   }),
 });
 
