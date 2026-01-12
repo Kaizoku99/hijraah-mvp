@@ -49,12 +49,12 @@
 - [x] Calculator results page with detailed analysis
 
 ## Phase 7: Document Management System
-- [ ] Country-specific document checklist templates (Tunisia, Jordan, Lebanon, Morocco)
-- [ ] Document checklist generator based on user profile
-- [ ] Document upload to S3 with metadata
-- [ ] Document status tracking (not started, in progress, complete)
+- [x] Country-specific document checklist templates (Tunisia, Jordan, Lebanon, Morocco, Egypt, Sudan, Syria)
+- [x] Document checklist generator based on user profile
+- [x] File upload system with S3 integration
+- [x] Document status tracking (pending, uploaded, verified, rejected)
 - [ ] Document preview and download
-- [ ] Document requirements explanation in Arabic/English
+- [x] Upload progress indicatorsn in Arabic/English
 
 ## Phase 8: AI-Powered SOP Writer
 - [ ] SOP questionnaire form (background, goals, motivation)
@@ -122,3 +122,11 @@
 - [ ] Supabase project configuration
 - [ ] Initial checkpoint creation
 - [ ] Production deployment to Vercel
+
+## User Request: Expand Country Support
+- [x] Add Egypt to supported source countries
+- [x] Add Sudan to supported source countries
+- [x] Add Syria to supported source countries
+- [x] Update document checklists for Egypt-specific requirements
+- [x] Update document checklists for Sudan-specific requirements
+- [x] Update document checklists for Syria-specific requirements

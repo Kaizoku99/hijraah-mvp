@@ -21,6 +21,29 @@ import {
 } from "./db";
 import { generateChatResponse, generateChatResponseStream, GeminiMessage } from "./_core/gemini";
 import { calculateCRS, CrsInput } from "./crs-calculator";
+import {
+  createDocumentChecklist,
+  getUserDocumentChecklists,
+  getDocumentChecklist,
+  updateDocumentChecklist,
+  deleteDocumentChecklist,
+  createDocument,
+  getUserDocuments,
+  getChecklistDocuments,
+  getDocument,
+  updateDocument,
+  deleteDocument,
+  generateDocumentChecklist,
+} from "./documents";
+import { storagePut } from "./storage";
+import { nanoid } from "nanoid";
+import {
+  createSopGeneration,
+  getUserSopGenerations,
+  getSopGeneration,
+  updateSopGeneration,
+  deleteSopGeneration,
+} from "./sop";
 import { TRPCError } from "@trpc/server";
 
 export const appRouter = router({
@@ -357,6 +380,334 @@ Guidelines:
     latest: protectedProcedure.query(async ({ ctx }) => {
       return await getLatestCrsAssessment(ctx.user.id);
     }),
+  }),
+
+  documents: router({
+    // Generate document checklist
+    generateChecklist: protectedProcedure
+      .input(
+        z.object({
+          sourceCountry: z.enum(["tunisia", "jordan", "lebanon", "morocco", "egypt", "sudan", "syria"]),
+          immigrationPathway: z.enum(["express_entry", "study_permit", "work_permit", "family_sponsorship"]),
+        })
+      )
+      .mutation(async ({ ctx, input }) => {
+        const items = generateDocumentChecklist(input.sourceCountry, input.immigrationPathway);
+        
+        const checklistId = await createDocumentChecklist({
+          userId: ctx.user.id,
+          sourceCountry: input.sourceCountry,
+          immigrationPathway: input.immigrationPathway,
+          items: items,
+        });
+
+        return { checklistId, items };
+      }),
+
+    // Get user's checklists
+    getChecklists: protectedProcedure.query(async ({ ctx }) => {
+      return await getUserDocumentChecklists(ctx.user.id);
+    }),
+
+    // Get specific checklist
+    getChecklist: protectedProcedure
+      .input(z.object({ checklistId: z.number() }))
+      .query(async ({ ctx, input }) => {
+        const checklist = await getDocumentChecklist(input.checklistId);
+        
+        if (!checklist || checklist.userId !== ctx.user.id) {
+          throw new TRPCError({ code: "NOT_FOUND", message: "Checklist not found" });
+        }
+
+        return checklist;
+      }),
+
+    // Update checklist items
+    updateChecklist: protectedProcedure
+      .input(
+        z.object({
+          checklistId: z.number(),
+          items: z.any(), // ChecklistItem[]
+        })
+      )
+      .mutation(async ({ ctx, input }) => {
+        const checklist = await getDocumentChecklist(input.checklistId);
+        
+        if (!checklist || checklist.userId !== ctx.user.id) {
+          throw new TRPCError({ code: "NOT_FOUND", message: "Checklist not found" });
+        }
+
+        await updateDocumentChecklist(input.checklistId, { items: input.items });
+        return { success: true };
+      }),
+
+    // Delete checklist
+    deleteChecklist: protectedProcedure
+      .input(z.object({ checklistId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        const checklist = await getDocumentChecklist(input.checklistId);
+        
+        if (!checklist || checklist.userId !== ctx.user.id) {
+          throw new TRPCError({ code: "NOT_FOUND", message: "Checklist not found" });
+        }
+
+        await deleteDocumentChecklist(input.checklistId);
+        return { success: true };
+      }),
+
+    // Upload document
+    uploadDocument: protectedProcedure
+      .input(
+        z.object({
+          checklistId: z.number().optional(),
+          documentType: z.string(),
+          fileName: z.string(),
+          fileData: z.string(), // base64 encoded
+          mimeType: z.string(),
+        })
+      )
+      .mutation(async ({ ctx, input }) => {
+        // Decode base64 file data
+        const fileBuffer = Buffer.from(input.fileData, "base64");
+        const fileSize = fileBuffer.length;
+
+        // Generate unique file key
+        const fileExtension = input.fileName.split(".").pop();
+        const fileKey = `${ctx.user.id}/documents/${input.documentType}-${nanoid()}.${fileExtension}`;
+
+        // Upload to S3
+        const { url } = await storagePut(fileKey, fileBuffer, input.mimeType);
+
+        // Save document record
+        const documentId = await createDocument({
+          userId: ctx.user.id,
+          checklistId: input.checklistId,
+          documentType: input.documentType,
+          fileName: input.fileName,
+          fileKey,
+          fileUrl: url,
+          mimeType: input.mimeType,
+          fileSize,
+          status: "uploaded",
+        });
+
+        return { documentId, fileUrl: url };
+      }),
+
+    // Get user's documents
+    getDocuments: protectedProcedure.query(async ({ ctx }) => {
+      return await getUserDocuments(ctx.user.id);
+    }),
+
+    // Get checklist documents
+    getChecklistDocuments: protectedProcedure
+      .input(z.object({ checklistId: z.number() }))
+      .query(async ({ ctx, input }) => {
+        return await getChecklistDocuments(input.checklistId);
+      }),
+
+    // Delete document
+    deleteDocument: protectedProcedure
+      .input(z.object({ documentId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        const document = await getDocument(input.documentId);
+        
+        if (!document || document.userId !== ctx.user.id) {
+          throw new TRPCError({ code: "NOT_FOUND", message: "Document not found" });
+        }
+
+        await deleteDocument(input.documentId);
+        return { success: true };
+      }),
+  }),
+
+  sop: router({
+    // Generate SOP based on questionnaire
+    generate: protectedProcedure
+      .input(
+        z.object({
+          targetProgram: z.string(),
+          targetInstitution: z.string().optional(),
+          background: z.string(),
+          education: z.string(),
+          workExperience: z.string(),
+          motivation: z.string(),
+          careerGoals: z.string(),
+          whyCanada: z.string(),
+          whyThisProgram: z.string(),
+          uniqueStrengths: z.string(),
+          challenges: z.string().optional(),
+          additionalInfo: z.string().optional(),
+          language: z.enum(["en", "ar"]),
+        })
+      )
+      .mutation(async ({ ctx, input }) => {
+        const { language, ...questionnaireData } = input;
+
+        // Generate SOP using Gemini
+        const prompt = `You are an expert immigration consultant specializing in Canadian immigration applications. Generate a professional, compelling Statement of Purpose (SOP) for a Canada immigration/study application based on the following information:
+
+Target Program: ${input.targetProgram}
+${input.targetInstitution ? `Target Institution: ${input.targetInstitution}` : ""}
+
+Background:
+${input.background}
+
+Education:
+${input.education}
+
+Work Experience:
+${input.workExperience}
+
+Motivation:
+${input.motivation}
+
+Career Goals:
+${input.careerGoals}
+
+Why Canada:
+${input.whyCanada}
+
+Why This Program:
+${input.whyThisProgram}
+
+Unique Strengths:
+${input.uniqueStrengths}
+
+${input.challenges ? `Challenges/Gaps to Address:\n${input.challenges}` : ""}
+
+${input.additionalInfo ? `Additional Information:\n${input.additionalInfo}` : ""}
+
+Generate a well-structured, professional SOP that:
+1. Has a compelling introduction that captures attention
+2. Clearly presents the applicant's academic and professional background
+3. Demonstrates strong motivation and clear career goals
+4. Explains why Canada and this specific program are the right fit
+5. Highlights unique strengths and addresses any gaps/challenges positively
+6. Concludes with a strong statement of commitment
+7. Uses professional, formal language appropriate for immigration applications
+8. Is approximately 800-1000 words
+9. Follows a logical structure with clear paragraphs
+
+${language === "ar" ? "Generate the SOP in Arabic." : "Generate the SOP in English."}
+
+Provide the SOP as a complete, ready-to-use document.`;
+
+        const response = await generateChatResponse({
+          messages: [{ role: "user", parts: prompt }],
+          systemInstruction: "You are an expert immigration consultant who writes compelling Statements of Purpose for Canada immigration applications.",
+          maxOutputTokens: 4096,
+        });
+
+        const generatedContent = response;
+
+        // Save to database
+        const sopId = await createSopGeneration({
+          userId: ctx.user.id,
+          background: input.background,
+          education: input.education,
+          workExperience: input.workExperience,
+          motivations: input.motivation,
+          goals: input.careerGoals,
+          whyCanada: input.whyCanada,
+          additionalInfo: input.additionalInfo,
+          generatedSop: generatedContent,
+          language,
+          version: 1,
+          status: "generated",
+        });
+
+        return {
+          sopId,
+          content: generatedContent,
+        };
+      }),
+
+    // Refine/improve existing SOP
+    refine: protectedProcedure
+      .input(
+        z.object({
+          sopId: z.number(),
+          feedback: z.string(),
+          focusAreas: z.array(z.string()).optional(),
+        })
+      )
+      .mutation(async ({ ctx, input }) => {
+        const sop = await getSopGeneration(input.sopId);
+
+        if (!sop || sop.userId !== ctx.user.id) {
+          throw new TRPCError({ code: "NOT_FOUND", message: "SOP not found" });
+        }
+
+        const prompt = `You are an expert immigration consultant. Here is a Statement of Purpose that needs improvement:
+
+${sop.generatedSop}
+
+User Feedback:
+${input.feedback}
+
+${input.focusAreas && input.focusAreas.length > 0 ? `Focus on improving these areas: ${input.focusAreas.join(", ")}` : ""}
+
+Please refine and improve this SOP based on the feedback. Maintain the same structure and key information, but enhance:
+1. Clarity and coherence
+2. Professional tone
+3. Compelling narrative
+4. Specific areas mentioned in the feedback
+
+Provide the complete refined SOP.`;
+
+        const response = await generateChatResponse({
+          messages: [{ role: "user", parts: prompt }],
+          systemInstruction: "You are an expert immigration consultant who refines and improves Statements of Purpose.",
+          maxOutputTokens: 4096,
+        });
+
+        const refinedContent = response;
+        const newVersion = (sop.version || 1) + 1;
+
+        await updateSopGeneration(input.sopId, {
+          generatedSop: refinedContent,
+          version: newVersion,
+          status: "revised",
+        });
+
+        return {
+          content: refinedContent,
+          version: newVersion,
+        };
+      }),
+
+    // Get user's SOPs
+    list: protectedProcedure.query(async ({ ctx }) => {
+      return await getUserSopGenerations(ctx.user.id);
+    }),
+
+    // Get specific SOP
+    get: protectedProcedure
+      .input(z.object({ sopId: z.number() }))
+      .query(async ({ ctx, input }) => {
+        const sop = await getSopGeneration(input.sopId);
+
+        if (!sop || sop.userId !== ctx.user.id) {
+          throw new TRPCError({ code: "NOT_FOUND", message: "SOP not found" });
+        }
+
+        return sop;
+      }),
+
+    // Delete SOP
+    delete: protectedProcedure
+      .input(z.object({ sopId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        const sop = await getSopGeneration(input.sopId);
+
+        if (!sop || sop.userId !== ctx.user.id) {
+          throw new TRPCError({ code: "NOT_FOUND", message: "SOP not found" });
+        }
+
+        await deleteSopGeneration(input.sopId);
+        return { success: true };
+      }),
   }),
 });
 

@@ -46,7 +46,10 @@ export async function generateChatResponse(options: GeminiChatOptions): Promise<
       temperature: options.temperature ?? 0.7,
       maxOutputTokens: options.maxOutputTokens ?? 2048,
     },
-    systemInstruction: options.systemInstruction,
+    systemInstruction: options.systemInstruction ? {
+      role: "user",
+      parts: [{ text: options.systemInstruction }],
+    } : undefined,
   });
 
   const result = await chat.sendMessage("");
@@ -71,7 +74,10 @@ export async function* generateChatResponseStream(
       temperature: options.temperature ?? 0.7,
       maxOutputTokens: options.maxOutputTokens ?? 2048,
     },
-    systemInstruction: options.systemInstruction,
+    systemInstruction: options.systemInstruction ? {
+      role: "user",
+      parts: [{ text: options.systemInstruction }],
+    } : undefined,
   });
 
   const result = await chat.sendMessageStream("");
