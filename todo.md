@@ -196,3 +196,5 @@
 
 ## Bug Fixes
 - [x] Fix nested anchor tag error in Home page
+- [x] Fix profile.get query returning undefined
+- [x] Fix nested anchor tag in Dashboard page

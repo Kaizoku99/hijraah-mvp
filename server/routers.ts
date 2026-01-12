@@ -62,7 +62,7 @@ export const appRouter = router({
   profile: router({
     get: protectedProcedure.query(async ({ ctx }) => {
       const profile = await getUserProfile(ctx.user.id);
-      return profile;
+      return profile || null;
     }),
 
     create: protectedProcedure

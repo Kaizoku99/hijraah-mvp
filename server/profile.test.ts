@@ -38,12 +38,12 @@ function createAuthContext(): { ctx: TrpcContext } {
 }
 
 describe("profile procedures", () => {
-  it("should return undefined for user without profile", async () => {
+  it("should return null for user without profile", async () => {
     const { ctx } = createAuthContext();
     const caller = appRouter.createCaller(ctx);
 
     const profile = await caller.profile.get();
-    expect(profile).toBeUndefined();
+    expect(profile).toBeNull();
   });
 
   it("should update language preference", async () => {
