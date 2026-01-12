@@ -19,9 +19,9 @@
 ## Phase 3: Authentication & User Management
 - [x] Supabase Auth integration with social providers
 - [x] User profile page with editable fields
-- [ ] User settings page with language preference
-- [ ] Protected route wrapper component
-- [ ] User onboarding flow for new registrations
+- [x] User settings page with language preference
+- [x] Protected route wrapper component
+- [x] User onboarding flow for new registrations
 - [x] Profile completion tracking
 
 ## Phase 4: AI Chat Assistant
@@ -53,7 +53,7 @@
 - [x] Document checklist generator based on user profile
 - [x] File upload system with S3 integration
 - [x] Document status tracking (pending, uploaded, verified, rejected)
-- [ ] Document preview and download
+- [x] Document preview and download
 - [x] Upload progress indicatorsn in Arabic/English
 
 ## Phase 8: AI-Powered SOP Writer
@@ -130,3 +130,38 @@
 - [x] Update document checklists for Egypt-specific requirements
 - [x] Update document checklists for Sudan-specific requirements
 - [x] Update document checklists for Syria-specific requirements
+
+
+## Continuation Phase: Complete MVP Features
+
+### Stripe Payment Integration
+- [ ] Install Stripe SDK and configure environment variables
+- [ ] Create Stripe checkout session endpoint
+- [ ] Implement webhook handler at /api/stripe/webhook
+- [ ] Handle payment success events (checkout.session.completed)
+- [ ] Handle subscription events (customer.subscription.created, updated, deleted)
+- [ ] Store subscription data in database
+
+### Subscription Management UI
+- [ ] Create pricing page with tier comparison
+- [ ] Build subscription management page
+- [ ] Add upgrade/downgrade functionality
+- [ ] Display current subscription status
+- [ ] Show payment history
+- [ ] Handle subscription cancellation
+
+### Usage Tracking & Limits
+- [ ] Track chat message usage per user
+- [ ] Track SOP generation usage per user
+- [ ] Enforce tier limits with helpful error messages
+- [ ] Display usage stats in dashboard
+- [ ] Show upgrade prompts when limits reached
+- [ ] Reset monthly usage counters
+
+### SOP Writer UI
+- [ ] Create multi-step SOP questionnaire page
+- [ ] Build SOP display page with markdown rendering
+- [ ] Add SOP refinement interface
+- [ ] Implement SOP download as PDF/DOCX
+- [ ] Show SOP history and versions
+- [ ] Add navigation from dashboard to SOP writer
