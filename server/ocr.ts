@@ -167,7 +167,7 @@ ${text}
 Provide only the translation, no explanations or notes.`;
 
   const translatedText = await generateChatResponse({
-    messages: [{ role: "user", parts: prompt }],
+    messages: [{ role: "user", content: prompt } as any],
     systemInstruction: "You are an expert translator for immigration documents. Provide accurate, professional translations.",
     temperature: 0.2,
     maxOutputTokens: 4096,

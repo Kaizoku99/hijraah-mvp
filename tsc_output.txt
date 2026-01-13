@@ -1,0 +1,46 @@
+components/ai-elements/tool.tsx(43,5): error TS1117: An object literal cannot have multiple properties with the same name.
+components/ai-elements/tool.tsx(54,5): error TS1117: An object literal cannot have multiple properties with the same name.
+server/_core/auth.ts(30,32): error TS2304: Cannot find name 'getAuthUserFromExpressRequest'.
+server/_core/auth.ts(93,32): error TS2304: Cannot find name 'getAuthUserFromExpressRequest'.
+server/_core/index.ts(4,43): error TS2307: Cannot find module '../routers' or its corresponding type declarations.
+server/_core/systemRouter.ts(3,57): error TS2307: Cannot find module './trpc' or its corresponding type declarations.
+server/_core/systemRouter.ts(23,24): error TS7031: Binding element 'input' implicitly has an 'any' type.
+server/auth.logout.test.ts(2,27): error TS2307: Cannot find module './routers' or its corresponding type declarations.
+server/auth.logout.test.ts(18,5): error TS2353: Object literal may only specify known properties, and 'openId' does not exist in type '{ id: number; authId: string; name: string | null; email: string | null; role: "user" | "admin"; subscriptionTier: "free" | "essential" | "premium" | "vip"; subscriptionStatus: "active" | "canceled" | "expired"; ... 6 more ...; lastSignedIn: Date; }'.
+server/auth.logout.test.ts(30,10): error TS2352: Conversion of type '{ protocol: string; headers: {}; }' to type 'NextRequest' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type '{ protocol: string; headers: {}; }' is missing the following properties from type 'NextRequest': cookies, nextUrl, page, ua, and 21 more.
+server/auth.logout.test.ts(34,10): error TS2352: Conversion of type '{ clearCookie: (name: string, options: Record<string, unknown>) => void; }' to type 'Response' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type '{ clearCookie: (name: string, options: Record<string, unknown>) => void; }' is missing the following properties from type 'Response': headers, ok, redirected, status, and 12 more.
+server/chat.test.ts(2,27): error TS2307: Cannot find module './routers' or its corresponding type declarations.
+server/chat.test.ts(10,5): error TS2353: Object literal may only specify known properties, and 'openId' does not exist in type '{ id: number; authId: string; name: string | null; email: string | null; role: "user" | "admin"; subscriptionTier: "free" | "essential" | "premium" | "vip"; subscriptionStatus: "active" | "canceled" | "expired"; ... 6 more ...; lastSignedIn: Date; }'.
+server/chat.test.ts(28,10): error TS2352: Conversion of type '{ protocol: string; headers: {}; }' to type 'NextRequest' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type '{ protocol: string; headers: {}; }' is missing the following properties from type 'NextRequest': cookies, nextUrl, page, ua, and 21 more.
+server/chat.test.ts(32,10): error TS2352: Conversion of type '{ clearCookie: () => void; }' to type 'Response' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type '{ clearCookie: () => void; }' is missing the following properties from type 'Response': headers, ok, redirected, status, and 12 more.
+server/crs.test.ts(2,27): error TS2307: Cannot find module './routers' or its corresponding type declarations.
+server/crs.test.ts(11,5): error TS2353: Object literal may only specify known properties, and 'openId' does not exist in type '{ id: number; authId: string; name: string | null; email: string | null; role: "user" | "admin"; subscriptionTier: "free" | "essential" | "premium" | "vip"; subscriptionStatus: "active" | "canceled" | "expired"; ... 6 more ...; lastSignedIn: Date; }'.
+server/crs.test.ts(29,10): error TS2352: Conversion of type '{ protocol: string; headers: {}; }' to type 'NextRequest' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type '{ protocol: string; headers: {}; }' is missing the following properties from type 'NextRequest': cookies, nextUrl, page, ua, and 21 more.
+server/crs.test.ts(33,10): error TS2352: Conversion of type '{ clearCookie: () => void; }' to type 'Response' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type '{ clearCookie: () => void; }' is missing the following properties from type 'Response': headers, ok, redirected, status, and 12 more.
+server/profile.test.ts(2,27): error TS2307: Cannot find module './routers' or its corresponding type declarations.
+server/profile.test.ts(10,5): error TS2353: Object literal may only specify known properties, and 'openId' does not exist in type '{ id: number; authId: string; name: string | null; email: string | null; role: "user" | "admin"; subscriptionTier: "free" | "essential" | "premium" | "vip"; subscriptionStatus: "active" | "canceled" | "expired"; ... 6 more ...; lastSignedIn: Date; }'.
+server/profile.test.ts(28,10): error TS2352: Conversion of type '{ protocol: string; headers: {}; }' to type 'NextRequest' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type '{ protocol: string; headers: {}; }' is missing the following properties from type 'NextRequest': cookies, nextUrl, page, ua, and 21 more.
+server/profile.test.ts(32,10): error TS2352: Conversion of type '{ clearCookie: () => void; }' to type 'Response' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type '{ clearCookie: () => void; }' is missing the following properties from type 'Response': headers, ok, redirected, status, and 12 more.
+server/sop.test.ts(2,27): error TS2307: Cannot find module './routers' or its corresponding type declarations.
+server/sop.test.ts(10,5): error TS2353: Object literal may only specify known properties, and 'openId' does not exist in type '{ id: number; authId: string; name: string | null; email: string | null; role: "user" | "admin"; subscriptionTier: "free" | "essential" | "premium" | "vip"; subscriptionStatus: "active" | "canceled" | "expired"; ... 6 more ...; lastSignedIn: Date; }'.
+server/sop.test.ts(22,10): error TS2352: Conversion of type '{ protocol: string; headers: {}; }' to type 'NextRequest' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type '{ protocol: string; headers: {}; }' is missing the following properties from type 'NextRequest': cookies, nextUrl, page, ua, and 21 more.
+src/app/api/stripe/webhook/route.ts(5,3): error TS2322: Type '"2024-11-20.acacia"' is not assignable to type '"2025-12-15.clover"'.
+src/components/ai-elements/confirmation.tsx(100,3): error TS2578: Unused '@ts-expect-error' directive.
+src/components/ai-elements/confirmation.tsx(120,9): error TS2578: Unused '@ts-expect-error' directive.
+src/components/ai-elements/confirmation.tsx(122,9): error TS2578: Unused '@ts-expect-error' directive.
+src/components/ai-elements/confirmation.tsx(144,9): error TS2578: Unused '@ts-expect-error' directive.
+src/components/ai-elements/confirmation.tsx(146,9): error TS2578: Unused '@ts-expect-error' directive.
+src/components/ai-elements/confirmation.tsx(165,3): error TS2578: Unused '@ts-expect-error' directive.
+src/components/ai-elements/tool.tsx(43,5): error TS2578: Unused '@ts-expect-error' directive.
+src/components/ai-elements/tool.tsx(54,5): error TS2578: Unused '@ts-expect-error' directive.
+src/components/Map.tsx(77,23): error TS2688: Cannot find type definition file for 'google.maps'.
+src/components/Map.tsx(80,30): error TS2307: Cannot find module '@/hooks/usePersistFn' or its corresponding type declarations.

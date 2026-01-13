@@ -1,0 +1,25 @@
+components/ai-elements/tool.tsx(43,5): error TS1117: An object literal cannot have multiple properties with the same name.
+components/ai-elements/tool.tsx(54,5): error TS1117: An object literal cannot have multiple properties with the same name.
+server/db.ts(20,21): error TS2307: Cannot find module './_core/env' or its corresponding type declarations.
+server/guides.ts(11,38): error TS2307: Cannot find module './_core/gemini' or its corresponding type declarations.
+server/ocr.ts(2,38): error TS2307: Cannot find module './_core/gemini' or its corresponding type declarations.
+server/rag.ts(2,31): error TS2307: Cannot find module './_core/supabase' or its corresponding type declarations.
+server/sop-quality.ts(1,38): error TS2307: Cannot find module './_core/gemini' or its corresponding type declarations.
+server/storage.ts(4,21): error TS2307: Cannot find module './_core/env' or its corresponding type declarations.
+server/stripe.ts(2,21): error TS2307: Cannot find module './_core/env' or its corresponding type declarations.
+src/actions/auth.ts(3,57): error TS2307: Cannot find module '@/../server/_core/supabase' or its corresponding type declarations.
+src/actions/chat.ts(18,53): error TS2307: Cannot find module '@/../server/_core/gemini' or its corresponding type declarations.
+src/actions/sop.ts(15,38): error TS2307: Cannot find module '@/../server/_core/gemini' or its corresponding type declarations.
+src/app/api/ai/chat/route.ts(2,59): error TS2307: Cannot find module '@/server/_core/ai' or its corresponding type declarations.
+src/app/api/ai/chat/route.ts(3,40): error TS2307: Cannot find module '@/server/_core/supabase' or its corresponding type declarations.
+src/app/api/ai/chat/route.ts(126,26): error TS7031: Binding element 'responseMessage' implicitly has an 'any' type.
+src/app/api/ai/chat/route.ts(131,23): error TS7006: Parameter 'part' implicitly has an 'any' type.
+src/app/api/ai/chat/route.ts(132,19): error TS7006: Parameter 'part' implicitly has an 'any' type.
+src/app/api/ai/chat/route.ts(158,63): error TS2307: Cannot find module '@/server/_core/ai' or its corresponding type declarations.
+src/app/api/stripe/webhook/route.ts(5,3): error TS2322: Type '"2024-11-20.acacia"' is not assignable to type '"2025-12-15.clover"'.
+src/components/ai-elements/confirmation.tsx(119,5): error TS2578: Unused '@ts-expect-error' directive.
+src/components/ai-elements/confirmation.tsx(121,7): error TS2578: Unused '@ts-expect-error' directive.
+src/components/ai-elements/confirmation.tsx(143,5): error TS2578: Unused '@ts-expect-error' directive.
+src/components/ai-elements/confirmation.tsx(145,7): error TS2578: Unused '@ts-expect-error' directive.
+src/components/ai-elements/tool.tsx(43,5): error TS2578: Unused '@ts-expect-error' directive.
+src/hooks/usePersistFn.ts(7,23): error TS2554: Expected 1 arguments, but got 0.

@@ -9,7 +9,15 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageToggle } from "@/components/LanguageToggle";
-import { trpc } from "@/lib/trpc";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  getChecklists,
+  getDocuments,
+  generateDocumentChecklist,
+  updateChecklistItems,
+  deleteChecklist,
+  uploadDocument,
+} from "@/actions/documents";
 import {
   FileText,
   User,
@@ -32,47 +40,57 @@ export default function Documents() {
   const { logout } = useAuth();
   const { t, language } = useLanguage();
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const [selectedCountry, setSelectedCountry] = useState<string>("");
   const [selectedPathway, setSelectedPathway] = useState<string>("");
   const [selectedChecklistId, setSelectedChecklistId] = useState<number | null>(null);
 
-  const checklistsQuery = trpc.documents.getChecklists.useQuery();
-  const documentsQuery = trpc.documents.getDocuments.useQuery();
+  const checklistsQuery = useQuery({
+    queryKey: ['documents', 'checklists'],
+    queryFn: getChecklists,
+  });
+  const documentsQuery = useQuery({
+    queryKey: ['documents', 'list'],
+    queryFn: getDocuments,
+  });
 
-  const generateChecklistMutation = trpc.documents.generateChecklist.useMutation({
+  const generateChecklistMutation = useMutation({
+    mutationFn: generateDocumentChecklist,
     onSuccess: (data) => {
       setSelectedChecklistId(data.checklistId);
-      checklistsQuery.refetch();
+      queryClient.invalidateQueries({ queryKey: ['documents', 'checklists'] });
       toast.success(language === "ar" ? "تم إنشاء قائمة المستندات" : "Checklist created successfully");
     },
-    onError: (error) => {
+    onError: (error: any) => {
       toast.error(error.message);
     },
   });
 
-  const updateChecklistMutation = trpc.documents.updateChecklist.useMutation({
+  const updateChecklistMutation = useMutation({
+    mutationFn: updateChecklistItems,
     onSuccess: () => {
-      checklistsQuery.refetch();
+      queryClient.invalidateQueries({ queryKey: ['documents', 'checklists'] });
       toast.success(language === "ar" ? "تم تحديث القائمة" : "Checklist updated");
     },
   });
 
-  const deleteChecklistMutation = trpc.documents.deleteChecklist.useMutation({
+  const deleteChecklistMutation = useMutation({
+    mutationFn: deleteChecklist,
     onSuccess: () => {
       setSelectedChecklistId(null);
-      checklistsQuery.refetch();
+      queryClient.invalidateQueries({ queryKey: ['documents', 'checklists'] });
       toast.success(language === "ar" ? "تم حذف القائمة" : "Checklist deleted");
     },
   });
 
-  const uploadDocumentMutation = trpc.documents.uploadDocument.useMutation({
+  const uploadDocumentMutation = useMutation({
+    mutationFn: uploadDocument,
     onSuccess: () => {
-      documentsQuery.refetch();
-      checklistsQuery.refetch();
+      queryClient.invalidateQueries({ queryKey: ['documents'] });
       toast.success(language === "ar" ? "تم رفع المستند" : "Document uploaded successfully");
     },
-    onError: (error) => {
+    onError: (error: any) => {
       toast.error(error.message);
     },
   });

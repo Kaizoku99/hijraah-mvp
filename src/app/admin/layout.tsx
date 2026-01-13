@@ -44,6 +44,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                             <Link href="/admin/guides" className="text-sm font-medium hover:text-primary transition-colors">
                                 Guides
                             </Link>
+                            <Link href="/admin/whatsapp" className="text-sm font-medium hover:text-primary transition-colors">
+                                WhatsApp
+                            </Link>
                             <Link href="/dashboard" className="text-sm font-medium hover:text-primary transition-colors">
                                 App Dashboard
                             </Link>

@@ -8,7 +8,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageToggle } from "@/components/LanguageToggle";
-import { trpc } from "@/lib/trpc";
+import { useMutation } from "@tanstack/react-query";
+import { generateSop } from "@/actions/sop";
 import { FileText, User, LogOut, Loader2, ArrowRight, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -35,12 +36,13 @@ export default function SopNew() {
     targetInstitution: "",
   });
 
-  const generateMutation = trpc.sop.generate.useMutation({
+  const generateMutation = useMutation({
+    mutationFn: generateSop,
     onSuccess: (data) => {
       toast.success(language === "ar" ? "تم إنشاء خطاب النوايا بنجاح" : "SOP generated successfully");
       router.push(`/sop/${data.sopId}`);
     },
-    onError: (error) => {
+    onError: (error: any) => {
       toast.error(error.message);
     },
   });

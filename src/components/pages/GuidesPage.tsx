@@ -2,18 +2,19 @@
 
 import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageToggle } from "@/components/LanguageToggle";
-import { trpc } from "@/lib/trpc";
+import { useQuery } from "@tanstack/react-query";
+import { listGuides, getCategories, searchGuidesAction } from "@/actions/guides";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { 
-  BookOpen, 
-  Search, 
-  ArrowLeft, 
-  ArrowRight, 
-  Clock, 
+import {
+  BookOpen,
+  Search,
+  ArrowLeft,
+  ArrowRight,
+  Clock,
   Tag,
   FileText,
   GraduationCap,
@@ -67,19 +68,27 @@ export default function Guides() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   // Fetch guides
-  const { data: guides, isLoading } = trpc.guides.list.useQuery({
-    category: selectedCategory || undefined,
-    limit: 50,
+  const { data: guides, isLoading } = useQuery({
+    queryKey: ['guides', 'list', selectedCategory],
+    queryFn: () => listGuides({
+      category: selectedCategory || undefined,
+      limit: 50,
+      offset: 0,
+    }),
   });
 
   // Fetch categories
-  const { data: categoriesData } = trpc.guides.categories.useQuery();
+  const { data: categoriesData } = useQuery({
+    queryKey: ['guides', 'categories'],
+    queryFn: getCategories,
+  });
 
   // Search guides
-  const { data: searchResults, isLoading: isSearching } = trpc.guides.search.useQuery(
-    { query: searchQuery },
-    { enabled: searchQuery.length >= 2 }
-  );
+  const { data: searchResults, isLoading: isSearching } = useQuery({
+    queryKey: ['guides', 'search', searchQuery],
+    queryFn: () => searchGuidesAction({ query: searchQuery, limit: 10 }),
+    enabled: searchQuery.length >= 2,
+  });
 
   const displayedGuides = searchQuery.length >= 2 ? searchResults : guides;
 
@@ -155,7 +164,7 @@ export default function Guides() {
               const count = categoriesData.counts.find((c) => c.category === category)?.count || 0;
               const Icon = categoryIcons[category] || HelpCircle;
               const label = categoryLabels[category] || { en: category, ar: category };
-              
+
               return (
                 <Button
                   key={category}
@@ -197,7 +206,7 @@ export default function Guides() {
               {displayedGuides.map((guide) => {
                 const Icon = categoryIcons[guide.category] || HelpCircle;
                 const categoryLabel = categoryLabels[guide.category] || { en: guide.category, ar: guide.category };
-                
+
                 return (
                   <Link key={guide.id} href={`/guides/${guide.slug}`}>
                     <Card className="h-full hover:border-primary transition-all hover:shadow-md cursor-pointer">
@@ -217,7 +226,7 @@ export default function Guides() {
                           {language === "ar" ? guide.titleAr : guide.titleEn}
                         </CardTitle>
                         <CardDescription className="line-clamp-3">
-                          {language === "ar" 
+                          {language === "ar"
                             ? (guide.metaDescriptionAr || guide.contentAr.substring(0, 150) + "...")
                             : (guide.metaDescriptionEn || guide.contentEn.substring(0, 150) + "...")
                           }
@@ -264,8 +273,8 @@ export default function Guides() {
                     ? "جرب البحث بكلمات مختلفة"
                     : "Try searching with different keywords"
                   : language === "ar"
-                  ? "لم يتم نشر أي أدلة بعد"
-                  : "No guides have been published yet"}
+                    ? "لم يتم نشر أي أدلة بعد"
+                    : "No guides have been published yet"}
               </p>
             </div>
           )}

@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageToggle } from "@/components/LanguageToggle";
-import { trpc } from "@/lib/trpc";
+import { useQuery } from "@tanstack/react-query";
+import { listSops } from "@/actions/sop";
 import { FileText, User, LogOut, Plus, Loader2, Calendar, Eye } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -17,7 +18,10 @@ export default function SopList() {
   const { t, language } = useLanguage();
   const router = useRouter();
 
-  const { data: sops, isLoading } = trpc.sop.list.useQuery();
+  const { data: sops, isLoading } = useQuery({
+    queryKey: ['sop', 'list'],
+    queryFn: listSops,
+  });
 
   const handleLogout = async () => {
     await logout();
@@ -126,8 +130,8 @@ export default function SopList() {
                             {sop.goals
                               ? sop.goals.substring(0, 100) + (sop.goals.length > 100 ? "..." : "")
                               : language === "ar"
-                              ? "لا يوجد وصف"
-                              : "No description"}
+                                ? "لا يوجد وصف"
+                                : "No description"}
                           </CardDescription>
                         </div>
                         <span className={`px-2 py-1 rounded-full text-xs font-medium ${status.color}`}>
@@ -169,4 +173,3 @@ export default function SopList() {
     </div>
   );
 }
-

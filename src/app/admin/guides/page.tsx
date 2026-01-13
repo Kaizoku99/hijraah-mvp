@@ -1,7 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { trpc } from '@/lib/trpc';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import {
+    listAllGuides,
+    toggleGuidePublishAction,
+    deleteGuideAction
+} from '@/actions/guides';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Plus, Edit, Trash2, Eye, EyeOff } from 'lucide-react';
@@ -23,12 +28,13 @@ export default function AdminGuidesPage() {
     const [page, setPage] = useState(0);
     const limit = 20;
 
-    const { data, isLoading, refetch } = trpc.guides.listAll.useQuery({
-        limit,
-        offset: page * limit,
+    const { data, isLoading, refetch } = useQuery({
+        queryKey: ['guides', 'admin', page],
+        queryFn: () => listAllGuides({ limit, offset: page * limit }),
     });
 
-    const togglePublishMutation = trpc.guides.togglePublish.useMutation({
+    const togglePublishMutation = useMutation({
+        mutationFn: toggleGuidePublishAction,
         onSuccess: () => {
             toast.success('Guide status updated');
             refetch();
@@ -38,7 +44,8 @@ export default function AdminGuidesPage() {
         },
     });
 
-    const deleteMutation = trpc.guides.delete.useMutation({
+    const deleteMutation = useMutation({
+        mutationFn: deleteGuideAction,
         onSuccess: () => {
             toast.success('Guide deleted');
             refetch();

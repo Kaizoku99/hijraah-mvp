@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
-import { trpc } from "@/lib/trpc";
+import { useMutation } from "@tanstack/react-query";
+import { processOcrBase64, translateAction } from "@/actions/ocr";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -56,8 +57,12 @@ export function DocumentScanner() {
   const [editedText, setEditedText] = useState("");
   const [activeTab, setActiveTab] = useState("original");
 
-  const processOcrMutation = trpc.ocr.processBase64.useMutation();
-  const translateMutation = trpc.ocr.translate.useMutation();
+  const processOcrMutation = useMutation({
+    mutationFn: processOcrBase64,
+  });
+  const translateMutation = useMutation({
+    mutationFn: translateAction,
+  });
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const selectedFile = acceptedFiles[0];
@@ -97,7 +102,7 @@ export function DocumentScanner() {
       const reader = new FileReader();
       reader.onload = async () => {
         const base64 = (reader.result as string).split(",")[1];
-        
+
         const result = await processOcrMutation.mutateAsync({
           base64Data: base64,
           mimeType: file.type,
@@ -204,8 +209,8 @@ export function DocumentScanner() {
                   ? "أفلت الملف هنا"
                   : "Drop the file here"
                 : isRtl
-                ? "اسحب وأفلت الملف هنا أو انقر للتحميل"
-                : "Drag and drop a file here, or click to upload"}
+                  ? "اسحب وأفلت الملف هنا أو انقر للتحميل"
+                  : "Drag and drop a file here, or click to upload"}
             </p>
             <p className="text-sm text-muted-foreground">
               {isRtl
@@ -381,7 +386,7 @@ export function DocumentScanner() {
                         className={cn(
                           "whitespace-pre-wrap text-sm leading-relaxed",
                           translationResult.targetLanguage === "ar" &&
-                            "rtl text-right"
+                          "rtl text-right"
                         )}
                       >
                         {translationResult.translatedText}
@@ -456,7 +461,7 @@ export function DocumentScanner() {
                       <p
                         className={cn(
                           "text-sm whitespace-pre-wrap",
-                          ocrResult.language === "ar" && "rtl text-right"
+                          ocrResult.language === "ar" && "rtl text-start"
                         )}
                       >
                         {page.text}

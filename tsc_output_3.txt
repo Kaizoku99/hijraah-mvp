@@ -1,0 +1,31 @@
+components/ai-elements/tool.tsx(43,5): error TS1117: An object literal cannot have multiple properties with the same name.
+components/ai-elements/tool.tsx(54,5): error TS1117: An object literal cannot have multiple properties with the same name.
+server/guides.ts(11,10): error TS2305: Module '"./_core/gemini"' has no exported member 'generateChatResponse'.
+server/ocr.ts(2,10): error TS2305: Module '"./_core/gemini"' has no exported member 'generateChatResponse'.
+server/rag.ts(126,33): error TS18047: 'supabase' is possibly 'null'.
+server/rag.ts(133,56): error TS18047: 'supabase' is possibly 'null'.
+server/rag.ts(197,22): error TS18047: 'supabase' is possibly 'null'.
+server/rag.ts(239,22): error TS18047: 'supabase' is possibly 'null'.
+server/rag.ts(427,48): error TS18047: 'supabase' is possibly 'null'.
+server/rag.ts(460,39): error TS18047: 'supabase' is possibly 'null'.
+server/rag.ts(469,9): error TS18047: 'supabase' is possibly 'null'.
+server/rag.ts(521,33): error TS18047: 'supabase' is possibly 'null'.
+server/rag.ts(554,33): error TS18047: 'supabase' is possibly 'null'.
+server/sop-quality.ts(1,10): error TS2305: Module '"./_core/gemini"' has no exported member 'generateChatResponse'.
+server/storage.ts(4,10): error TS2724: '"./_core/env"' has no exported member named 'ENV'. Did you mean 'env'?
+server/stripe.ts(148,7): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/actions/auth.ts(3,10): error TS2305: Module '"@/../server/_core/supabase"' has no exported member 'getAuthUser'.
+src/actions/auth.ts(3,23): error TS2305: Module '"@/../server/_core/supabase"' has no exported member 'createSupabaseServerClient'.
+src/actions/chat.ts(18,10): error TS2305: Module '"@/../server/_core/gemini"' has no exported member 'generateChatResponse'.
+src/actions/chat.ts(18,32): error TS2305: Module '"@/../server/_core/gemini"' has no exported member 'GeminiMessage'.
+src/actions/sop.ts(15,10): error TS2305: Module '"@/../server/_core/gemini"' has no exported member 'generateChatResponse'.
+src/app/api/ai/chat/route.ts(2,59): error TS2307: Cannot find module '@/server/_core/ai' or its corresponding type declarations.
+src/app/api/ai/chat/route.ts(3,10): error TS2305: Module '"@/server/_core/supabase"' has no exported member 'getAuthUserFromRequest'.
+src/app/api/ai/chat/route.ts(126,26): error TS7031: Binding element 'responseMessage' implicitly has an 'any' type.
+src/app/api/ai/chat/route.ts(131,23): error TS7006: Parameter 'part' implicitly has an 'any' type.
+src/app/api/ai/chat/route.ts(132,19): error TS7006: Parameter 'part' implicitly has an 'any' type.
+src/app/api/ai/chat/route.ts(158,63): error TS2307: Cannot find module '@/server/_core/ai' or its corresponding type declarations.
+src/components/ai-elements/confirmation.tsx(119,5): error TS2578: Unused '@ts-expect-error' directive.
+src/components/ai-elements/confirmation.tsx(121,7): error TS2578: Unused '@ts-expect-error' directive.
+src/components/ai-elements/tool.tsx(43,5): error TS2578: Unused '@ts-expect-error' directive.

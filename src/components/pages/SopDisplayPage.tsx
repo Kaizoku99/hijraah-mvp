@@ -6,7 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { SopQualityScore } from "@/components/SopQualityScore";
-import { trpc } from "@/lib/trpc";
+import { useQuery } from "@tanstack/react-query";
+import { getSop } from "@/actions/sop";
 import { generateSopPdf, downloadPdf } from "@/lib/pdfExport";
 import { User, LogOut, Copy, Download, RefreshCw, Loader2, FileText } from "lucide-react";
 import Link from "next/link";
@@ -19,10 +20,14 @@ export default function SopDisplay() {
   const { t, language } = useLanguage();
   const router = useRouter();
   const params = useParams<{ id: string }>();
-  
+
   const sopId = params?.id ? parseInt(params.id) : 0;
 
-  const { data: sop, isLoading } = trpc.sop.get.useQuery({ sopId });
+  const { data: sop, isLoading } = useQuery({
+    queryKey: ['sop', 'get', sopId],
+    queryFn: () => getSop({ sopId }),
+    enabled: sopId > 0,
+  });
   const [isExportingPdf, setIsExportingPdf] = useState(false);
 
   const handleCopy = () => {
@@ -49,7 +54,7 @@ export default function SopDisplay() {
 
   const handleDownloadPdf = async () => {
     if (!sop?.content) return;
-    
+
     setIsExportingPdf(true);
     try {
       const blob = await generateSopPdf({
@@ -58,7 +63,7 @@ export default function SopDisplay() {
         title: language === "ar" ? "خطاب النوايا" : "Statement of Purpose",
         createdAt: new Date(sop.createdAt),
       });
-      
+
       downloadPdf(blob, `SOP-${sopId}.pdf`);
       toast.success(language === "ar" ? "تم تنزيل PDF بنجاح" : "PDF downloaded successfully");
     } catch (error) {
@@ -159,9 +164,9 @@ export default function SopDisplay() {
                 <Download className="h-4 w-4 mr-2" />
                 {language === "ar" ? "نص" : "TXT"}
               </Button>
-              <Button 
-                variant="default" 
-                size="sm" 
+              <Button
+                variant="default"
+                size="sm"
                 onClick={handleDownloadPdf}
                 disabled={isExportingPdf}
               >

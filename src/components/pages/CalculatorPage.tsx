@@ -1,7 +1,5 @@
 'use client'
 
-'use client'
-
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,7 +11,9 @@ import { Separator } from "@/components/ui/separator";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { DrawComparison } from "@/components/DrawComparison";
-import { trpc } from "@/lib/trpc";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { getProfile } from "@/actions/profile";
+import { calculateCrsScore } from "@/actions/crs";
 import { Calculator as CalculatorIcon, User, LogOut, TrendingUp, Award, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -26,7 +26,10 @@ export default function CalculatorPage() {
   const router = useRouter();
   const [isPreFilled, setIsPreFilled] = useState(false);
 
-  const { data: profile } = trpc.profile.get.useQuery();
+  const { data: profile } = useQuery({
+    queryKey: ['profile', 'get'],
+    queryFn: getProfile,
+  });
 
   const [formData, setFormData] = useState({
     age: 25,
@@ -102,12 +105,13 @@ export default function CalculatorPage() {
     }
   }, [profile, isPreFilled, language]);
 
-  const calculateMutation = trpc.crs.calculate.useMutation({
+  const calculateMutation = useMutation({
+    mutationFn: calculateCrsScore,
     onSuccess: (data) => {
       setResult(data);
       toast.success(language === "ar" ? "تم حساب النقاط بنجاح" : "Score calculated successfully");
     },
-    onError: (error) => {
+    onError: (error: any) => {
       toast.error(error.message);
     },
   });
@@ -324,7 +328,7 @@ export default function CalculatorPage() {
               {/* Additional Factors */}
               <div className="space-y-4">
                 <Label className="text-base font-semibold">{language === "ar" ? "عوامل إضافية" : "Additional Factors"}</Label>
-                
+
                 <div className="flex items-center justify-between">
                   <Label htmlFor="spouse">{language === "ar" ? "لديك زوج/زوجة" : "Have a spouse"}</Label>
                   <Switch
@@ -470,4 +474,3 @@ export default function CalculatorPage() {
     </div>
   );
 }
-

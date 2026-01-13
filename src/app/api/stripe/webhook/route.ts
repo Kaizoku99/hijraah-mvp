@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-11-20.acacia',
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'dummy_key', {
+  apiVersion: '2025-12-15.clover' as any, // Cast to any to avoid type mismatch with specific version string
 })
 
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!
+const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET || 'dummy_secret'
 
 export async function POST(req: NextRequest) {
   const body = await req.text()

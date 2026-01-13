@@ -4,11 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { trpc } from "@/lib/trpc";
-import { 
-  Sparkles, 
-  CheckCircle2, 
-  AlertTriangle, 
+import { useMutation } from "@tanstack/react-query";
+import { analyzeSopQualityAction } from "@/actions/sop";
+import {
+  Sparkles,
+  CheckCircle2,
+  AlertTriangle,
   Loader2,
   Target,
   Lightbulb,
@@ -29,11 +30,12 @@ export function SopQualityScore({ sopId }: SopQualityScoreProps) {
   const isRtl = language === "ar";
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
-  const analyzeMutation = trpc.sop.analyzeQuality.useMutation({
+  const analyzeMutation = useMutation({
+    mutationFn: analyzeSopQualityAction,
     onSuccess: () => {
       toast.success(isRtl ? "تم تحليل خطاب النوايا بنجاح" : "SOP analyzed successfully");
     },
-    onError: (error) => {
+    onError: (error: any) => {
       toast.error(isRtl ? "فشل في التحليل" : "Analysis failed");
       console.error(error);
     },

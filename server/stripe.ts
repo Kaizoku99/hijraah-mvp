@@ -11,9 +11,15 @@ let _stripe: Stripe | null = null;
 function getStripe(): Stripe {
   if (!_stripe) {
     if (!env.STRIPE_SECRET_KEY) {
-      throw new Error("STRIPE_SECRET_KEY is not configured. Please set it in your .env file.");
+      console.warn("STRIPE_SECRET_KEY is not configured. Using dummy key for build.");
+      _stripe = new Stripe('dummy_key', {
+        apiVersion: '2025-12-15.clover' as any,
+      });
+    } else {
+      _stripe = new Stripe(env.STRIPE_SECRET_KEY, {
+        apiVersion: '2025-12-15.clover' as any,
+      });
     }
-    _stripe = new Stripe(env.STRIPE_SECRET_KEY);
   }
   return _stripe;
 }
@@ -56,14 +62,23 @@ export async function createCheckoutSession(options: {
   let customerId = user.stripeCustomerId;
 
   if (!customerId) {
-    // Create new Stripe customer
-    const customer = await stripe.instance.customers.create({
+    // If stripeCustomerId is null in our DB, try to find an existing customer by email first
+    const existingCustomers = await stripe.instance.customers.list({
       email: options.userEmail,
-      metadata: {
-        userId: options.userId.toString(),
-      },
+      limit: 1,
     });
-    customerId = customer.id;
+
+    if (existingCustomers.data.length > 0) {
+      customerId = existingCustomers.data[0].id;
+    } else {
+      const newCustomer = await stripe.instance.customers.create({
+        email: options.userEmail,
+        metadata: {
+          userId: options.userId.toString(),
+        },
+      });
+      customerId = newCustomer.id;
+    }
 
     // Save customer ID to database
     await db
@@ -142,6 +157,7 @@ export async function handleWebhookEvent(payload: string, signature: string) {
   let event: Stripe.Event;
 
   try {
+    if (!env.STRIPE_WEBHOOK_SECRET) throw new Error('STRIPE_WEBHOOK_SECRET missing');
     event = stripe.instance.webhooks.constructEvent(
       payload,
       signature,

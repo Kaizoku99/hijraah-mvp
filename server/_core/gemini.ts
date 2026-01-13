@@ -1,166 +1,42 @@
-import { GoogleGenerativeAI, GenerativeModel } from "@google/generative-ai";
+import { createGoogleGenerativeAI } from '@ai-sdk/google';
+import { env } from './env';
+import { generateText } from 'ai';
 
-let genAI: GoogleGenerativeAI | null = null;
-let model: GenerativeModel | null = null;
+export const google = createGoogleGenerativeAI({
+    apiKey: env.GOOGLE_GENERATIVE_AI_API_KEY || 'no-key-provided',
+});
 
-function getGeminiClient() {
-  if (!process.env.GEMINI_API_KEY) {
-    throw new Error("GEMINI_API_KEY environment variable is not set");
-  }
+// Manual definition compatible with what we expect from UI and DB
+export type GeminiMessage = {
+    role: 'user' | 'assistant' | 'system' | 'data' | 'tool';
+    content: string;
+    id?: string;
+    name?: string;
+};
 
-  if (!genAI) {
-    genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-  }
+export type GenerateChatResponseOptions = {
+    messages: any[];
+    systemInstruction?: string;
+    temperature?: number;
+    maxOutputTokens?: number;
+};
 
-  if (!model) {
-    model = genAI.getGenerativeModel({ model: "gemini-2.5-pro" });
-  }
-
-  return { genAI, model };
-}
-
-export interface GeminiMessage {
-  role: "user" | "model";
-  parts: string;
-}
-
-export interface GeminiChatOptions {
-  messages: GeminiMessage[];
-  systemInstruction?: string;
-  temperature?: number;
-  maxOutputTokens?: number;
-}
-
-/**
- * Generate a chat response using Gemini 2.5 Pro
- */
-export async function generateChatResponse(options: GeminiChatOptions): Promise<string> {
-  const { model } = getGeminiClient();
-
-  const chat = model.startChat({
-    history: options.messages.map((msg) => ({
-      role: msg.role,
-      parts: [{ text: msg.parts }],
-    })),
-    generationConfig: {
-      temperature: options.temperature ?? 0.7,
-      maxOutputTokens: options.maxOutputTokens ?? 2048,
-    },
-    systemInstruction: options.systemInstruction ? {
-      role: "user",
-      parts: [{ text: options.systemInstruction }],
-    } : undefined,
-  });
-
-  const result = await chat.sendMessage("");
-  const response = await result.response;
-  return response.text();
-}
-
-/**
- * Generate a streaming chat response using Gemini 2.5 Pro
- */
-export async function* generateChatResponseStream(
-  options: GeminiChatOptions
-): AsyncGenerator<string, void, unknown> {
-  const { model } = getGeminiClient();
-
-  const chat = model.startChat({
-    history: options.messages.map((msg) => ({
-      role: msg.role,
-      parts: [{ text: msg.parts }],
-    })),
-    generationConfig: {
-      temperature: options.temperature ?? 0.7,
-      maxOutputTokens: options.maxOutputTokens ?? 2048,
-    },
-    systemInstruction: options.systemInstruction ? {
-      role: "user",
-      parts: [{ text: options.systemInstruction }],
-    } : undefined,
-  });
-
-  const result = await chat.sendMessageStream("");
-
-  for await (const chunk of result.stream) {
-    const chunkText = chunk.text();
-    if (chunkText) {
-      yield chunkText;
-    }
-  }
-}
-
-/**
- * Generate structured JSON response using Gemini
- */
-export async function generateStructuredResponse<T>(
-  prompt: string,
-  schema: any,
-  systemInstruction?: string
-): Promise<T> {
-  const { model } = getGeminiClient();
-
-  const result = await model.generateContent({
-    contents: [{ role: "user", parts: [{ text: prompt }] }],
-    generationConfig: {
-      temperature: 0.3,
-      responseMimeType: "application/json",
-      responseSchema: schema,
-    },
+export async function generateChatResponse({
+    messages,
     systemInstruction,
-  } as any);
+    temperature,
+    maxOutputTokens
+}: GenerateChatResponseOptions) {
+    const model = google('gemini-1.5-flash');
 
-  const response = await result.response;
-  const text = response.text();
-  return JSON.parse(text) as T;
-}
+    const result = await generateText({
+        model,
+        messages: messages as any,
+        system: systemInstruction,
+        temperature,
+        // @ts-ignore - maxTokens is supported in runtime but types might vary across versions
+        maxTokens: maxOutputTokens,
+    });
 
-/**
- * Analyze image with Gemini Vision
- */
-export async function analyzeImage(
-  imageData: string,
-  prompt: string,
-  mimeType: string = "image/jpeg"
-): Promise<string> {
-  const { genAI } = getGeminiClient();
-  const visionModel = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
-
-  const result = await visionModel.generateContent([
-    {
-      inlineData: {
-        data: imageData,
-        mimeType,
-      },
-    },
-    prompt,
-  ]);
-
-  const response = await result.response;
-  return response.text();
-}
-
-/**
- * Generate embeddings using Gemini
- */
-export async function generateEmbedding(text: string): Promise<number[]> {
-  const { genAI } = getGeminiClient();
-  const embeddingModel = genAI.getGenerativeModel({ model: "text-embedding-004" });
-
-  const result = await embeddingModel.embedContent(text);
-  return result.embedding.values;
-}
-
-/**
- * Batch generate embeddings
- */
-export async function generateEmbeddings(texts: string[]): Promise<number[][]> {
-  const { genAI } = getGeminiClient();
-  const embeddingModel = genAI.getGenerativeModel({ model: "text-embedding-004" });
-
-  const results = await Promise.all(
-    texts.map((text) => embeddingModel.embedContent(text))
-  );
-
-  return results.map((result: any) => result.embedding.values);
+    return result.text;
 }

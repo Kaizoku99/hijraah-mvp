@@ -50,7 +50,7 @@ Respond ONLY with a valid JSON object in this exact format (no markdown, no code
 }`;
 
   const response = await generateChatResponse({
-    messages: [{ role: "user", parts: prompt }],
+    messages: [{ role: "user", content: prompt } as any],
     systemInstruction: "You are an expert immigration consultant who evaluates Statements of Purpose. Always respond with valid JSON only, no markdown formatting.",
     temperature: 0.3,
     maxOutputTokens: 2048,
@@ -71,7 +71,7 @@ Respond ONLY with a valid JSON object in this exact format (no markdown, no code
     cleanedResponse = cleanedResponse.trim();
 
     const result = JSON.parse(cleanedResponse) as SopQualityScore;
-    
+
     // Validate and sanitize scores
     result.overallScore = Math.min(100, Math.max(0, result.overallScore));
     for (const category of Object.values(result.categories)) {

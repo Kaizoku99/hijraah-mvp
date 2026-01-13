@@ -2,15 +2,16 @@
 
 import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageToggle } from "@/components/LanguageToggle";
-import { trpc } from "@/lib/trpc";
+import { useQuery } from "@tanstack/react-query";
+import { getGuide } from "@/actions/guides";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { 
-  ArrowLeft, 
-  ArrowRight, 
-  Clock, 
+import {
+  ArrowLeft,
+  ArrowRight,
+  Clock,
   Tag,
   BookOpen,
   Share2,
@@ -44,10 +45,11 @@ export default function GuideDetail() {
   const router = useRouter();
 
   // Fetch guide by slug
-  const { data: guide, isLoading, error } = trpc.guides.bySlug.useQuery(
-    { slug: slug || "" },
-    { enabled: !!slug }
-  );
+  const { data: guide, isLoading, error } = useQuery({
+    queryKey: ['guides', 'bySlug', slug],
+    queryFn: () => getGuide({ slug: slug || "" }),
+    enabled: !!slug,
+  });
 
   // Handle share
   const handleShare = async () => {
@@ -220,8 +222,8 @@ export default function GuideDetail() {
                   <h3 className="text-xl font-semibold mt-6 mb-3">{children}</h3>
                 ),
                 a: ({ href, children }: { href?: string; children?: React.ReactNode }) => (
-                  <a 
-                    href={href} 
+                  <a
+                    href={href}
                     target={href?.startsWith("http") ? "_blank" : undefined}
                     rel={href?.startsWith("http") ? "noopener noreferrer" : undefined}
                     className="text-blue-600 hover:text-blue-800 inline-flex items-center gap-1"

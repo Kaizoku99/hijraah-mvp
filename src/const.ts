@@ -5,14 +5,13 @@ export const getLoginUrl = () => {
   // Use NEXT_PUBLIC_ prefix for Next.js environment variables
   const oauthPortalUrl = process.env.NEXT_PUBLIC_OAUTH_PORTAL_URL;
   const appId = process.env.NEXT_PUBLIC_APP_ID;
-  
+
   // Return fallback if env vars not configured
   if (!oauthPortalUrl || !appId) {
-    console.warn("OAuth not configured: NEXT_PUBLIC_OAUTH_PORTAL_URL or NEXT_PUBLIC_APP_ID missing");
     return "/login";
   }
-  
-  const redirectUri = typeof window !== 'undefined' 
+
+  const redirectUri = typeof window !== 'undefined'
     ? `${window.location.origin}/api/oauth/callback`
     : '';
   const state = typeof window !== 'undefined' ? btoa(redirectUri) : '';

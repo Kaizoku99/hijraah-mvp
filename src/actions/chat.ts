@@ -149,8 +149,9 @@ export async function sendMessage(input: SendMessageInput) {
     const geminiMessages: GeminiMessage[] = history
         .filter((msg) => msg.role !== 'system')
         .map((msg) => ({
-            role: msg.role === 'user' ? 'user' : 'model',
-            parts: msg.content,
+            role: msg.role === 'user' ? 'user' : 'assistant',
+            content: msg.content,
+            id: msg.id.toString(),
         }))
 
     // System instruction

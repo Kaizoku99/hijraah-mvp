@@ -2,7 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { trpc } from '@/lib/trpc';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+    getGuideByIdAction,
+    createGuideAction,
+    updateGuideAction,
+    translateGuideAction
+} from '@/actions/guides';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -49,21 +55,24 @@ export default function GuideEditor({ guideId }: GuideEditorProps) {
     const [isPublished, setIsPublished] = useState(false);
     const [isTranslating, setIsTranslating] = useState(false);
 
+    const queryClient = useQueryClient();
+
     // Fetch guide data if editing
-    const { data: guide, isLoading: isLoadingGuide } = trpc.guides.byId.useQuery(
-        { id: guideId! },
-        { enabled: !!guideId }
-    );
+    const { data: guide, isLoading: isLoadingGuide } = useQuery({
+        queryKey: ['guides', guideId],
+        queryFn: () => getGuideByIdAction({ id: guideId! }),
+        enabled: !!guideId,
+    });
 
     // Auto-fill form when guide loaded
     useEffect(() => {
         if (guide) {
             setTitleEn(guide.titleEn);
             setContentEn(guide.contentEn);
-            setExcerptEn(guide.excerptEn || '');
+            setExcerptEn(guide.metaDescriptionEn || '');
             setTitleAr(guide.titleAr);
             setContentAr(guide.contentAr);
-            setExcerptAr(guide.excerptAr || '');
+            setExcerptAr(guide.metaDescriptionAr || '');
             setSlug(guide.slug);
             setCategory(guide.category);
             setIsPublished(guide.isPublished);
@@ -82,7 +91,8 @@ export default function GuideEditor({ guideId }: GuideEditorProps) {
         }
     }, [titleEn, guideId]);
 
-    const createMutation = trpc.guides.create.useMutation({
+    const createMutation = useMutation({
+        mutationFn: createGuideAction,
         onSuccess: () => {
             toast.success('Guide created successfully');
             router.push('/admin/guides');
@@ -90,19 +100,22 @@ export default function GuideEditor({ guideId }: GuideEditorProps) {
         onError: (error) => toast.error(error.message),
     });
 
-    const updateMutation = trpc.guides.update.useMutation({
+    const updateMutation = useMutation({
+        mutationFn: updateGuideAction,
         onSuccess: () => {
             toast.success('Guide updated successfully');
+            queryClient.invalidateQueries({ queryKey: ['guides', guideId] });
             router.push('/admin/guides');
         },
         onError: (error) => toast.error(error.message),
     });
 
-    const translateMutation = trpc.guides.translate.useMutation({
+    const translateMutation = useMutation({
+        mutationFn: translateGuideAction,
         onSuccess: (data) => {
             setTitleAr(data.titleAr);
             setContentAr(data.contentAr);
-            setExcerptAr(data.excerptAr);
+            setExcerptAr(data.metaDescriptionAr || ''); // Assuming metaDescription used as excerpt
             toast.success('Content translated successfully');
             setIsTranslating(false);
         },

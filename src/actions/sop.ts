@@ -91,7 +91,7 @@ Generate a well-structured, professional SOP (800-1000 words).
 ${language === 'ar' ? 'Generate in Arabic.' : 'Generate in English.'}`
 
     const response = await generateChatResponse({
-        messages: [{ role: 'user', parts: prompt }],
+        messages: [{ role: 'user', content: prompt } as any],
         systemInstruction: 'You are an expert immigration consultant who writes compelling Statements of Purpose.',
         maxOutputTokens: 4096,
     })
@@ -175,7 +175,7 @@ ${validated.focusAreas?.length ? `Focus areas: ${validated.focusAreas.join(', ')
 Refine and improve based on the feedback. Maintain structure and key information.`
 
     const response = await generateChatResponse({
-        messages: [{ role: 'user', parts: prompt }],
+        messages: [{ role: 'user', content: prompt } as any],
         systemInstruction: 'You are an expert immigration consultant who refines Statements of Purpose.',
         maxOutputTokens: 4096,
     })

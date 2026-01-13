@@ -7,7 +7,12 @@ import { Progress } from "@/components/ui/progress"
 import { useLanguage } from "@/contexts/LanguageContext"
 import { LanguageToggle } from "@/components/LanguageToggle"
 import { UsageDisplay } from "@/components/UsageDisplay"
-import { trpc } from "@/lib/trpc"
+import { useQuery } from "@tanstack/react-query"
+import { getProfile } from "@/actions/profile"
+import { getLatestCrs, getCrsHistory } from "@/actions/crs"
+import { getChecklists, getDocuments } from "@/actions/documents"
+import { listSops } from "@/actions/sop"
+import { listConversations } from "@/actions/chat"
 import {
   MessageSquare,
   Calculator,
@@ -34,13 +39,34 @@ export default function Dashboard() {
   const { t, language } = useLanguage()
   const router = useRouter()
 
-  const { data: profile, isLoading: profileLoading } = trpc.profile.get.useQuery()
-  const { data: latestCrs, isLoading: crsLoading } = trpc.crs.latest.useQuery()
-  const { data: crsHistory } = trpc.crs.history.useQuery()
-  const { data: checklists } = trpc.documents.getChecklists.useQuery()
-  const { data: documents } = trpc.documents.getDocuments.useQuery()
-  const { data: sops } = trpc.sop.list.useQuery()
-  const { data: conversations } = trpc.chat.list.useQuery()
+  const { data: profile, isLoading: profileLoading } = useQuery({
+    queryKey: ['profile'],
+    queryFn: getProfile,
+  })
+  const { data: latestCrs, isLoading: crsLoading } = useQuery({
+    queryKey: ['crs', 'latest'],
+    queryFn: getLatestCrs,
+  })
+  const { data: crsHistory } = useQuery({
+    queryKey: ['crs', 'history'],
+    queryFn: getCrsHistory,
+  })
+  const { data: checklists } = useQuery({
+    queryKey: ['documents', 'checklists'],
+    queryFn: getChecklists,
+  })
+  const { data: documents } = useQuery({
+    queryKey: ['documents', 'list'],
+    queryFn: getDocuments,
+  })
+  const { data: sops } = useQuery({
+    queryKey: ['sop', 'list'],
+    queryFn: listSops,
+  })
+  const { data: conversations } = useQuery({
+    queryKey: ['chat', 'list'],
+    queryFn: listConversations,
+  })
 
   const handleLogout = async () => {
     await logout()
@@ -70,10 +96,10 @@ export default function Dashboard() {
   // Calculate document completion
   const calculateDocumentCompletion = () => {
     if (!checklists || checklists.length === 0) return { completed: 0, total: 0 }
-    
+
     let totalItems = 0
     let completedItems = 0
-    
+
     checklists.forEach((checklist: any) => {
       const items = checklist.items as any[]
       if (Array.isArray(items)) {
@@ -81,14 +107,14 @@ export default function Dashboard() {
         completedItems += items.filter((item: any) => item.status === "completed" || item.status === "uploaded").length
       }
     })
-    
+
     return { completed: completedItems, total: totalItems }
   }
 
   const profileCompletion = calculateProfileCompletion()
   const docCompletion = calculateDocumentCompletion()
-  const docCompletionPercent = docCompletion.total > 0 
-    ? Math.round((docCompletion.completed / docCompletion.total) * 100) 
+  const docCompletionPercent = docCompletion.total > 0
+    ? Math.round((docCompletion.completed / docCompletion.total) * 100)
     : 0
 
   // Get CRS trend
@@ -169,9 +195,9 @@ export default function Dashboard() {
         {/* Welcome Section */}
         <div className="mb-8">
           <h2 className="text-3xl font-bold mb-2">
-            {language === "ar" 
-              ? `مرحباً، ${profile?.name || user?.email?.split('@')[0] || 'مستخدم'}` 
-              : `Welcome back, ${profile?.name || user?.email?.split('@')[0] || 'User'}`}
+            {language === "ar"
+              ? `مرحباً، ${user?.name || user?.email?.split('@')[0] || 'مستخدم'}`
+              : `Welcome back, ${user?.name || user?.email?.split('@')[0] || 'User'}`}
           </h2>
           <p className="text-muted-foreground">
             {language === "ar"

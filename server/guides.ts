@@ -240,12 +240,12 @@ export async function toggleGuidePublish(id: number, isPublished: boolean) {
 /**
  * Search guides
  */
-export async function searchGuides(query: string, publishedOnly = true) {
+export async function searchGuides(query: string, limit = 50, publishedOnly = true) {
   const db = await getDb();
   if (!db) return [];
 
   const searchTerm = `%${query}%`;
-  
+
   const baseCondition = sql`(
     ${guides.titleEn} ILIKE ${searchTerm} OR 
     ${guides.titleAr} ILIKE ${searchTerm} OR 
@@ -257,7 +257,7 @@ export async function searchGuides(query: string, publishedOnly = true) {
     ? and(baseCondition, eq(guides.isPublished, true))
     : baseCondition;
 
-  return await db.select().from(guides).where(condition).orderBy(desc(guides.publishedAt));
+  return await db.select().from(guides).where(condition).orderBy(desc(guides.publishedAt)).limit(limit);
 }
 
 /**
@@ -300,7 +300,7 @@ Response format:
 
   try {
     const response = await generateChatResponse({
-      messages: [{ role: "user", parts: prompt }],
+      messages: [{ role: "user", content: prompt } as any],
       temperature: 0.3,
       maxOutputTokens: 8192,
     });

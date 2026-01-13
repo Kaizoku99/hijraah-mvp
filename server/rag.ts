@@ -3,13 +3,13 @@ import { supabaseAdmin } from "./_core/supabase";
 
 let genAI: GoogleGenerativeAI | null = null;
 
+import { env } from "./_core/env";
+
 function getGoogleAI() {
-  if (!process.env.GEMINI_API_KEY) {
-    throw new Error("GEMINI_API_KEY environment variable is not set");
-  }
+  const apiKey = env.GOOGLE_GENERATIVE_AI_API_KEY || 'no-key-provided';
 
   if (!genAI) {
-    genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    genAI = new GoogleGenerativeAI(apiKey);
   }
 
   return genAI;

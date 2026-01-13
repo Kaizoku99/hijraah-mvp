@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageToggle } from "@/components/LanguageToggle";
-import { trpc } from "@/lib/trpc";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { createCheckout, getInvoices } from "@/actions/subscription";
 import { Check, Crown, Sparkles, Star, Zap, User, LogOut, ArrowLeft, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
@@ -27,13 +28,14 @@ export default function Pricing() {
     }
   }, [language]);
 
-  const checkoutMutation = trpc.subscription.createCheckout.useMutation({
+  const checkoutMutation = useMutation({
+    mutationFn: createCheckout,
     onSuccess: (data) => {
       if (data.url) {
         window.location.href = data.url;
       }
     },
-    onError: (error) => {
+    onError: (error: any) => {
       toast.error(error.message);
     },
   });
@@ -379,7 +381,10 @@ export default function Pricing() {
 }
 
 function PaymentHistoryList({ language }: { language: "ar" | "en" }) {
-  const { data: invoices, isLoading } = trpc.subscription.invoices.useQuery();
+  const { data: invoices, isLoading } = useQuery({
+    queryKey: ['subscription', 'invoices'],
+    queryFn: getInvoices,
+  });
 
   if (isLoading) {
     return (

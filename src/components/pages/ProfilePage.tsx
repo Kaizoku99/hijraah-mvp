@@ -14,7 +14,8 @@ import {
 } from "@/components/ui/select";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageToggle } from "@/components/LanguageToggle";
-import { trpc } from "@/lib/trpc";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { getProfile, createProfile, updateProfile } from "@/actions/profile";
 import { User, LogOut, Loader2, Save, CheckCircle } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -25,8 +26,12 @@ export default function Profile() {
   const { user, logout } = useAuth();
   const { t, language } = useLanguage();
   const router = useRouter();
+  const queryClient = useQueryClient();
 
-  const { data: profile, isLoading: profileLoading } = trpc.profile.get.useQuery();
+  const { data: profile, isLoading: profileLoading } = useQuery({
+    queryKey: ['profile', 'get'],
+    queryFn: getProfile,
+  });
 
   const [formData, setFormData] = useState({
     dateOfBirth: "",
@@ -70,21 +75,25 @@ export default function Profile() {
     }
   }, [profile]);
 
-  const createProfile = trpc.profile.create.useMutation({
+  const createProfileMutation = useMutation({
+    mutationFn: createProfile,
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['profile'] });
       toast.success(language === "ar" ? "تم حفظ الملف الشخصي بنجاح" : "Profile saved successfully");
     },
-    onError: (error) => {
+    onError: (error: any) => {
       toast.error(language === "ar" ? "فشل حفظ الملف الشخصي" : "Failed to save profile");
       console.error(error);
     },
   });
 
-  const updateProfile = trpc.profile.update.useMutation({
+  const updateProfileMutation = useMutation({
+    mutationFn: updateProfile,
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['profile'] });
       toast.success(language === "ar" ? "تم تحديث الملف الشخصي بنجاح" : "Profile updated successfully");
     },
-    onError: (error) => {
+    onError: (error: any) => {
       toast.error(language === "ar" ? "فشل تحديث الملف الشخصي" : "Failed to update profile");
       console.error(error);
     },
@@ -120,9 +129,9 @@ export default function Profile() {
     };
 
     if (profile) {
-      updateProfile.mutate(profileData);
+      updateProfileMutation.mutate(profileData);
     } else {
-      createProfile.mutate(profileData);
+      createProfileMutation.mutate(profileData);
     }
   };
 
@@ -576,10 +585,10 @@ export default function Profile() {
                 </Link>
                 <Button
                   type="submit"
-                  disabled={createProfile.isPending || updateProfile.isPending}
+                  disabled={createProfileMutation.isPending || updateProfileMutation.isPending}
                   className="gap-2"
                 >
-                  {createProfile.isPending || updateProfile.isPending ? (
+                  {createProfileMutation.isPending || updateProfileMutation.isPending ? (
                     <>
                       <Loader2 className="h-4 w-4 animate-spin" />
                       {language === "ar" ? "جاري الحفظ..." : "Saving..."}
