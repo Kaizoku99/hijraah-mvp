@@ -33,11 +33,11 @@
 - [x] Chat page with bilingual UI
 
 ## Phase 5: RAG Engine & Knowledge Base
-- [ ] Immigration policy knowledge graph schema
-- [ ] Google embeddings integration for semantic search
-- [ ] Vector storage setup (using database or external service)
-- [ ] RAG query pipeline with Gemini 2.5 Pro
-- [ ] Knowledge base seeding with Canada immigration data
+- [x] Immigration policy knowledge graph schema
+- [x] Google embeddings integration for semantic search
+- [x] Vector storage setup (using database or external service)
+- [x] RAG query pipeline with Gemini 2.5 Pro
+- [x] Knowledge base seeding with Canada immigration data
 - [ ] Policy update tracking and versioning
 
 ## Phase 6: Express Entry Calculator
@@ -45,7 +45,7 @@
 - [x] Multi-step questionnaire form
 - [x] Score breakdown visualization
 - [x] Improvement recommendations engine
-- [ ] Recent draw cutoff comparison
+- [x] Recent draw cutoff comparison
 - [x] Calculator results page with detailed analysis
 
 ## Phase 7: Document Management System
@@ -57,44 +57,44 @@
 - [x] Upload progress indicatorsn in Arabic/English
 
 ## Phase 8: AI-Powered SOP Writer
-- [ ] SOP questionnaire form (background, goals, motivation)
-- [ ] Gemini 2.5 Pro SOP generation with specialized prompts
-- [ ] Iterative improvement workflow
-- [ ] SOP version history and comparison
-- [ ] PDF export functionality
-- [ ] SOP quality scoring and suggestions
+- [x] SOP questionnaire form (background, goals, motivation)
+- [x] Gemini 2.5 Pro SOP generation with specialized prompts
+- [x] Iterative improvement workflow
+- [x] SOP version history and comparison
+- [x] PDF export functionality
+- [x] SOP quality scoring and suggestions
 
 ## Phase 9: User Dashboard
-- [ ] Dashboard layout with progress overview
-- [ ] Application timeline component
-- [ ] Next steps recommendations
-- [ ] Document status summary cards
-- [ ] CRS score display widget
-- [ ] Quick actions and shortcuts
+- [x] Dashboard layout with progress overview
+- [x] Application timeline component
+- [x] Next steps recommendations
+- [x] Document status summary cards
+- [x] CRS score display widget
+- [x] Quick actions and shortcuts
 
 ## Phase 10: OCR & Document Translation
-- [ ] Gemini 2.5 Pro vision API integration
-- [ ] Arabic document OCR processing
-- [ ] Automatic translation to English
-- [ ] OCR results review and editing interface
-- [ ] Support for common MENA document formats (PDF, JPG, PNG)
+- [x] Mistral OCR API integration (replaced Gemini vision)
+- [x] Arabic document OCR processing
+- [x] Automatic translation to English
+- [x] OCR results review and editing interface
+- [x] Support for common MENA document formats (PDF, JPG, PNG)
 - [ ] Batch document processing
 
 ## Phase 11: Content Management System
-- [ ] Immigration guides database schema
-- [ ] Content versioning system
-- [ ] Automated translation with Gemini 2.5 Pro
-- [ ] Content editor interface for admins
+- [x] Immigration guides database schema
+- [x] Content versioning system
+- [x] Automated translation with Gemini 2.5 Pro
+- [x] Content editor interface for admins
 - [ ] Policy update notifications
-- [ ] Public-facing guides pages
+- [x] Public-facing guides pages
 
 ## Phase 12: Subscription & Payment System
-- [ ] Stripe integration setup
-- [ ] Subscription tiers configuration (Free, Essential, Premium, VIP)
-- [ ] Payment checkout flow
-- [ ] Subscription management page
-- [ ] Feature gating based on subscription tier
-- [ ] Usage tracking and limits for free tier
+- [x] Stripe integration setup
+- [x] Subscription tiers configuration (Free, Essential, Premium, VIP)
+- [x] Payment checkout flow
+- [x] Subscription management page
+- [x] Feature gating based on subscription tier
+- [x] Usage tracking and limits for free tier
 
 ## Phase 13: WhatsApp Support Integration
 - [ ] WhatsApp Business API integration
@@ -109,8 +109,8 @@
 - [ ] Arabic RTL layout verification
 - [ ] Cross-browser compatibility testing
 - [ ] Performance optimization
-- [ ] Error handling and user feedback
-- [ ] Loading states and skeletons
+- [x] Error handling and user feedback
+- [x] Loading states and skeletons
 - [ ] Accessibility improvements
 - [ ] SEO optimization for landing pages
 
@@ -135,64 +135,36 @@
 ## Continuation Phase: Complete MVP Features
 
 ### Stripe Payment Integration
-- [ ] Install Stripe SDK and configure environment variables
-- [ ] Create Stripe checkout session endpoint
-- [ ] Implement webhook handler at /api/stripe/webhook
-- [ ] Handle payment success events (checkout.session.completed)
-- [ ] Handle subscription events (customer.subscription.created, updated, deleted)
-- [ ] Store subscription data in database
+- [x] Install Stripe SDK and configure environment variables
+- [x] Create Stripe checkout session endpoint
+- [x] Implement webhook handler at /api/stripe/webhook
+- [x] Handle payment success events (checkout.session.completed)
+- [x] Handle subscription events (customer.subscription.created, updated, deleted)
+- [x] Store subscription data in database
 
 ### Subscription Management UI
-- [ ] Create pricing page with tier comparison
-- [ ] Build subscription management page
-- [ ] Add upgrade/downgrade functionality
-- [ ] Display current subscription status
-- [ ] Show payment history
-- [ ] Handle subscription cancellation
+- [x] Create pricing page with tier comparison
+- [x] Build subscription management page (Stripe customer portal)
+- [x] Add upgrade/downgrade functionality
+- [x] Display current subscription status
+- [x] Show payment history
+- [x] Handle subscription cancellation
 
 ### Usage Tracking & Limits
-- [ ] Track chat message usage per user
-- [ ] Track SOP generation usage per user
-- [ ] Enforce tier limits with helpful error messages
-- [ ] Display usage stats in dashboard
-- [ ] Show upgrade prompts when limits reached
-- [ ] Reset monthly usage counters
+- [x] Track chat message usage per user
+- [x] Track SOP generation usage per user
+- [x] Enforce tier limits with helpful error messages
+- [x] Display usage stats in dashboard
+- [x] Show upgrade prompts when limits reached
+- [x] Reset monthly usage counters
 
 ### SOP Writer UI
-- [ ] Create multi-step SOP questionnaire page
-- [ ] Build SOP display page with markdown rendering
-- [ ] Add SOP refinement interface
-- [ ] Implement SOP download as PDF/DOCX
-- [ ] Show SOP history and versions
-- [ ] Add navigation from dashboard to SOP writer
-
-
-## Continuation: Complete Remaining MVP Features
-
-### SOP Writer UI
-- [ ] Create SOP questionnaire page (/sop/new) with multi-step form
-- [ ] Build SOP display page (/sop/:id) with markdown rendering
-- [ ] Add SOP refinement interface with feedback input
-- [ ] Implement SOP list page showing all user SOPs
-- [ ] Add navigation links from dashboard to SOP writer
-- [ ] Show loading states during generation
-
-### Stripe Payment Integration
-- [ ] Create pricing page with tier comparison
-- [ ] Implement checkout session creation
-- [ ] Build webhook handler for payment events
-- [ ] Add subscription status display in dashboard
-- [ ] Create subscription management page
-- [ ] Handle upgrade/downgrade flows
-
-### Usage Tracking & Limits
-- [ ] Add usage tracking for chat messages
-- [ ] Add usage tracking for SOP generations
-- [ ] Enforce tier limits with error messages
-- [ ] Display usage stats in dashboard
-- [ ] Show upgrade prompts when limits reached
-- [ ] Add monthly usage reset logic
-
+- [x] Create multi-step SOP questionnaire page
+- [x] Build SOP display page with markdown rendering
+- [x] Add SOP refinement interface
+- [x] Implement SOP download as PDF/DOCX
+- [x] Show SOP history and versions
+- [x] Add navigation from dashboard to SOP writer
 
 ## Bug Fixes
 - [x] Fix nested anchor tag error in Home page
@@ -223,8 +195,8 @@
 - [x] Add download SOP button (copy to clipboard for now)
 
 ## Enhancement: Dashboard Widgets
-- [ ] Display most recent CRS score with trend
-- [ ] Show document completion progress
-- [ ] Add quick action buttons (Calculate CRS, Upload Documents, Chat with AI)
-- [ ] Display profile completion percentage
-- [ ] Show recent chat conversations
+- [x] Display most recent CRS score with trend
+- [x] Show document completion progress
+- [x] Add quick action buttons (Calculate CRS, Upload Documents, Chat with AI)
+- [x] Display profile completion percentage
+- [x] Show recent chat conversations

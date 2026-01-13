@@ -13,7 +13,7 @@ function getGeminiClient() {
   }
 
   if (!model) {
-    model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
+    model = genAI.getGenerativeModel({ model: "gemini-2.5-pro" });
   }
 
   return { genAI, model };
@@ -124,7 +124,7 @@ export async function analyzeImage(
   mimeType: string = "image/jpeg"
 ): Promise<string> {
   const { genAI } = getGeminiClient();
-  const visionModel = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
+  const visionModel = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
 
   const result = await visionModel.generateContent([
     {

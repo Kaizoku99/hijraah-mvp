@@ -1,373 +1,477 @@
-import { int, mysqlEnum, mysqlTable, text, timestamp, varchar, boolean, json, decimal } from "drizzle-orm/mysql-core";
+import {
+  pgTable,
+  serial,
+  integer,
+  varchar,
+  text,
+  boolean,
+  timestamp,
+  json,
+  pgEnum,
+  uuid,
+  numeric,
+} from "drizzle-orm/pg-core";
 
-/**
- * Core user table backing auth flow.
- */
-export const users = mysqlTable("users", {
-  id: int("id").autoincrement().primaryKey(),
-  openId: varchar("openId", { length: 64 }).notNull().unique(),
+// ============================================
+// MVP ENUMS (prefixed to avoid conflicts with parent project)
+// ============================================
+
+export const mvpDocumentStatusEnum = pgEnum("mvp_document_status", [
+  "uploaded",
+  "processing",
+  "completed",
+  "failed",
+]);
+
+export const mvpEducationLevelEnum = pgEnum("mvp_education_level", [
+  "high_school",
+  "bachelor",
+  "master",
+  "phd",
+  "other",
+]);
+
+export const mvpImmigrationPathwayEnum = pgEnum("mvp_immigration_pathway", [
+  "express_entry",
+  "study_permit",
+  "family_sponsorship",
+  "other",
+]);
+
+export const mvpKnowledgeCategoryEnum = pgEnum("mvp_knowledge_category", [
+  "express_entry",
+  "study_permit",
+  "work_permit",
+  "family_sponsorship",
+  "provincial_nominee",
+  "documents",
+  "fees",
+  "timeline",
+  "other",
+]);
+
+export const mvpLanguageEnum = pgEnum("mvp_language", ["ar", "en"]);
+
+export const mvpLanguageProficiencyEnum = pgEnum("mvp_language_proficiency", [
+  "none",
+  "basic",
+  "intermediate",
+  "advanced",
+  "native",
+]);
+
+export const mvpMaritalStatusEnum = pgEnum("mvp_marital_status", [
+  "single",
+  "married",
+  "divorced",
+  "widowed",
+]);
+
+export const mvpMessageRoleEnum = pgEnum("mvp_message_role", [
+  "user",
+  "assistant",
+  "system",
+]);
+
+export const mvpRoleEnum = pgEnum("mvp_role", ["user", "admin"]);
+
+export const mvpSenderTypeEnum = pgEnum("mvp_sender_type", ["user", "agent", "bot"]);
+
+export const mvpSopStatusEnum = pgEnum("mvp_sop_status", [
+  "draft",
+  "generated",
+  "revised",
+  "final",
+]);
+
+export const mvpSubscriptionStatusEnum = pgEnum("mvp_subscription_status", [
+  "active",
+  "canceled",
+  "expired",
+]);
+
+export const mvpSubscriptionTierEnum = pgEnum("mvp_subscription_tier", [
+  "free",
+  "essential",
+  "premium",
+  "vip",
+]);
+
+export const mvpTicketPriorityEnum = pgEnum("mvp_ticket_priority", [
+  "low",
+  "medium",
+  "high",
+  "urgent",
+]);
+
+export const mvpTicketStatusEnum = pgEnum("mvp_ticket_status", [
+  "open",
+  "in_progress",
+  "waiting_user",
+  "resolved",
+  "closed",
+]);
+
+// ============================================
+// MVP TABLES (prefixed to coexist with parent project)
+// ============================================
+
+// Users table - links to Supabase Auth
+export const users = pgTable("mvp_users", {
+  id: serial("id").primaryKey(),
+  authId: uuid("auth_id").notNull().unique(),
   name: text("name"),
   email: varchar("email", { length: 320 }),
-  loginMethod: varchar("loginMethod", { length: 64 }),
-  role: mysqlEnum("role", ["user", "admin"]).default("user").notNull(),
-  
-  // Subscription info
-  subscriptionTier: mysqlEnum("subscriptionTier", ["free", "essential", "premium", "vip"]).default("free").notNull(),
-  subscriptionStatus: mysqlEnum("subscriptionStatus", ["active", "canceled", "expired"]).default("active").notNull(),
-  subscriptionExpiresAt: timestamp("subscriptionExpiresAt"),
-  stripeCustomerId: varchar("stripeCustomerId", { length: 255 }),
-  stripeSubscriptionId: varchar("stripeSubscriptionId", { length: 255 }),
-  
-  // User preferences
-  preferredLanguage: mysqlEnum("preferredLanguage", ["ar", "en"]).default("ar").notNull(),
-  
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
-  lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),
+  role: mvpRoleEnum("role").default("user").notNull(),
+  subscriptionTier: mvpSubscriptionTierEnum("subscription_tier")
+    .default("free")
+    .notNull(),
+  subscriptionStatus: mvpSubscriptionStatusEnum("subscription_status")
+    .default("active")
+    .notNull(),
+  subscriptionExpiresAt: timestamp("subscription_expires_at", {
+    withTimezone: true,
+  }),
+  stripeCustomerId: varchar("stripe_customer_id", { length: 255 }),
+  stripeSubscriptionId: varchar("stripe_subscription_id", { length: 255 }),
+  preferredLanguage: mvpLanguageEnum("preferred_language").default("ar").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+  lastSignedIn: timestamp("last_signed_in", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
 });
+
+// User Profiles - extended immigration info
+export const userProfiles = pgTable("mvp_user_profiles", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  dateOfBirth: timestamp("date_of_birth", { withTimezone: true }),
+  nationality: varchar("nationality", { length: 100 }),
+  sourceCountry: varchar("source_country", { length: 100 }),
+  currentCountry: varchar("current_country", { length: 100 }),
+  maritalStatus: mvpMaritalStatusEnum("marital_status"),
+  educationLevel: mvpEducationLevelEnum("education_level"),
+  fieldOfStudy: varchar("field_of_study", { length: 255 }),
+  yearsOfExperience: integer("years_of_experience"),
+  currentOccupation: varchar("current_occupation", { length: 255 }),
+  nocCode: varchar("noc_code", { length: 10 }),
+  englishLevel: mvpLanguageProficiencyEnum("english_level"),
+  frenchLevel: mvpLanguageProficiencyEnum("french_level"),
+  ieltsScore: numeric("ielts_score", { precision: 3, scale: 1 }),
+  tefScore: numeric("tef_score", { precision: 3, scale: 1 }),
+  targetDestination: varchar("target_destination", { length: 100 })
+    .default("Canada")
+    .notNull(),
+  immigrationPathway: mvpImmigrationPathwayEnum("immigration_pathway"),
+  profileCompleteness: integer("profile_completeness").default(0).notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+});
+
+// Conversations for AI chat
+export const conversations = pgTable("mvp_conversations", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  title: varchar("title", { length: 255 }),
+  language: mvpLanguageEnum("language").default("ar").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+});
+
+// Messages within conversations
+export const messages = pgTable("mvp_messages", {
+  id: serial("id").primaryKey(),
+  conversationId: integer("conversation_id")
+    .notNull()
+    .references(() => conversations.id, { onDelete: "cascade" }),
+  role: mvpMessageRoleEnum("role").notNull(),
+  content: text("content").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+});
+
+// CRS Score Assessments
+export const crsAssessments = pgTable("mvp_crs_assessments", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  age: integer("age"),
+  educationLevel: varchar("education_level", { length: 100 }),
+  canadianEducation: boolean("canadian_education").default(false),
+  firstLanguageScore: json("first_language_score"),
+  secondLanguageScore: json("second_language_score"),
+  canadianWorkExperience: integer("canadian_work_experience"),
+  foreignWorkExperience: integer("foreign_work_experience"),
+  hasSpouse: boolean("has_spouse").default(false),
+  spouseEducation: varchar("spouse_education", { length: 100 }),
+  spouseLanguageScore: json("spouse_language_score"),
+  spouseCanadianWorkExperience: integer("spouse_canadian_work_experience"),
+  hasSiblingInCanada: boolean("has_sibling_in_canada").default(false),
+  hasFrenchLanguageSkills: boolean("has_french_language_skills").default(false),
+  hasProvincialNomination: boolean("has_provincial_nomination").default(false),
+  hasJobOffer: boolean("has_job_offer").default(false),
+  hasCanadianStudyExperience: boolean("has_canadian_study_experience").default(
+    false
+  ),
+  totalScore: integer("total_score").notNull(),
+  coreScore: integer("core_score"),
+  spouseScore: integer("spouse_score"),
+  skillTransferabilityScore: integer("skill_transferability_score"),
+  additionalScore: integer("additional_score"),
+  recommendations: json("recommendations"),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+});
+
+// Document Checklists
+export const documentChecklists = pgTable("mvp_document_checklists", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  sourceCountry: varchar("source_country", { length: 100 }).notNull(),
+  immigrationPathway: varchar("immigration_pathway", { length: 100 }).notNull(),
+  items: json("items").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+});
+
+// Documents (uploaded files)
+export const documents = pgTable("mvp_documents", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  checklistId: integer("checklist_id").references(() => documentChecklists.id, {
+    onDelete: "set null",
+  }),
+  documentType: varchar("document_type", { length: 100 }).notNull(),
+  fileName: varchar("file_name", { length: 255 }).notNull(),
+  fileKey: varchar("file_key", { length: 500 }).notNull(),
+  fileUrl: text("file_url").notNull(),
+  mimeType: varchar("mime_type", { length: 100 }),
+  fileSize: integer("file_size"),
+  ocrProcessed: boolean("ocr_processed").default(false),
+  ocrText: text("ocr_text"),
+  translatedText: text("translated_text"),
+  status: mvpDocumentStatusEnum("status").default("uploaded").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+});
+
+// SOP Generations
+export const sopGenerations = pgTable("mvp_sop_generations", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  background: text("background"),
+  education: text("education"),
+  workExperience: text("work_experience"),
+  motivations: text("motivations"),
+  goals: text("goals"),
+  whyCanada: text("why_canada"),
+  additionalInfo: text("additional_info"),
+  generatedSop: text("generated_sop"),
+  version: integer("version").default(1).notNull(),
+  language: mvpLanguageEnum("language").default("en").notNull(),
+  qualityScore: integer("quality_score"),
+  suggestions: json("suggestions"),
+  status: mvpSopStatusEnum("status").default("draft").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+});
+
+// Knowledge Base for RAG
+export const knowledgeBase = pgTable("mvp_knowledge_base", {
+  id: serial("id").primaryKey(),
+  title: varchar("title", { length: 500 }).notNull(),
+  content: text("content").notNull(),
+  contentAr: text("content_ar"),
+  category: mvpKnowledgeCategoryEnum("category").notNull(),
+  sourceCountry: varchar("source_country", { length: 100 }),
+  embedding: json("embedding"),
+  sourceUrl: text("source_url"),
+  lastVerified: timestamp("last_verified", { withTimezone: true }),
+  version: integer("version").default(1).notNull(),
+  isActive: boolean("is_active").default(true).notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+});
+
+// Guides (CMS for immigration guides)
+export const guides = pgTable("mvp_guides", {
+  id: serial("id").primaryKey(),
+  slug: varchar("slug", { length: 255 }).notNull().unique(),
+  titleEn: varchar("title_en", { length: 500 }).notNull(),
+  titleAr: varchar("title_ar", { length: 500 }).notNull(),
+  contentEn: text("content_en").notNull(),
+  contentAr: text("content_ar").notNull(),
+  category: varchar("category", { length: 100 }).notNull(),
+  tags: json("tags"),
+  metaDescriptionEn: text("meta_description_en"),
+  metaDescriptionAr: text("meta_description_ar"),
+  isPublished: boolean("is_published").default(false).notNull(),
+  publishedAt: timestamp("published_at", { withTimezone: true }),
+  version: integer("version").default(1).notNull(),
+  lastReviewedAt: timestamp("last_reviewed_at", { withTimezone: true }),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+});
+
+// Support Tickets (for WhatsApp integration)
+export const supportTickets = pgTable("mvp_support_tickets", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  subject: varchar("subject", { length: 500 }),
+  status: mvpTicketStatusEnum("status").default("open").notNull(),
+  priority: mvpTicketPriorityEnum("priority").default("medium").notNull(),
+  whatsappNumber: varchar("whatsapp_number", { length: 50 }),
+  whatsappConversationId: varchar("whatsapp_conversation_id", { length: 255 }),
+  assignedToAgent: varchar("assigned_to_agent", { length: 255 }),
+  lastMessageAt: timestamp("last_message_at", { withTimezone: true }),
+  resolvedAt: timestamp("resolved_at", { withTimezone: true }),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+});
+
+// Support Messages
+export const supportMessages = pgTable("mvp_support_messages", {
+  id: serial("id").primaryKey(),
+  ticketId: integer("ticket_id")
+    .notNull()
+    .references(() => supportTickets.id, { onDelete: "cascade" }),
+  senderType: mvpSenderTypeEnum("sender_type").notNull(),
+  senderName: varchar("sender_name", { length: 255 }),
+  content: text("content").notNull(),
+  isAutomated: boolean("is_automated").default(false),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+});
+
+// Usage Tracking
+export const usageTracking = pgTable("mvp_usage_tracking", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  chatMessagesCount: integer("chat_messages_count").default(0).notNull(),
+  sopGenerationsCount: integer("sop_generations_count").default(0).notNull(),
+  documentUploadsCount: integer("document_uploads_count").default(0).notNull(),
+  crsCalculationsCount: integer("crs_calculations_count").default(0).notNull(),
+  periodStart: timestamp("period_start", { withTimezone: true }).notNull(),
+  periodEnd: timestamp("period_end", { withTimezone: true }).notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+});
+
+// ============================================
+// TYPE EXPORTS
+// ============================================
 
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 
-/**
- * User profiles with immigration-specific information
- */
-export const userProfiles = mysqlTable("user_profiles", {
-  id: int("id").autoincrement().primaryKey(),
-  userId: int("userId").notNull().references(() => users.id, { onDelete: "cascade" }),
-  
-  // Personal information
-  dateOfBirth: timestamp("dateOfBirth"),
-  nationality: varchar("nationality", { length: 100 }),
-  sourceCountry: varchar("sourceCountry", { length: 100 }), // Tunisia, Jordan, Lebanon, Morocco, etc.
-  currentCountry: varchar("currentCountry", { length: 100 }),
-  maritalStatus: mysqlEnum("maritalStatus", ["single", "married", "divorced", "widowed"]),
-  
-  // Education
-  educationLevel: mysqlEnum("educationLevel", ["high_school", "bachelor", "master", "phd", "other"]),
-  fieldOfStudy: varchar("fieldOfStudy", { length: 255 }),
-  
-  // Work experience
-  yearsOfExperience: int("yearsOfExperience"),
-  currentOccupation: varchar("currentOccupation", { length: 255 }),
-  nocCode: varchar("nocCode", { length: 10 }), // National Occupational Classification code
-  
-  // Language proficiency
-  englishLevel: mysqlEnum("englishLevel", ["none", "basic", "intermediate", "advanced", "native"]),
-  frenchLevel: mysqlEnum("frenchLevel", ["none", "basic", "intermediate", "advanced", "native"]),
-  ieltsScore: decimal("ieltsScore", { precision: 3, scale: 1 }),
-  tefScore: decimal("tefScore", { precision: 3, scale: 1 }),
-  
-  // Immigration goals
-  targetDestination: varchar("targetDestination", { length: 100 }).default("Canada").notNull(),
-  immigrationPathway: mysqlEnum("immigrationPathway", ["express_entry", "study_permit", "family_sponsorship", "other"]),
-  
-  // Profile completion
-  profileCompleteness: int("profileCompleteness").default(0).notNull(), // 0-100%
-  
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
-});
-
 export type UserProfile = typeof userProfiles.$inferSelect;
 export type InsertUserProfile = typeof userProfiles.$inferInsert;
-
-/**
- * Chat conversations
- */
-export const conversations = mysqlTable("conversations", {
-  id: int("id").autoincrement().primaryKey(),
-  userId: int("userId").notNull().references(() => users.id, { onDelete: "cascade" }),
-  title: varchar("title", { length: 255 }),
-  language: mysqlEnum("language", ["ar", "en"]).default("ar").notNull(),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
-});
 
 export type Conversation = typeof conversations.$inferSelect;
 export type InsertConversation = typeof conversations.$inferInsert;
 
-/**
- * Chat messages
- */
-export const messages = mysqlTable("messages", {
-  id: int("id").autoincrement().primaryKey(),
-  conversationId: int("conversationId").notNull().references(() => conversations.id, { onDelete: "cascade" }),
-  role: mysqlEnum("role", ["user", "assistant", "system"]).notNull(),
-  content: text("content").notNull(),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-});
-
 export type Message = typeof messages.$inferSelect;
 export type InsertMessage = typeof messages.$inferInsert;
-
-/**
- * CRS (Comprehensive Ranking System) assessments
- */
-export const crsAssessments = mysqlTable("crs_assessments", {
-  id: int("id").autoincrement().primaryKey(),
-  userId: int("userId").notNull().references(() => users.id, { onDelete: "cascade" }),
-  
-  // Core factors
-  age: int("age"),
-  educationLevel: varchar("educationLevel", { length: 100 }),
-  canadianEducation: boolean("canadianEducation").default(false),
-  firstLanguageScore: json("firstLanguageScore"), // {listening, reading, writing, speaking}
-  secondLanguageScore: json("secondLanguageScore"),
-  canadianWorkExperience: int("canadianWorkExperience"), // years
-  foreignWorkExperience: int("foreignWorkExperience"), // years
-  
-  // Spouse factors (if applicable)
-  hasSpouse: boolean("hasSpouse").default(false),
-  spouseEducation: varchar("spouseEducation", { length: 100 }),
-  spouseLanguageScore: json("spouseLanguageScore"),
-  spouseCanadianWorkExperience: int("spouseCanadianWorkExperience"),
-  
-  // Additional factors
-  hasSiblingInCanada: boolean("hasSiblingInCanada").default(false),
-  hasFrenchLanguageSkills: boolean("hasFrenchLanguageSkills").default(false),
-  hasProvincialNomination: boolean("hasProvincialNomination").default(false),
-  hasJobOffer: boolean("hasJobOffer").default(false),
-  hasCanadianStudyExperience: boolean("hasCanadianStudyExperience").default(false),
-  
-  // Calculated scores
-  totalScore: int("totalScore").notNull(),
-  coreScore: int("coreScore"),
-  spouseScore: int("spouseScore"),
-  skillTransferabilityScore: int("skillTransferabilityScore"),
-  additionalScore: int("additionalScore"),
-  
-  // Recommendations
-  recommendations: json("recommendations"), // Array of improvement suggestions
-  
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-});
 
 export type CrsAssessment = typeof crsAssessments.$inferSelect;
 export type InsertCrsAssessment = typeof crsAssessments.$inferInsert;
 
-/**
- * Document checklists
- */
-export const documentChecklists = mysqlTable("document_checklists", {
-  id: int("id").autoincrement().primaryKey(),
-  userId: int("userId").notNull().references(() => users.id, { onDelete: "cascade" }),
-  sourceCountry: varchar("sourceCountry", { length: 100 }).notNull(),
-  immigrationPathway: varchar("immigrationPathway", { length: 100 }).notNull(),
-  items: json("items").notNull(), // Array of checklist items with status
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
-});
-
 export type DocumentChecklist = typeof documentChecklists.$inferSelect;
 export type InsertDocumentChecklist = typeof documentChecklists.$inferInsert;
-
-/**
- * User documents
- */
-export const documents = mysqlTable("documents", {
-  id: int("id").autoincrement().primaryKey(),
-  userId: int("userId").notNull().references(() => users.id, { onDelete: "cascade" }),
-  checklistId: int("checklistId").references(() => documentChecklists.id, { onDelete: "set null" }),
-  
-  documentType: varchar("documentType", { length: 100 }).notNull(), // passport, degree, transcript, etc.
-  fileName: varchar("fileName", { length: 255 }).notNull(),
-  fileKey: varchar("fileKey", { length: 500 }).notNull(), // S3 key
-  fileUrl: text("fileUrl").notNull(), // S3 URL
-  mimeType: varchar("mimeType", { length: 100 }),
-  fileSize: int("fileSize"), // bytes
-  
-  // OCR and translation
-  ocrProcessed: boolean("ocrProcessed").default(false),
-  ocrText: text("ocrText"),
-  translatedText: text("translatedText"),
-  
-  status: mysqlEnum("status", ["uploaded", "processing", "completed", "failed"]).default("uploaded").notNull(),
-  
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
-});
 
 export type Document = typeof documents.$inferSelect;
 export type InsertDocument = typeof documents.$inferInsert;
 
-/**
- * Statement of Purpose (SOP) generations
- */
-export const sopGenerations = mysqlTable("sop_generations", {
-  id: int("id").autoincrement().primaryKey(),
-  userId: int("userId").notNull().references(() => users.id, { onDelete: "cascade" }),
-  
-  // User input
-  background: text("background"),
-  education: text("education"),
-  workExperience: text("workExperience"),
-  motivations: text("motivations"),
-  goals: text("goals"),
-  whyCanada: text("whyCanada"),
-  additionalInfo: text("additionalInfo"),
-  
-  // Generated content
-  generatedSop: text("generatedSop"),
-  version: int("version").default(1).notNull(),
-  language: mysqlEnum("language", ["ar", "en"]).default("en").notNull(),
-  
-  // Quality metrics
-  qualityScore: int("qualityScore"), // 0-100
-  suggestions: json("suggestions"), // Array of improvement suggestions
-  
-  status: mysqlEnum("status", ["draft", "generated", "revised", "final"]).default("draft").notNull(),
-  
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
-});
-
 export type SopGeneration = typeof sopGenerations.$inferSelect;
 export type InsertSopGeneration = typeof sopGenerations.$inferInsert;
 
-/**
- * Immigration knowledge base (for RAG)
- */
-export const knowledgeBase = mysqlTable("knowledge_base", {
-  id: int("id").autoincrement().primaryKey(),
-  
-  title: varchar("title", { length: 500 }).notNull(),
-  content: text("content").notNull(),
-  contentAr: text("contentAr"), // Arabic translation
-  
-  category: mysqlEnum("category", [
-    "express_entry",
-    "study_permit",
-    "work_permit",
-    "family_sponsorship",
-    "provincial_nominee",
-    "documents",
-    "fees",
-    "timeline",
-    "other"
-  ]).notNull(),
-  
-  sourceCountry: varchar("sourceCountry", { length: 100 }), // Specific to a country, or null for general
-  
-  // For semantic search
-  embedding: json("embedding"), // Vector embedding from Google embeddings
-  
-  // Metadata
-  sourceUrl: text("sourceUrl"),
-  lastVerified: timestamp("lastVerified"),
-  version: int("version").default(1).notNull(),
-  
-  isActive: boolean("isActive").default(true).notNull(),
-  
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
-});
-
-export type KnowledgeBase = typeof knowledgeBase.$inferSelect;
-export type InsertKnowledgeBase = typeof knowledgeBase.$inferInsert;
-
-/**
- * Immigration guides and content
- */
-export const guides = mysqlTable("guides", {
-  id: int("id").autoincrement().primaryKey(),
-  
-  slug: varchar("slug", { length: 255 }).notNull().unique(),
-  titleEn: varchar("titleEn", { length: 500 }).notNull(),
-  titleAr: varchar("titleAr", { length: 500 }).notNull(),
-  contentEn: text("contentEn").notNull(),
-  contentAr: text("contentAr").notNull(),
-  
-  category: varchar("category", { length: 100 }).notNull(),
-  tags: json("tags"), // Array of tags
-  
-  // SEO
-  metaDescriptionEn: text("metaDescriptionEn"),
-  metaDescriptionAr: text("metaDescriptionAr"),
-  
-  // Publishing
-  isPublished: boolean("isPublished").default(false).notNull(),
-  publishedAt: timestamp("publishedAt"),
-  
-  // Versioning
-  version: int("version").default(1).notNull(),
-  lastReviewedAt: timestamp("lastReviewedAt"),
-  
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
-});
+export type KnowledgeBaseEntry = typeof knowledgeBase.$inferSelect;
+export type InsertKnowledgeBaseEntry = typeof knowledgeBase.$inferInsert;
 
 export type Guide = typeof guides.$inferSelect;
 export type InsertGuide = typeof guides.$inferInsert;
 
-/**
- * Support tickets (WhatsApp integration)
- */
-export const supportTickets = mysqlTable("support_tickets", {
-  id: int("id").autoincrement().primaryKey(),
-  userId: int("userId").notNull().references(() => users.id, { onDelete: "cascade" }),
-  
-  subject: varchar("subject", { length: 500 }),
-  status: mysqlEnum("status", ["open", "in_progress", "waiting_user", "resolved", "closed"]).default("open").notNull(),
-  priority: mysqlEnum("priority", ["low", "medium", "high", "urgent"]).default("medium").notNull(),
-  
-  // WhatsApp info
-  whatsappNumber: varchar("whatsappNumber", { length: 50 }),
-  whatsappConversationId: varchar("whatsappConversationId", { length: 255 }),
-  
-  // Assignment
-  assignedToAgent: varchar("assignedToAgent", { length: 255 }),
-  
-  lastMessageAt: timestamp("lastMessageAt"),
-  resolvedAt: timestamp("resolvedAt"),
-  
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
-});
-
 export type SupportTicket = typeof supportTickets.$inferSelect;
 export type InsertSupportTicket = typeof supportTickets.$inferInsert;
-
-/**
- * Support messages
- */
-export const supportMessages = mysqlTable("support_messages", {
-  id: int("id").autoincrement().primaryKey(),
-  ticketId: int("ticketId").notNull().references(() => supportTickets.id, { onDelete: "cascade" }),
-  
-  senderType: mysqlEnum("senderType", ["user", "agent", "bot"]).notNull(),
-  senderName: varchar("senderName", { length: 255 }),
-  content: text("content").notNull(),
-  
-  // For automated responses
-  isAutomated: boolean("isAutomated").default(false),
-  
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-});
 
 export type SupportMessage = typeof supportMessages.$inferSelect;
 export type InsertSupportMessage = typeof supportMessages.$inferInsert;
 
-/**
- * Usage tracking for free tier limits
- */
-export const usageTracking = mysqlTable("usage_tracking", {
-  id: int("id").autoincrement().primaryKey(),
-  userId: int("userId").notNull().references(() => users.id, { onDelete: "cascade" }),
-  
-  // Monthly counters (reset each month)
-  chatMessagesCount: int("chatMessagesCount").default(0).notNull(),
-  sopGenerationsCount: int("sopGenerationsCount").default(0).notNull(),
-  documentUploadsCount: int("documentUploadsCount").default(0).notNull(),
-  crsCalculationsCount: int("crsCalculationsCount").default(0).notNull(),
-  
-  // Tracking period
-  periodStart: timestamp("periodStart").notNull(),
-  periodEnd: timestamp("periodEnd").notNull(),
-  
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
-});
-
 export type UsageTracking = typeof usageTracking.$inferSelect;
 export type InsertUsageTracking = typeof usageTracking.$inferInsert;
+
+// Export enum types for use in code
+export type MvpDocumentStatus = typeof mvpDocumentStatusEnum.enumValues[number];
+export type MvpEducationLevel = typeof mvpEducationLevelEnum.enumValues[number];
+export type MvpImmigrationPathway = typeof mvpImmigrationPathwayEnum.enumValues[number];
+export type MvpKnowledgeCategory = typeof mvpKnowledgeCategoryEnum.enumValues[number];
+export type MvpLanguage = typeof mvpLanguageEnum.enumValues[number];
+export type MvpLanguageProficiency = typeof mvpLanguageProficiencyEnum.enumValues[number];
+export type MvpMaritalStatus = typeof mvpMaritalStatusEnum.enumValues[number];
+export type MvpMessageRole = typeof mvpMessageRoleEnum.enumValues[number];
+export type MvpRole = typeof mvpRoleEnum.enumValues[number];
+export type MvpSenderType = typeof mvpSenderTypeEnum.enumValues[number];
+export type MvpSopStatus = typeof mvpSopStatusEnum.enumValues[number];
+export type MvpSubscriptionStatus = typeof mvpSubscriptionStatusEnum.enumValues[number];
+export type MvpSubscriptionTier = typeof mvpSubscriptionTierEnum.enumValues[number];
+export type MvpTicketPriority = typeof mvpTicketPriorityEnum.enumValues[number];
+export type MvpTicketStatus = typeof mvpTicketStatusEnum.enumValues[number];

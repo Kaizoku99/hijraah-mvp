@@ -1,5 +1,6 @@
 import { eq, desc } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/mysql2";
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
 import {
   InsertUser,
   users,
@@ -16,15 +17,18 @@ import {
   CrsAssessment,
   InsertCrsAssessment,
 } from "../drizzle/schema";
-import { ENV } from './_core/env';
+import { env } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
+let _client: ReturnType<typeof postgres> | null = null;
 
 // Lazily create the drizzle instance so local tooling can run without a DB.
 export async function getDb() {
-  if (!_db && process.env.DATABASE_URL) {
+  if (!_db && env.DATABASE_URL) {
     try {
-      _db = drizzle(process.env.DATABASE_URL);
+      // Disable prefetch as it is not supported for "Transaction" pool mode
+      _client = postgres(env.DATABASE_URL, { prepare: false });
+      _db = drizzle(_client);
     } catch (error) {
       console.warn("[Database] Failed to connect:", error);
       _db = null;
@@ -33,86 +37,87 @@ export async function getDb() {
   return _db;
 }
 
-export async function upsertUser(user: InsertUser): Promise<void> {
-  if (!user.openId) {
-    throw new Error("User openId is required for upsert");
-  }
-
+// Get or create user by Supabase auth ID
+export async function getOrCreateUserByAuthId(authId: string, userData?: { email?: string; name?: string }): Promise<typeof users.$inferSelect | null> {
   const db = await getDb();
   if (!db) {
-    console.warn("[Database] Cannot upsert user: database not available");
-    return;
+    console.warn("[Database] Cannot get/create user: database not available");
+    return null;
   }
 
-  try {
-    const values: InsertUser = {
-      openId: user.openId,
-    };
-    const updateSet: Record<string, unknown> = {};
+  // Try to find existing user
+  const existingUser = await db
+    .select()
+    .from(users)
+    .where(eq(users.authId, authId))
+    .limit(1);
 
-    const textFields = ["name", "email", "loginMethod"] as const;
-    type TextField = (typeof textFields)[number];
-
-    const assignNullable = (field: TextField) => {
-      const value = user[field];
-      if (value === undefined) return;
-      const normalized = value ?? null;
-      values[field] = normalized;
-      updateSet[field] = normalized;
-    };
-
-    textFields.forEach(assignNullable);
-
-    if (user.lastSignedIn !== undefined) {
-      values.lastSignedIn = user.lastSignedIn;
-      updateSet.lastSignedIn = user.lastSignedIn;
-    }
-    if (user.role !== undefined) {
-      values.role = user.role;
-      updateSet.role = user.role;
-    } else if (user.openId === ENV.ownerOpenId) {
-      values.role = 'admin';
-      updateSet.role = 'admin';
-    }
-
-    if (!values.lastSignedIn) {
-      values.lastSignedIn = new Date();
-    }
-
-    if (Object.keys(updateSet).length === 0) {
-      updateSet.lastSignedIn = new Date();
-    }
-
-    await db.insert(users).values(values).onDuplicateKeyUpdate({
-      set: updateSet,
-    });
-  } catch (error) {
-    console.error("[Database] Failed to upsert user:", error);
-    throw error;
+  if (existingUser.length > 0) {
+    // Update last signed in
+    await db
+      .update(users)
+      .set({ lastSignedIn: new Date() })
+      .where(eq(users.authId, authId));
+    return existingUser[0];
   }
+
+  // Create new user
+  const newUser: InsertUser = {
+    authId,
+    email: userData?.email ?? null,
+    name: userData?.name ?? null,
+    lastSignedIn: new Date(),
+  };
+
+  const result = await db
+    .insert(users)
+    .values(newUser)
+    .returning();
+
+  return result[0];
 }
 
-export async function getUserByOpenId(openId: string) {
+export async function getUserByAuthId(authId: string) {
   const db = await getDb();
   if (!db) {
     console.warn("[Database] Cannot get user: database not available");
-    return undefined;
+    return null;
   }
 
-  const result = await db.select().from(users).where(eq(users.openId, openId)).limit(1);
+  const result = await db
+    .select()
+    .from(users)
+    .where(eq(users.authId, authId))
+    .limit(1);
 
-  return result.length > 0 ? result[0] : undefined;
+  return result.length > 0 ? result[0] : null;
 }
 
-export async function getUserProfile(userId: number): Promise<UserProfile | undefined> {
+export async function getUserById(userId: number) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get user: database not available");
+    return null;
+  }
+
+  const result = await db
+    .select()
+    .from(users)
+    .where(eq(users.id, userId))
+    .limit(1);
+
+  return result.length > 0 ? result[0] : null;
+}
+
+export async function getUserProfile(userId: number): Promise<UserProfile | null> {
   const db = await getDb();
   if (!db) {
     console.warn("[Database] Cannot get user profile: database not available");
-    return undefined;
+    return null;
   }
 
   const result = await db.select().from(userProfiles).where(eq(userProfiles.userId, userId)).limit(1);
-  return result.length > 0 ? result[0] : undefined;
+  return result.length > 0 ? result[0] : null;
 }
 
 export async function createUserProfile(profile: InsertUserProfile) {
@@ -121,7 +126,8 @@ export async function createUserProfile(profile: InsertUserProfile) {
     throw new Error("Database not available");
   }
 
-  await db.insert(userProfiles).values(profile);
+  const result = await db.insert(userProfiles).values(profile).returning();
+  return result[0];
 }
 
 export async function updateUserProfile(userId: number, updates: Partial<InsertUserProfile>) {
@@ -173,10 +179,8 @@ export async function createConversation(conversation: InsertConversation): Prom
     throw new Error("Database not available");
   }
 
-  const result: any = await db.insert(conversations).values(conversation);
-  // insertId is a BigInt, convert to number
-  const id = result[0]?.insertId || result.insertId;
-  return Number(id);
+  const result = await db.insert(conversations).values(conversation).returning({ id: conversations.id });
+  return result[0].id;
 }
 
 export async function getUserConversations(userId: number): Promise<Conversation[]> {
@@ -192,10 +196,10 @@ export async function getUserConversations(userId: number): Promise<Conversation
     .orderBy(desc(conversations.updatedAt));
 }
 
-export async function getConversation(conversationId: number): Promise<Conversation | undefined> {
+export async function getConversation(conversationId: number): Promise<Conversation | null> {
   const db = await getDb();
   if (!db) {
-    return undefined;
+    return null;
   }
 
   const result = await db
@@ -204,7 +208,7 @@ export async function getConversation(conversationId: number): Promise<Conversat
     .where(eq(conversations.id, conversationId))
     .limit(1);
 
-  return result.length > 0 ? result[0] : undefined;
+  return result.length > 0 ? result[0] : null;
 }
 
 export async function updateConversationTitle(conversationId: number, title: string) {
@@ -230,15 +234,21 @@ export async function deleteConversation(conversationId: number) {
 
 // Chat message functions
 export async function createMessage(message: InsertMessage): Promise<number> {
+  console.log("[DB] createMessage called with:", JSON.stringify(message, null, 2));
   const db = await getDb();
   if (!db) {
+    console.error("[DB] createMessage failed: Database not available");
     throw new Error("Database not available");
   }
 
-  const result: any = await db.insert(messages).values(message);
-  // insertId is a BigInt, convert to number
-  const id = result[0]?.insertId || result.insertId;
-  return Number(id);
+  try {
+    const result = await db.insert(messages).values(message).returning({ id: messages.id });
+    console.log("[DB] createMessage success, id:", result[0]?.id);
+    return result[0].id;
+  } catch (error) {
+    console.error("[DB] createMessage error:", error);
+    throw error;
+  }
 }
 
 export async function getConversationMessages(conversationId: number): Promise<Message[]> {
@@ -261,9 +271,8 @@ export async function createCrsAssessment(assessment: InsertCrsAssessment): Prom
     throw new Error("Database not available");
   }
 
-  const result: any = await db.insert(crsAssessments).values(assessment);
-  const id = result[0]?.insertId || result.insertId;
-  return Number(id);
+  const result = await db.insert(crsAssessments).values(assessment).returning({ id: crsAssessments.id });
+  return result[0].id;
 }
 
 export async function getUserCrsAssessments(userId: number): Promise<CrsAssessment[]> {
@@ -279,10 +288,10 @@ export async function getUserCrsAssessments(userId: number): Promise<CrsAssessme
     .orderBy(desc(crsAssessments.createdAt));
 }
 
-export async function getLatestCrsAssessment(userId: number): Promise<CrsAssessment | undefined> {
+export async function getLatestCrsAssessment(userId: number): Promise<CrsAssessment | null> {
   const db = await getDb();
   if (!db) {
-    return undefined;
+    return null;
   }
 
   const result = await db
@@ -292,5 +301,5 @@ export async function getLatestCrsAssessment(userId: number): Promise<CrsAssessm
     .orderBy(desc(crsAssessments.createdAt))
     .limit(1);
 
-  return result.length > 0 ? result[0] : undefined;
+  return result.length > 0 ? result[0] : null;
 }

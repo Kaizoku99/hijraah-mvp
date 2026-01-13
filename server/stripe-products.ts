@@ -49,9 +49,9 @@ export const SUBSCRIPTION_TIERS: Record<string, SubscriptionTier> = {
     ],
     limits: {
       chatMessages: 10,
-      crsCalculations: 0,
+      crsCalculations: 3,  // Allow 3 trial calculations
       sopGenerations: 0,
-      documentChecklists: 0,
+      documentChecklists: 1,  // Allow 1 trial checklist
       whatsappSupport: false,
       prioritySupport: false,
       consultation: false,
@@ -171,7 +171,7 @@ export function canAccessFeature(
 ): boolean {
   const tier = getTierById(userTier);
   if (!tier) return false;
-  
+
   return tier.limits[feature] === true || tier.limits[feature] === "unlimited";
 }
 
@@ -182,16 +182,16 @@ export function getRemainingUsage(
 ): number | "unlimited" {
   const tier = getTierById(userTier);
   if (!tier) return 0;
-  
+
   const limit = tier.limits[feature];
-  
+
   if (limit === "unlimited" || limit === true) {
     return "unlimited";
   }
-  
+
   if (typeof limit === "number") {
     return Math.max(0, limit - currentUsage);
   }
-  
+
   return 0;
 }
