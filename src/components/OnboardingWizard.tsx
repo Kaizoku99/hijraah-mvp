@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Progress } from "@/components/ui/progress";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { CountrySelect } from "@/components/CountrySelect";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createProfile, updateProfile } from "@/actions/profile";
 import {
@@ -42,14 +43,42 @@ interface OnboardingWizardProps {
     existingProfile?: any;
 }
 
+// MENA Countries (Middle East and North Africa) - comprehensive list
 const COUNTRIES = [
+    // North Africa
+    { value: "algeria", labelAr: "الجزائر", labelEn: "Algeria" },
+    { value: "egypt", labelAr: "مصر", labelEn: "Egypt" },
+    { value: "libya", labelAr: "ليبيا", labelEn: "Libya" },
+    { value: "mauritania", labelAr: "موريتانيا", labelEn: "Mauritania" },
+    { value: "morocco", labelAr: "المغرب", labelEn: "Morocco" },
+    { value: "sudan", labelAr: "السودان", labelEn: "Sudan" },
     { value: "tunisia", labelAr: "تونس", labelEn: "Tunisia" },
+    // Levant
     { value: "jordan", labelAr: "الأردن", labelEn: "Jordan" },
     { value: "lebanon", labelAr: "لبنان", labelEn: "Lebanon" },
-    { value: "morocco", labelAr: "المغرب", labelEn: "Morocco" },
-    { value: "egypt", labelAr: "مصر", labelEn: "Egypt" },
-    { value: "sudan", labelAr: "السودان", labelEn: "Sudan" },
+    { value: "palestine", labelAr: "فلسطين", labelEn: "Palestine" },
     { value: "syria", labelAr: "سوريا", labelEn: "Syria" },
+    // Gulf States
+    { value: "bahrain", labelAr: "البحرين", labelEn: "Bahrain" },
+    { value: "iraq", labelAr: "العراق", labelEn: "Iraq" },
+    { value: "kuwait", labelAr: "الكويت", labelEn: "Kuwait" },
+    { value: "oman", labelAr: "عُمان", labelEn: "Oman" },
+    { value: "qatar", labelAr: "قطر", labelEn: "Qatar" },
+    { value: "saudi_arabia", labelAr: "السعودية", labelEn: "Saudi Arabia" },
+    { value: "uae", labelAr: "الإمارات", labelEn: "United Arab Emirates" },
+    { value: "yemen", labelAr: "اليمن", labelEn: "Yemen" },
+    // Other Arab Countries
+    { value: "comoros", labelAr: "جزر القمر", labelEn: "Comoros" },
+    { value: "djibouti", labelAr: "جيبوتي", labelEn: "Djibouti" },
+    { value: "somalia", labelAr: "الصومال", labelEn: "Somalia" },
+    // Common Destination Countries (for current residence)
+    { value: "canada", labelAr: "كندا", labelEn: "Canada" },
+    { value: "usa", labelAr: "الولايات المتحدة", labelEn: "United States" },
+    { value: "uk", labelAr: "المملكة المتحدة", labelEn: "United Kingdom" },
+    { value: "france", labelAr: "فرنسا", labelEn: "France" },
+    { value: "germany", labelAr: "ألمانيا", labelEn: "Germany" },
+    { value: "turkey", labelAr: "تركيا", labelEn: "Turkey" },
+    { value: "malaysia", labelAr: "ماليزيا", labelEn: "Malaysia" },
     { value: "other", labelAr: "أخرى", labelEn: "Other" },
 ];
 
@@ -167,8 +196,9 @@ export default function OnboardingWizard({ onComplete, onSkip, existingProfile }
         step4Title: language === "ar" ? "ما هو مستوى لغتك الإنجليزية؟" : "What's Your English Level?",
         step5Title: language === "ar" ? "أنت جاهز للبدء!" : "You're Ready to Start!",
         nationality: language === "ar" ? "الجنسية" : "Nationality",
-        sourceCountry: language === "ar" ? "بلد الإقامة الحالي" : "Current Country of Residence",
-        currentCountry: language === "ar" ? "بلدك الحالي" : "Your Current Country",
+        sourceCountry: language === "ar" ? "بلد المنشأ" : "Country of Origin",
+        currentCountry: language === "ar" ? "بلد الإقامة الحالي" : "Current Country of Residence",
+
         next: language === "ar" ? "التالي" : "Next",
         previous: language === "ar" ? "السابق" : "Previous",
         skip: language === "ar" ? "تخطي" : "Skip for now",
@@ -225,33 +255,22 @@ export default function OnboardingWizard({ onComplete, onSkip, existingProfile }
                         <div className="space-y-4">
                             <div className="space-y-2">
                                 <Label>{t.nationality}</Label>
-                                <Select value={data.nationality} onValueChange={(v) => setData({ ...data, nationality: v })}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder={language === "ar" ? "اختر الجنسية" : "Select nationality"} />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {COUNTRIES.map((c) => (
-                                            <SelectItem key={c.value} value={c.value}>
-                                                {language === "ar" ? c.labelAr : c.labelEn}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
+                                <CountrySelect
+                                    value={data.nationality}
+                                    onValueChange={(v) => setData({ ...data, nationality: v })}
+                                    placeholder={language === "ar" ? "اختر الجنسية" : "Select nationality"}
+                                    language={language}
+                                />
                             </div>
+
                             <div className="space-y-2">
-                                <Label>{t.sourceCountry}</Label>
-                                <Select value={data.sourceCountry} onValueChange={(v) => setData({ ...data, sourceCountry: v })}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder={language === "ar" ? "اختر البلد" : "Select country"} />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {COUNTRIES.map((c) => (
-                                            <SelectItem key={c.value} value={c.value}>
-                                                {language === "ar" ? c.labelAr : c.labelEn}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
+                                <Label>{t.currentCountry}</Label>
+                                <CountrySelect
+                                    value={data.currentCountry}
+                                    onValueChange={(v) => setData({ ...data, currentCountry: v })}
+                                    placeholder={language === "ar" ? "اختر بلد الإقامة" : "Select current country"}
+                                    language={language}
+                                />
                             </div>
                         </div>
                     </div>

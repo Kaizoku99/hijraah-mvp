@@ -8,7 +8,7 @@ import { conversations, messages } from '@/../drizzle/schema';
 import { generateChatTitle } from '@/../server/_core/gemini';
 import { eq, or, isNull, asc } from 'drizzle-orm';
 
-export const maxDuration = 120; // Allow up to 2 minutes for batch processing
+export const maxDuration = 60; // Max for Vercel Hobby plan
 
 export async function GET() {
     try {

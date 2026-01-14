@@ -91,12 +91,15 @@ export function useAuth(options?: UseAuthOptions) {
     console.log('[useAuth] signInWithPassword success, user:', data.user?.id)
   }, [])
 
-  const signUpWithEmail = useCallback(async (email: string, password: string) => {
+  const signUpWithEmail = useCallback(async (email: string, password: string, name?: string) => {
     const { error } = await supabase.auth.signUp({
       email,
       password,
       options: {
         emailRedirectTo: `${window.location.origin}/api/auth/callback`,
+        data: {
+          full_name: name || email.split('@')[0], // Use name or derive from email
+        },
       },
     })
     if (error) throw error

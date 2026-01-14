@@ -345,3 +345,204 @@
 - [x] Remove console.log debug statements from production code
 - [x] Fix 'any' types in checklist handling with proper TypeScript types
 - [x] Ensure consistent query key format (arrays vs strings)
+
+---
+
+## Phase 16: UX Analysis Implementation (January 2026)
+
+### Critical Fixes (P0)
+- [x] Fix onboarding wizard not showing for new users (was in DashboardPage.tsx component, not app/dashboard/page.tsx)
+- [x] Add name field to signup form and save to Supabase user_metadata
+- [x] Connect user name to profile for personalized dashboard greeting
+- [x] Fix typo in chat feedback message ("Thanks for difference!" → "Thanks for your feedback!")
+- [x] Remove debug console.log statements from ChatPage.tsx
+- [x] Add toast notification for user feedback (instead of console.log)
+
+### Profile Form Enhancements (P1)
+- [ ] Add inline validation before allowing step navigation
+- [ ] Show validation errors with shake animation
+- [ ] Highlight CRS-impacting fields with special border/icon
+- [ ] Add "Required for CRS calculation" visual grouping
+
+### Calculator Enhancements (P1)
+- [ ] Add save confirmation toast after calculation
+- [ ] Show "You're X points from cutoff" more prominently
+- [ ] Add animated score counter on calculation
+- [ ] Add "Share score" functionality
+
+### Document Management Enhancements (P2)
+- [ ] Show file requirements inline (formats, size limits)
+- [ ] Add document thumbnail preview in checklist
+- [ ] Show "X/Y checklists used" before generation
+- [ ] Add drag-and-drop upload zone
+
+### Chat Improvements (P2)
+- [ ] Add conversation export functionality
+- [ ] Add conversation timestamp grouping (Today, Yesterday, Last week)
+- [ ] Add "Ask AI about this" button on CRS results
+- [ ] Add "Chat about documents" from checklist page
+
+### SOP Writer Improvements (P2)
+- [ ] Show estimated time during generation (e.g., "~30 seconds")
+- [ ] Color-code character count (red < green range < red)
+- [ ] Add explicit "Save as draft" button
+
+### Trust & Conversion (P2)
+- [ ] Add data privacy policy link in footer
+- [ ] Add security badges (SSL, encryption mention)
+- [ ] Add "Most popular" badge on mid-tier pricing
+- [ ] Show "Annual save X%" comparison
+- [ ] Add money-back guarantee messaging
+
+### Accessibility Polish (P3)
+- [ ] Add focus trap in modals (Tab cycles only within modal)
+- [ ] Add aria-live regions for dynamic content updates
+- [ ] Screen reader testing with NVDA/VoiceOver
+
+### Help & Support (P3)
+- [ ] Create dedicated Help/FAQ section
+- [ ] Add contextual help tooltips throughout app
+- [ ] Add "Contact Support" link in footer
+
+### Mobile PWA Features (P4)
+- [ ] Add service worker for offline support
+- [ ] Add installable PWA manifest
+- [ ] Add pull-to-refresh for data updates
+
+---
+
+## Phase 17: Performance & Infrastructure
+
+### Caching Strategy
+- [ ] Implement Next.js caching with `unstable_cache` for server actions
+- [ ] Add cache tags for targeted invalidation (profile, crs, documents, chat)
+- [ ] Configure stale-while-revalidate patterns for public data
+- [ ] Add Redis/Upstash for session and rate-limit caching (optional)
+
+### CDN Configuration
+- [ ] Configure Vercel Edge Network for static assets
+- [ ] Add image optimization with next/image and Vercel CDN
+- [ ] Set up proper cache headers for API responses
+- [ ] Configure geographic edge caching for MENA region
+
+### Database Optimization
+- [ ] Add indexes for frequently queried columns (userId, conversationId, createdAt)
+- [ ] Implement query pagination for large result sets
+- [ ] Add connection pooling configuration for Supabase
+- [ ] Monitor slow queries and optimize N+1 patterns
+
+### AI Cultural Training
+- [ ] Create MENA-specific immigration context prompts
+- [ ] Add Arabic cultural nuances to AI responses
+- [ ] Train AI on common questions from Tunisian/Jordanian/Lebanese users
+- [ ] Add country-specific immigration advice context
+
+---
+
+## Phase 18: Legal & Compliance
+
+### Documentation
+- [ ] Create Privacy Policy page (GDPR/CCPA compliant)
+- [ ] Create Terms of Service page
+- [ ] Add cookie consent banner
+- [ ] Create data deletion request process
+- [ ] Document data retention policies
+
+### User Support
+- [ ] Set up customer support email (support@hijraah.com)
+- [ ] Create help desk ticketing system (Zendesk/Freshdesk/Intercom)
+- [ ] Add in-app chat support widget
+- [ ] Create user documentation and FAQ section
+- [ ] Add knowledge base for common immigration questions
+
+---
+
+## Phase 19: Marketing & Growth
+
+### Social Media Presence
+- [ ] Create Twitter/X account for Hijraah
+- [ ] Create LinkedIn company page
+- [ ] Create Instagram account with immigration tips
+- [ ] Set up content calendar for social posts
+- [ ] Add social media links to website footer
+
+### Marketing Materials
+- [ ] Create product screenshots for marketing
+- [ ] Record demo video walkthrough
+- [ ] Create landing page feature graphics
+- [ ] Design email templates with brand styling
+- [ ] Create press kit with logos and descriptions
+
+### Email Marketing
+- [ ] Set up email marketing platform (Resend/Mailchimp/SendGrid)
+- [ ] Create welcome email sequence for new users
+- [ ] Set up newsletter for immigration updates
+- [ ] Add email preferences to user settings
+- [ ] Create re-engagement emails for inactive users
+
+### User Acquisition
+- [ ] Create referral program with incentives
+- [ ] Add "Invite a friend" feature in dashboard
+- [ ] Set up affiliate tracking for referrals
+- [ ] Create shareable referral links
+- [ ] Add referral stats to user dashboard
+
+### Testimonials & Social Proof
+- [ ] Collect testimonials from beta testers
+- [ ] Add testimonial carousel to landing page
+- [ ] Create case study pages for success stories
+- [ ] Add trust badges (security, satisfaction guarantee)
+- [ ] Display user count and success metrics
+
+---
+
+## Phase 20: Analytics & Optimization
+
+### User Feedback
+- [ ] Set up user feedback collection system (Canny/UserVoice)
+- [ ] Add NPS survey after key actions
+- [ ] Create feedback button in app header
+- [ ] Implement feature request voting system
+- [ ] Add in-app rating prompts
+
+### A/B Testing
+- [ ] Set up A/B testing framework (Vercel/PostHog/Optimizely)
+- [ ] Implement pricing page A/B tests
+- [ ] Test different CTA copy and colors
+- [ ] A/B test onboarding flow variations
+- [ ] Track conversion metrics for each variant
+
+### Analytics
+- [ ] Set up Google Analytics 4
+- [ ] Add Mixpanel/Amplitude for product analytics
+- [ ] Create conversion funnels (signup → profile → calculator → upgrade)
+- [ ] Track feature usage metrics
+- [ ] Set up weekly analytics reports
+
+---
+
+## Integration Audit (January 2026)
+
+**Issue**: Some features were implemented in component files but NOT connected to actual routes.
+
+### Fixed Issues ✅
+- [x] **OnboardingWizard**: Was in `DashboardPage.tsx` component, NOT in `app/dashboard/page.tsx` → Now connected
+- [x] **ImmigrationJourney**: Was in `DashboardPage.tsx` component, NOT in `app/dashboard/page.tsx` → Now connected
+- [x] **Signup name field**: Name field existed but wasn't passed to Supabase → Now saves to user_metadata
+- [x] **User name in dashboard**: Shows "Welcome back, User" instead of actual name → Now uses profile name
+- [x] **DashboardFocusCard**: Was in DashboardPage.tsx → Migrated to `app/dashboard/page.tsx`
+- [x] **PricingRecommendation**: Was in DashboardPage.tsx → Migrated to `app/dashboard/page.tsx`
+
+### Consolidated Files ✅
+- [x] Deleted `components/pages/DashboardPage.tsx` (all features migrated to `app/dashboard/page.tsx`)
+- [x] Deleted `components/pages/HomePage.tsx` (unused, `app/page.tsx` is the active landing page)
+
+### Accessibility Items to Verify
+- [ ] Skip navigation links (marked done but no `aria-skip-link` found in codebase)
+- [ ] Focus trap in modals
+- [ ] aria-live regions for dynamic content
+
+### Notes
+- `app/dashboard/page.tsx` now contains ALL dashboard features in one consolidated file
+- No more duplicate implementations
+

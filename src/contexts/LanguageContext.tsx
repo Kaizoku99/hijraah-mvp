@@ -32,13 +32,13 @@ const translations: Record<Language, Record<string, string>> = {
     "nav.profile": "Profile",
     "nav.logout": "Logout",
     "nav.login": "Login",
-    
+
     // Home page
     "home.hero.title": "Your AI-Powered Immigration Partner",
     "home.hero.subtitle": "Get expert guidance for immigrating to Canada with our AI assistant, designed specifically for Arabic-speaking communities.",
-    "home.hero.cta": "Get Started Free",
+    "home.hero.cta": "Get Started for Free",
     "home.hero.secondary": "Learn More",
-    
+
     // Features
     "features.chat.title": "AI Immigration Assistant",
     "features.chat.description": "Chat with our AI assistant in Arabic or English for personalized immigration guidance.",
@@ -48,7 +48,7 @@ const translations: Record<Language, Record<string, string>> = {
     "features.documents.description": "Get a personalized checklist based on your country and immigration pathway.",
     "features.sop.title": "SOP Writer",
     "features.sop.description": "Generate professional Statement of Purpose with AI assistance.",
-    
+
     // Pricing
     "pricing.title": "Choose Your Plan",
     "pricing.free": "Free",
@@ -59,7 +59,7 @@ const translations: Record<Language, Record<string, string>> = {
     "pricing.oneTime": "one-time",
     "pricing.selectPlan": "Select Plan",
     "pricing.currentPlan": "Current Plan",
-    
+
     // Common
     "common.loading": "Loading...",
     "common.error": "An error occurred",
@@ -80,7 +80,7 @@ const translations: Record<Language, Record<string, string>> = {
     "common.view": "View",
     "common.language": "Language",
     "common.send": "Send",
-    
+
     // Dashboard
     "dashboard.welcome": "Welcome back",
     "dashboard.progress": "Your Progress",
@@ -88,20 +88,20 @@ const translations: Record<Language, Record<string, string>> = {
     "dashboard.documents": "Documents",
     "dashboard.crsScore": "CRS Score",
     "dashboard.timeline": "Timeline",
-    
+
     // Chat
     "chat.title": "AI Immigration Assistant",
     "chat.placeholder": "Ask me anything about immigrating to Canada...",
     "chat.newChat": "New Chat",
     "chat.history": "Chat History",
-    
+
     // Calculator
     "calculator.title": "CRS Score Calculator",
     "calculator.subtitle": "Calculate your Comprehensive Ranking System score for Express Entry",
     "calculator.yourScore": "Your Score",
     "calculator.calculate": "Calculate Score",
     "calculator.recommendations": "Recommendations",
-    
+
     // Documents
     "documents.title": "Document Checklist",
     "documents.upload": "Upload Document",
@@ -109,13 +109,13 @@ const translations: Record<Language, Record<string, string>> = {
     "documents.status.processing": "Processing",
     "documents.status.completed": "Completed",
     "documents.status.failed": "Failed",
-    
+
     // SOP
     "sop.title": "Statement of Purpose Writer",
     "sop.generate": "Generate SOP",
     "sop.revise": "Revise",
     "sop.export": "Export PDF",
-    
+
     // Profile
     "profile.title": "Profile",
     "profile.personalInfo": "Personal Information",
@@ -123,7 +123,7 @@ const translations: Record<Language, Record<string, string>> = {
     "profile.workExperience": "Work Experience",
     "profile.languageSkills": "Language Skills",
     "profile.subscription": "Subscription",
-    
+
     // Auth
     "auth.signIn": "Sign In",
     "auth.signUp": "Sign Up",
@@ -143,13 +143,13 @@ const translations: Record<Language, Record<string, string>> = {
     "nav.profile": "الملف الشخصي",
     "nav.logout": "تسجيل الخروج",
     "nav.login": "تسجيل الدخول",
-    
+
     // Home page
     "home.hero.title": "شريكك في الهجرة بتقنية الذكاء الاصطناعي",
     "home.hero.subtitle": "احصل على إرشادات الخبراء للهجرة إلى كندا مع مساعدنا الذكي، المصمم خصيصًا للمجتمعات الناطقة بالعربية.",
     "home.hero.cta": "ابدأ مجانًا",
     "home.hero.secondary": "اعرف المزيد",
-    
+
     // Features
     "features.chat.title": "المساعد الذكي للهجرة",
     "features.chat.description": "تحدث مع مساعدنا الذكي بالعربية أو الإنجليزية للحصول على إرشادات مخصصة للهجرة.",
@@ -159,7 +159,7 @@ const translations: Record<Language, Record<string, string>> = {
     "features.documents.description": "احصل على قائمة مخصصة بناءً على بلدك ومسار الهجرة الخاص بك.",
     "features.sop.title": "كاتب خطاب النوايا",
     "features.sop.description": "أنشئ خطاب نوايا احترافي بمساعدة الذكاء الاصطناعي.",
-    
+
     // Pricing
     "pricing.title": "اختر خطتك",
     "pricing.free": "مجاني",
@@ -170,7 +170,7 @@ const translations: Record<Language, Record<string, string>> = {
     "pricing.oneTime": "دفعة واحدة",
     "pricing.selectPlan": "اختر الخطة",
     "pricing.currentPlan": "الخطة الحالية",
-    
+
     // Common
     "common.loading": "جاري التحميل...",
     "common.error": "حدث خطأ",
@@ -191,7 +191,7 @@ const translations: Record<Language, Record<string, string>> = {
     "common.view": "عرض",
     "common.language": "اللغة",
     "common.send": "إرسال",
-    
+
     // Dashboard
     "dashboard.welcome": "مرحبًا بعودتك",
     "dashboard.progress": "تقدمك",
@@ -199,20 +199,20 @@ const translations: Record<Language, Record<string, string>> = {
     "dashboard.documents": "المستندات",
     "dashboard.crsScore": "نقاط CRS",
     "dashboard.timeline": "الجدول الزمني",
-    
+
     // Chat
     "chat.title": "المساعد الذكي للهجرة",
     "chat.placeholder": "اسألني أي شيء عن الهجرة إلى كندا...",
     "chat.newChat": "محادثة جديدة",
     "chat.history": "سجل المحادثات",
-    
+
     // Calculator
     "calculator.title": "حاسبة نقاط CRS",
     "calculator.subtitle": "احسب نقاطك في نظام التصنيف الشامل للدخول السريع",
     "calculator.yourScore": "نقاطك",
     "calculator.calculate": "احسب النقاط",
     "calculator.recommendations": "التوصيات",
-    
+
     // Documents
     "documents.title": "قائمة المستندات",
     "documents.upload": "رفع مستند",
@@ -220,13 +220,13 @@ const translations: Record<Language, Record<string, string>> = {
     "documents.status.processing": "قيد المعالجة",
     "documents.status.completed": "مكتمل",
     "documents.status.failed": "فشل",
-    
+
     // SOP
     "sop.title": "كاتب خطاب النوايا",
     "sop.generate": "إنشاء خطاب النوايا",
     "sop.revise": "مراجعة",
     "sop.export": "تصدير PDF",
-    
+
     // Profile
     "profile.title": "الملف الشخصي",
     "profile.personalInfo": "المعلومات الشخصية",
@@ -234,7 +234,7 @@ const translations: Record<Language, Record<string, string>> = {
     "profile.workExperience": "الخبرة العملية",
     "profile.languageSkills": "المهارات اللغوية",
     "profile.subscription": "الاشتراك",
-    
+
     // Auth
     "auth.signIn": "تسجيل الدخول",
     "auth.signUp": "إنشاء حساب",

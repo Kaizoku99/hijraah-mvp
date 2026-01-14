@@ -22,22 +22,194 @@ import {
   LogOut,
   Loader2,
   ArrowRight,
+  ArrowRightCircle,
   Crown,
   TrendingUp,
   TrendingDown,
-  CheckCircle2,
-  Clock,
-  AlertCircle,
+  Sparkles,
 } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { format } from "date-fns"
 import { ar, enUS } from "date-fns/locale"
+import { useState, useEffect } from "react"
+import OnboardingWizard, { isOnboardingComplete } from "@/components/OnboardingWizard"
+import { ImmigrationJourney } from "@/components/ImmigrationJourney"
+
+// Context-aware Focus Card - shows user their next step
+function DashboardFocusCard({
+  profileCompletion,
+  hasCrsScore,
+  docCompletion,
+  language,
+  router
+}: {
+  profileCompletion: number;
+  hasCrsScore: boolean;
+  docCompletion: { completed: number; total: number };
+  language: string;
+  router: ReturnType<typeof useRouter>
+}) {
+  // Determine user state
+  let state: 'profile' | 'crs' | 'documents' | 'complete' = 'profile';
+
+  if (profileCompletion < 100) {
+    state = 'profile';
+  } else if (!hasCrsScore) {
+    state = 'crs';
+  } else if (docCompletion.total > 0 && docCompletion.completed < docCompletion.total) {
+    state = 'documents';
+  } else {
+    state = 'complete';
+  }
+
+  const content = {
+    profile: {
+      title: language === "ar" ? "أكمل ملفك الشخصي" : "Complete Your Profile",
+      description: language === "ar"
+        ? `أنت في ${profileCompletion}% من الطريق! إكمال ملفك الشخصي يزيد من دقة حساب نقاط CRS.`
+        : `You are ${profileCompletion}% there. Completing your profile improves CRS score accuracy.`,
+      action: language === "ar" ? "الذهاب للملف الشخصي" : "Go to Profile",
+      icon: User,
+      href: "/profile",
+      color: "text-blue-600",
+      bg: "bg-blue-50/50 dark:bg-blue-950/20"
+    },
+    crs: {
+      title: language === "ar" ? "احسب نقاط CRS" : "Calculate Your CRS Score",
+      description: language === "ar"
+        ? "اكتشف مدى أهليتك للهجرة إلى كندا الآن."
+        : "Find out your eligibility for Canadian immigration right now.",
+      action: language === "ar" ? "بدء الحساب" : "Start Calculator",
+      icon: Calculator,
+      href: "/calculator",
+      color: "text-purple-600",
+      bg: "bg-purple-50/50 dark:bg-purple-950/20"
+    },
+    documents: {
+      title: language === "ar" ? "رفع المستندات المطلوبة" : "Upload Required Documents",
+      description: language === "ar"
+        ? `لديك ${docCompletion.total - docCompletion.completed} مستندات بانتظار الرفع.`
+        : `You have ${docCompletion.total - docCompletion.completed} pending documents to upload.`,
+      action: language === "ar" ? "عرض القائمة" : "View Checklist",
+      icon: FileText,
+      href: "/documents",
+      color: "text-amber-600",
+      bg: "bg-amber-50/50 dark:bg-amber-950/20"
+    },
+    complete: {
+      title: language === "ar" ? "أنت جاهز للتقديم!" : "You're Ready to Apply",
+      description: language === "ar"
+        ? "تحدث مع مساعدنا الذكي للبدء في إجراءات التقديم."
+        : "Talk to our AI assistant to guide you through the submission process.",
+      action: language === "ar" ? "تحدث مع هجرة" : "Talk to Hijraah AI",
+      icon: Sparkles,
+      href: "/chat",
+      color: "text-green-600",
+      bg: "bg-green-50/50 dark:bg-green-950/20"
+    }
+  }[state];
+
+  return (
+    <Card className={`mb-6 border-l-4 ${content.bg} overflow-hidden`} style={{ borderLeftColor: 'currentColor' }}>
+      <div className={content.color}>
+        <CardHeader className="pb-3">
+          <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
+            <div className="space-y-1">
+              <CardTitle className="text-xl flex items-center gap-2">
+                <content.icon className="h-6 w-6" />
+                {content.title}
+              </CardTitle>
+              <CardDescription className="text-base">
+                {content.description}
+              </CardDescription>
+            </div>
+            <Button onClick={() => router.push(content.href)} className="shrink-0 gap-2">
+              {content.action}
+              <ArrowRightCircle className={`h-4 w-4 ${language === "ar" ? "rotate-180" : ""}`} />
+            </Button>
+          </div>
+        </CardHeader>
+      </div>
+    </Card>
+  );
+}
+
+// Usage-based pricing recommendation
+function PricingRecommendation({
+  sopsCount,
+  chatCount,
+  checklistCount,
+  language,
+}: {
+  sopsCount: number;
+  chatCount: number;
+  checklistCount: number;
+  language: string;
+}) {
+  // Determine recommended tier based on usage
+  let recommendedTier: 'free' | 'essential' | 'premium' = 'free';
+  let reason = '';
+
+  if (sopsCount > 1 || chatCount > 30) {
+    recommendedTier = 'premium';
+    reason = language === "ar"
+      ? "استخدامك يتجاوز الخطة الأساسية. Premium يمنحك SOPs غير محدودة!"
+      : "Your usage exceeds Essential. Premium gives you unlimited SOPs!";
+  } else if (sopsCount > 0 || chatCount > 15 || checklistCount > 2) {
+    recommendedTier = 'essential';
+    reason = language === "ar"
+      ? "للحصول على المزيد من الرسائل والمستندات، جرّب الخطة الأساسية."
+      : "For more messages and documents, try the Essential plan.";
+  } else {
+    return null; // Free tier user with low usage - don't show recommendation
+  }
+
+  const tierInfo = {
+    essential: {
+      name: language === "ar" ? "أساسي" : "Essential",
+      price: "$29",
+      color: "border-blue-500 bg-blue-50/50 dark:bg-blue-950/20"
+    },
+    premium: {
+      name: language === "ar" ? "مميز" : "Premium",
+      price: "$79",
+      color: "border-purple-500 bg-purple-50/50 dark:bg-purple-950/20"
+    }
+  }[recommendedTier];
+
+  return (
+    <Card className={`mb-6 border-l-4 ${tierInfo?.color}`}>
+      <CardHeader className="pb-2">
+        <CardTitle className="text-sm flex items-center gap-2">
+          <Crown className="h-4 w-4 text-amber-500" />
+          {language === "ar" ? "ترقية مقترحة" : "Recommended Upgrade"}
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <p className="text-sm text-muted-foreground">{reason}</p>
+        <Link href="/pricing">
+          <Button size="sm" variant="outline">
+            {tierInfo?.name} - {tierInfo?.price}/{language === "ar" ? "شهر" : "mo"}
+          </Button>
+        </Link>
+      </CardContent>
+    </Card>
+  );
+}
 
 export default function Dashboard() {
   const { user, logout } = useAuth()
   const { t, language } = useLanguage()
   const router = useRouter()
+  const [showOnboarding, setShowOnboarding] = useState(false)
+
+  // Check for first-time user on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined' && !isOnboardingComplete()) {
+      setShowOnboarding(true)
+    }
+  }, [])
 
   const { data: profile, isLoading: profileLoading } = useQuery({
     queryKey: ['profile'],
@@ -193,7 +365,7 @@ export default function Dashboard() {
 
       <main className="container py-8">
         {/* Welcome Section */}
-        <div className="mb-8">
+        <div className="mb-6">
           <h2 className="text-3xl font-bold mb-2">
             {language === "ar"
               ? `مرحباً، ${user?.name || user?.email?.split('@')[0] || 'مستخدم'}`
@@ -205,6 +377,23 @@ export default function Dashboard() {
               : "Continue your journey to Canada"}
           </p>
         </div>
+
+        {/* Context-aware Focus Card */}
+        <DashboardFocusCard
+          profileCompletion={profileCompletion}
+          hasCrsScore={!!latestCrs}
+          docCompletion={docCompletion}
+          language={language}
+          router={router}
+        />
+
+        {/* Pricing Recommendation (only shows if applicable) */}
+        <PricingRecommendation
+          sopsCount={sops?.length || 0}
+          chatCount={conversations?.length || 0}
+          checklistCount={checklists?.length || 0}
+          language={language}
+        />
 
         {/* Stats Grid */}
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
@@ -299,7 +488,7 @@ export default function Dashboard() {
               const Icon = action.icon
               return (
                 <Link key={index} href={action.href}>
-                  <Card className="cursor-pointer hover:shadow-md transition-shadow">
+                  <Card className="cursor-pointer hover:shadow-md transition-shadow h-full">
                     <CardContent className="p-6">
                       <div className={`h-12 w-12 rounded-lg ${action.color} flex items-center justify-center mb-4`}>
                         <Icon className="h-6 w-6 text-white" />
@@ -349,40 +538,27 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          {/* Recent SOPs */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <BookOpen className="h-5 w-5" />
-                {language === "ar" ? "خطابات النوايا الأخيرة" : "Recent SOPs"}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {sops && sops.length > 0 ? (
-                <div className="space-y-4">
-                  {sops.slice(0, 3).map((sop: any) => (
-                    <Link key={sop.id} href={`/sop/${sop.id}`}>
-                      <div className="flex items-center justify-between p-3 rounded-lg hover:bg-muted cursor-pointer">
-                        <div>
-                          <p className="font-medium">{sop.title || (language === "ar" ? "خطاب نوايا" : "SOP")}</p>
-                          <p className="text-sm text-muted-foreground">
-                            {format(new Date(sop.createdAt), 'PPp', { locale: language === 'ar' ? ar : enUS })}
-                          </p>
-                        </div>
-                        <ArrowRight className="h-4 w-4 text-muted-foreground" />
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-muted-foreground text-center py-4">
-                  {language === "ar" ? "لم يتم إنشاء خطابات بعد" : "No SOPs created yet"}
-                </p>
-              )}
-            </CardContent>
-          </Card>
+          {/* Immigration Journey */}
+          <ImmigrationJourney
+            profileCompletion={profileCompletion}
+            hasCrsScore={!!latestCrs}
+            documentsUploaded={docCompletion.completed}
+            totalDocuments={docCompletion.total}
+          />
         </div>
       </main>
+
+      {/* Onboarding Wizard for first-time users */}
+      {showOnboarding && (
+        <OnboardingWizard
+          onComplete={() => {
+            setShowOnboarding(false)
+            router.push("/calculator")
+          }}
+          onSkip={() => setShowOnboarding(false)}
+          existingProfile={profile}
+        />
+      )}
     </div>
   )
 }

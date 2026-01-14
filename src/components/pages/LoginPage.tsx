@@ -82,7 +82,7 @@ export default function LoginPage({ defaultTab = "login" }: LoginPageProps) {
           setIsLoading(false);
           return;
         }
-        await signUpWithEmail(email, password);
+        await signUpWithEmail(email, password, userName);
         setShowWelcome(true);
         setTimeout(() => {
           router.push("/dashboard");
@@ -237,6 +237,18 @@ export default function LoginPage({ defaultTab = "login" }: LoginPageProps) {
 
               <TabsContent value="signup" className="space-y-4 mt-0">
                 <form onSubmit={handleEmailAuth} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="name">{t.name}</Label>
+                    <Input
+                      id="name"
+                      type="text"
+                      value={userName}
+                      onChange={(e) => setUserName(e.target.value)}
+                      placeholder={language === "ar" ? "اسمك الكامل" : "Your full name"}
+                      required
+                    />
+                  </div>
+
                   <div className="space-y-2">
                     <Label htmlFor="email">{t.email}</Label>
                     <Input

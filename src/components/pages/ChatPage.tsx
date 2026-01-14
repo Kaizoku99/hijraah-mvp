@@ -43,6 +43,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect, useCallback } from "react";
 import { StickToBottom, useStickToBottomContext } from "use-stick-to-bottom";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 // AI Elements Components
 import {
@@ -450,12 +451,7 @@ export default function ChatPage() {
     }
   }, [idParam, selectedConversationId]);
 
-  // Debug logging
-  console.log("[ChatPage] status:", status, "isStreaming:", isStreaming, "streamMessages:", streamMessages.length, "rawMessages:", rawMessages?.length, "conversationData:", conversationData?.messages?.length);
-  if (rawMessages?.length > 0) {
-    const lastRaw = rawMessages[rawMessages.length - 1];
-    console.log("[ChatPage] Last rawMessage role:", lastRaw.role, "parts:", lastRaw.parts?.length);
-  }
+
 
   // Combine database messages with streaming messages
   const displayMessages = useCallback((): HijraahChatMessage[] => {
@@ -483,14 +479,14 @@ export default function ChatPage() {
       };
     });
 
-    console.log("[ChatPage] displayMessages - dbMessages:", dbMessages.length, "streamMessages:", streamMessages.length);
+
 
     if (streamMessages.length > 0) {
       const dbMessageIds = new Set(dbMessages.map(m => m.content));
       const newStreamMessages = streamMessages.filter(
         m => !dbMessageIds.has(m.content)
       );
-      console.log("[ChatPage] New stream messages:", newStreamMessages.length);
+
       return [...dbMessages, ...newStreamMessages];
     }
 
@@ -565,14 +561,12 @@ export default function ChatPage() {
   };
 
   const handleFeedback = (messageId: string, type: 'up' | 'down') => {
-    // Determine the message text to show based on language
+    // Show toast feedback to user
     const feedbackText = language === "ar"
       ? (type === 'up' ? "شكراً لملاحظاتك!" : "سنعمل على تحسين ذلك.")
-      : (type === 'up' ? "Thanks for difference!" : "We'll improve this.");
+      : (type === 'up' ? "Thanks for your feedback!" : "We'll work on improving this.");
 
-    // Simple toast or console log for now as we don't have a backend table for this yet
-    console.log(`Feedback for ${messageId}: ${type}`);
-    // You might want to add a toast here if you have a toast component available
+    toast.success(feedbackText, { duration: 2000 });
   };
 
   const handleLogout = async () => {

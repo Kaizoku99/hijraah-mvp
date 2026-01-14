@@ -30,6 +30,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { CountrySelect } from "@/components/CountrySelect";
 
 const PROFILE_DRAFT_KEY = "hijraah_profile_draft";
 
@@ -183,19 +184,11 @@ export default function Profile() {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const sourceCountries = [
-    { value: "tunisia", label: language === "ar" ? "تونس" : "Tunisia" },
-    { value: "jordan", label: language === "ar" ? "الأردن" : "Jordan" },
-    { value: "lebanon", label: language === "ar" ? "لبنان" : "Lebanon" },
-    { value: "morocco", label: language === "ar" ? "المغرب" : "Morocco" },
-    { value: "egypt", label: language === "ar" ? "مصر" : "Egypt" },
-    { value: "sudan", label: language === "ar" ? "السودان" : "Sudan" },
-    { value: "syria", label: language === "ar" ? "سوريا" : "Syria" },
-  ];
+
 
   const completionPercentage = () => {
     // Weighted completion: Basic (10%), Education (30%), Work (30%), Language (30%)
-    const basicFields = ['dateOfBirth', 'nationality', 'sourceCountry', 'currentCountry', 'maritalStatus'];
+    const basicFields = ['dateOfBirth', 'nationality', 'currentCountry', 'maritalStatus'];
     const educationFields = ['educationLevel', 'fieldOfStudy'];
     const workFields = ['yearsOfExperience', 'currentOccupation', 'nocCode'];
     const languageFields = ['englishLevel', 'frenchLevel', 'ieltsScore', 'tefScore'];
@@ -297,47 +290,25 @@ export default function Profile() {
                         <Label htmlFor="nationality">
                           {language === "ar" ? "الجنسية" : "Nationality"}
                         </Label>
-                        <Input
-                          id="nationality"
+                        <CountrySelect
                           value={formData.nationality}
-                          onChange={(e) => handleChange("nationality", e.target.value)}
+                          onValueChange={(val) => handleChange("nationality", val)}
                           placeholder={language === "ar" ? "مثال: تونسي" : "e.g., Tunisian"}
+                          language={language}
                         />
                       </div>
 
-                      <div className="space-y-2">
-                        <Label htmlFor="sourceCountry">
-                          {language === "ar" ? "بلد المنشأ" : "Source Country"}
-                          <span className="text-destructive"> *</span>
-                        </Label>
-                        <Select
-                          value={formData.sourceCountry}
-                          onValueChange={(value) => handleChange("sourceCountry", value)}
-                        >
-                          <SelectTrigger id="sourceCountry">
-                            <SelectValue
-                              placeholder={language === "ar" ? "اختر بلد المنشأ" : "Select source country"}
-                            />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {sourceCountries.map((country) => (
-                              <SelectItem key={country.value} value={country.value}>
-                                {country.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
+
 
                       <div className="space-y-2">
                         <Label htmlFor="currentCountry">
                           {language === "ar" ? "البلد الحالي" : "Current Country"}
                         </Label>
-                        <Input
-                          id="currentCountry"
+                        <CountrySelect
                           value={formData.currentCountry}
-                          onChange={(e) => handleChange("currentCountry", e.target.value)}
+                          onValueChange={(val) => handleChange("currentCountry", val)}
                           placeholder={language === "ar" ? "مثال: الإمارات" : "e.g., UAE"}
+                          language={language}
                         />
                       </div>
 
