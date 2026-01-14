@@ -78,7 +78,7 @@
 - [x] Automatic translation to English
 - [x] OCR results review and editing interface
 - [x] Support for common MENA document formats (PDF, JPG, PNG)
-- [ ] Batch document processing
+- [x] Batch document processing
 
 ## Phase 11: Content Management System
 - [x] Immigration guides database schema
@@ -97,7 +97,7 @@
 - [x] Usage tracking and limits for free tier
 
 ## Phase 13: WhatsApp Support Integration
-- [ ] WhatsApp Business API integration
+- [x] WhatsApp Business API integration
 - [ ] Automated response system with Gemini 2.5 Pro
 - [ ] Human agent escalation logic
 - [ ] Support ticket tracking
@@ -105,14 +105,14 @@
 - [ ] Support chat history
 
 ## Phase 14: Polish & Testing
-- [ ] Responsive design testing (mobile, tablet, desktop)
-- [ ] Arabic RTL layout verification
-- [ ] Cross-browser compatibility testing
-- [ ] Performance optimization
+- [x] Responsive design testing (mobile, tablet, desktop)
+- [x] Arabic RTL layout verification
+- [x] Cross-browser compatibility testing
+- [x] Performance optimization
 - [x] Error handling and user feedback
 - [x] Loading states and skeletons
-- [ ] Accessibility improvements
-- [ ] SEO optimization for landing pages
+- [x] Accessibility improvements
+- [x] SEO optimization for landing pages
 
 ## Phase 15: Deployment & Launch
 - [ ] Environment variables configuration
@@ -200,3 +200,148 @@
 - [x] Add quick action buttons (Calculate CRS, Upload Documents, Chat with AI)
 - [x] Display profile completion percentage
 - [x] Show recent chat conversations
+
+---
+
+## Phase 16: UX Improvements (from Comprehensive Audit)
+
+### P0 - Critical Priority
+
+#### Onboarding Wizard
+- [x] Create 5-step onboarding wizard for new users
+  - [x] Step 1: Welcome + language confirmation
+  - [x] Step 2: Basic info (nationality, source country, current country)
+  - [x] Step 3: Immigration goal selection (Express Entry, Study, Family)
+  - [x] Step 4: Quick language ability self-assessment
+  - [x] Step 5: First action prompt (Calculate CRS or Generate Checklist)
+- [x] Add first-time user detection via localStorage
+- [x] Auto-save onboarding progress
+- [x] Show "Quick Start Guide" modal for returning incomplete users
+
+#### Calculator Bug Fixes
+- [x] Fix NaN validation errors (invalid input syntax for integer)
+- [x] Add parseInt fallback values for all number inputs
+- [x] Add min/max validation on number inputs
+- [x] Prevent form submission with invalid values
+
+#### Profile Multi-Step Conversion
+- [x] Convert single-page profile form to 5-step wizard
+  - [x] Step 1: Personal Information
+  - [x] Step 2: Education
+  - [x] Step 3: Work Experience
+  - [x] Step 4: Language Proficiency
+  - [x] Step 5: Immigration Goals
+- [x] Add inline validation with real-time feedback
+- [x] Implement autosave to localStorage + server
+- [x] Add progress indicator bar between steps
+- [x] Add "Save Draft" button functionality
+
+### P1 - High Priority
+
+#### SOP Writer Improvements
+- [x] Implement localStorage autosave between steps
+- [x] Add "Resume draft" option for returning users
+- [x] Add character count with recommended range (150-300 words)
+- [x] Add per-step validation before allowing "Next"
+- [x] Add estimated generation time indicator
+- [x] Pre-populate prompts with profile data where available
+
+#### Calculator UX Enhancements
+- [x] Add real-time score preview in sidebar/sticky header
+- [x] Add IELTS-to-CLB conversion helper
+- [x] Show point value next to each switch (e.g., "Provincial Nomination (+600)")
+- [x] Add score improvement simulator ("If you improve IELTS to 7, gain +30 points")
+- [x] Auto-scroll to results after calculation
+- [x] Add "Points impact" tooltip on each field
+
+#### Document Management Improvements
+- [x] Add document preview thumbnail after upload
+- [x] Show file name and size after successful upload
+- [x] Add document specifications (size limits, formats, required info)
+- [x] Rename "Verify" button to "Mark as Ready"
+- [x] Show tier limits upfront ("3/5 checklists used on Free tier")
+- [x] Integrate OCR as upload option ("Upload" vs "Scan & Upload")
+- [x] Add upload progress indicator
+
+#### Landing Page Trust
+- [x] Add testimonials carousel with user stories
+- [x] Add "Trusted by X users" counter
+- [x] Add country flags for supported source countries
+- [x] Add pricing tier comparison section
+- [x] Complete or remove "24/7 support" claim if WhatsApp not ready
+
+#### General UX Enhancements
+- [x] Add 'Immigration Journey' timeline/roadmap component (Profile → CRS → Documents → Application)
+- [x] Implement actionable document status badges (e.g., "Expired - Upload New")
+- [x] Add specific recovery actions to error messages (not just "Error", but "Try X")
+
+### P2 - Medium Priority
+
+#### Chat Improvements
+- [x] Generate context-aware follow-up suggestions based on conversation
+- [x] Show sample conversation preview or efficient "What can I do?" explainer
+- [x] Add thumbs up/down rating on AI responses
+- [x] Add conversation rename option
+- [x] Add "Ask in Arabic/English" quick toggle in chat
+- [x] Implement fallback responses when RAG has no sources
+- [x] Remove console.log debug statements from production
+
+#### Document OCR & Translation
+- [x] Integrate OCR as upload option ("Upload" vs "Scan & Upload")
+- [x] Add auto-translate toggle with side-by-side comparison view
+- [x] Add upload progress indicator
+
+#### SOP Advanced Features
+- [x] Add AI-generated prompt suggestions based on profile data
+- [x] Show generation progress steps ("Analyzing background... Creating introduction...")
+- [x] Allow inline editing of generated SOP sections
+- [x] Add "Regenerate section" option for specific parts
+
+#### Dashboard Focus Mode
+- [x] Implement contextual CTAs based on user state
+  - [x] No CRS → "Calculate Your Score First"
+  - [x] Incomplete profile → "Complete Profile to Continue"
+  - [x] Empty documents → "Start Your Document Checklist"
+- [x] Reduce information density with collapsible sections
+- [x] Highlight pricing tiers based on user's actual usage/needs
+
+#### Profile Enhancements
+- [x] Use proper date picker component for birth date
+- [x] Add tooltips explaining field importance (CRS impact)
+- [x] Weight progress calculation by required fields only
+- [x] Mark required vs optional fields clearly with visual indicators
+
+### P3 - Lower Priority
+
+#### Chat Additional Features
+- [x] Add conversation search and filters
+- [x] Add conversation categorization/tagging
+- [x] Clean up duplicate 'use client' directives in ChatPage.tsx
+
+#### Authentication Improvements
+- [x] Implement tabbed Login/Signup on single page
+- [x] Add welcome animation after successful signup
+
+#### Accessibility Improvements
+- [x] Verify color contrast ratios (WCAG 2.1 AA)
+- [x] Add visible focus states to custom components
+- [x] Add explicit label associations for all form inputs
+- [x] Add icons/text indicators to error messages (not just color)
+- [x] Add skip navigation links for keyboard users
+
+#### RTL-Specific Fixes
+- [x] Audit all arrow icons for proper RTL rotation
+- [x] Fix number input direction in RTL mode
+- [x] Fix progress indicator animation direction in RTL
+- [x] Mirror icons appropriately in RTL layout
+
+#### Mobile Experience
+- [x] Add sticky bottom navigation for mobile (Dashboard, Chat, Calculator)
+- [x] Add collapsible sections for long forms on mobile
+- [x] Consider swipe gestures for conversation navigation
+
+### Technical Debt
+- [x] Remove duplicate 'use client' directive in ChatPage.tsx (lines 1 and 3)
+- [x] Remove console.log debug statements from production code
+- [x] Fix 'any' types in checklist handling with proper TypeScript types
+- [x] Ensure consistent query key format (arrays vs strings)

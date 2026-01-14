@@ -8,6 +8,7 @@ import { LanguageToggle } from "@/components/LanguageToggle";
 import { MessageSquare, Calculator, FileText, BookOpen, ArrowRight, CheckCircle } from "lucide-react";
 import { getLoginUrl } from "@/const";
 import Link from "next/link";
+import CountUp from "react-countup";
 
 export default function Home() {
   const { user, isAuthenticated } = useAuth();
@@ -101,6 +102,60 @@ export default function Home() {
                   {t("home.hero.secondary")}
                 </Button>
               </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Trust Section */}
+      <section className="py-12 border-y bg-muted/20">
+        <div className="container">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center text-center">
+            {/* User Counter */}
+            <div className="space-y-2">
+              <div className="text-4xl font-bold text-primary flex justify-center items-center gap-1">
+                <CountUp end={150} duration={3} />
+                <span>+</span>
+              </div>
+              <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+                {language === "ar" ? "مستخدم يثق بنا" : "Users Trust Us"}
+              </p>
+            </div>
+
+            {/* Country Counter */}
+            <div className="space-y-2">
+              <div className="text-4xl font-bold text-primary flex justify-center items-center gap-1">
+                <CountUp end={12} duration={3} />
+                <span>+</span>
+              </div>
+              <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+                {language === "ar" ? "دولة مدعومة" : "Countries Supported"}
+              </p>
+            </div>
+
+            {/* Immigration Programs */}
+            <div className="space-y-2">
+              <div className="text-4xl font-bold text-primary flex justify-center items-center gap-1">
+                <CountUp end={60} duration={3} />
+                <span>+</span>
+              </div>
+              <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+                {language === "ar" ? "برنامج هجرة" : "Immigration Programs"}
+              </p>
+            </div>
+
+            {/* Flags Display */}
+            <div className="col-span-2 md:col-span-1 flex flex-col items-center justify-center space-y-2">
+              <div className="flex gap-2 text-2xl animate-pulse">
+                <span>🇨🇦</span>
+                <span>🇦🇪</span>
+                <span>🇸🇦</span>
+                <span>🇮🇳</span>
+                <span>🇳🇬</span>
+              </div>
+              <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+                {language === "ar" ? "نخدم المتقدمين من" : "Serving Applicants From"}
+              </p>
             </div>
           </div>
         </div>

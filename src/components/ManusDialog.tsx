@@ -58,7 +58,7 @@ export function ManusDialog({
             <div className="w-16 h-16 bg-white rounded-xl border border-[rgba(0,0,0,0.08)] flex items-center justify-center">
               <Image
                 src={logo}
-                alt="Dialog graphic"
+                alt="App Logo"
                 width={40}
                 height={40}
                 className="rounded-md"

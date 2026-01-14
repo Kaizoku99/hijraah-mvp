@@ -1,6 +1,6 @@
 import { eq, and, gte, lte } from "drizzle-orm";
 import { getDb } from "./db";
-import { usageTracking, InsertUsageTracking } from "../drizzle/schema";
+import { usageTracking, InsertUsageTracking, users } from "../drizzle/schema";
 import { SUBSCRIPTION_TIERS, getTierById } from "./stripe-products";
 
 /**
@@ -105,6 +105,26 @@ export async function checkUsageLimit(
     return { allowed: true, remaining: "unlimited", limit: "unlimited" };
   }
 
+  // Check for test user override (test@hijraah.com)
+  const db = await getDb();
+  if (db) {
+    const userRecord = await db
+      .select({ email: users.email })
+      .from(users)
+      .where(eq(users.id, userId))
+      .limit(1);
+
+    if (
+      userRecord.length > 0 &&
+      userRecord[0].email
+    ) {
+      console.log(`[UsageCheck] Checking limit for: ${userRecord[0].email} (ID: ${userId})`);
+      if (userRecord[0].email.toLowerCase() === "test@hijraah.com") {
+        return { allowed: true, remaining: "unlimited", limit: "unlimited" };
+      }
+    }
+  }
+
   // No access
   if (limit === 0) {
     return { allowed: false, remaining: 0, limit: 0 };
@@ -139,34 +159,51 @@ export async function getUserUsageStats(userId: number, subscriptionTier: string
     return null;
   }
 
+  // Check for test user override (test@hijraah.com)
+  let isTestUser = false;
+  const db = await getDb();
+  if (db) {
+    const userRecord = await db
+      .select({ email: users.email })
+      .from(users)
+      .where(eq(users.id, userId))
+      .limit(1);
+
+    if (
+      userRecord.length > 0 &&
+      userRecord[0].email &&
+      userRecord[0].email.toLowerCase() === "test@hijraah.com"
+    ) {
+      isTestUser = true;
+    }
+  }
+
+  const getLimit = (limit: number | "unlimited") => (isTestUser ? "unlimited" : limit);
+  const getRemaining = (limit: number | "unlimited", used: number) => {
+    if (isTestUser || limit === "unlimited") return "unlimited";
+    return Math.max(0, limit - used);
+  };
+
   return {
     chat: {
       used: usage.chatMessagesCount,
-      limit: tier.limits.chatMessages,
-      remaining: tier.limits.chatMessages === "unlimited"
-        ? "unlimited"
-        : Math.max(0, (tier.limits.chatMessages as number) - usage.chatMessagesCount),
+      limit: getLimit(tier.limits.chatMessages),
+      remaining: getRemaining(tier.limits.chatMessages, usage.chatMessagesCount),
     },
     sop: {
       used: usage.sopGenerationsCount,
-      limit: tier.limits.sopGenerations,
-      remaining: tier.limits.sopGenerations === 999
-        ? "unlimited"
-        : Math.max(0, tier.limits.sopGenerations - usage.sopGenerationsCount),
+      limit: getLimit(tier.limits.sopGenerations),
+      remaining: getRemaining(tier.limits.sopGenerations, usage.sopGenerationsCount),
     },
     document: {
       used: usage.documentUploadsCount,
-      limit: tier.limits.documentChecklists,
-      remaining: tier.limits.documentChecklists === "unlimited"
-        ? "unlimited"
-        : Math.max(0, (tier.limits.documentChecklists as number) - usage.documentUploadsCount),
+      limit: getLimit(tier.limits.documentChecklists),
+      remaining: getRemaining(tier.limits.documentChecklists, usage.documentUploadsCount),
     },
     crs: {
       used: usage.crsCalculationsCount,
-      limit: tier.limits.crsCalculations,
-      remaining: tier.limits.crsCalculations === "unlimited"
-        ? "unlimited"
-        : Math.max(0, (tier.limits.crsCalculations as number) - usage.crsCalculationsCount),
+      limit: getLimit(tier.limits.crsCalculations),
+      remaining: getRemaining(tier.limits.crsCalculations, usage.crsCalculationsCount),
     },
     periodStart: usage.periodStart,
     periodEnd: usage.periodEnd,

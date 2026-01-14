@@ -7,8 +7,21 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { DocumentScanner } from "@/components/DocumentScanner";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { format } from "date-fns";
+import { ar, enUS } from "date-fns/locale";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   getChecklists,
@@ -36,6 +49,14 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
+// Proper types for checklist items
+interface ChecklistItem {
+  name: string;
+  description?: string;
+  status: 'pending' | 'uploaded' | 'verified' | 'completed';
+  documentId?: number;
+}
+
 export default function Documents() {
   const { logout } = useAuth();
   const { t, language } = useLanguage();
@@ -62,8 +83,13 @@ export default function Documents() {
       queryClient.invalidateQueries({ queryKey: ['documents', 'checklists'] });
       toast.success(language === "ar" ? "تم إنشاء قائمة المستندات" : "Checklist created successfully");
     },
-    onError: (error: any) => {
-      toast.error(error.message);
+    onError: (error: any, variables) => {
+      toast.error(error.message, {
+        action: {
+          label: language === "ar" ? "إعادة المحاولة" : "Retry",
+          onClick: () => generateChecklistMutation.mutate(variables),
+        },
+      });
     },
   });
 
@@ -90,8 +116,13 @@ export default function Documents() {
       queryClient.invalidateQueries({ queryKey: ['documents'] });
       toast.success(language === "ar" ? "تم رفع المستند" : "Document uploaded successfully");
     },
-    onError: (error: any) => {
-      toast.error(error.message);
+    onError: (error: any, variables) => {
+      toast.error(error.message, {
+        action: {
+          label: language === "ar" ? "إعادة المحاولة" : "Retry",
+          onClick: () => uploadDocumentMutation.mutate(variables),
+        },
+      });
     },
   });
 
@@ -118,7 +149,9 @@ export default function Documents() {
 
       // Check file size (max 10MB)
       if (file.size > 10 * 1024 * 1024) {
-        toast.error(language === "ar" ? "حجم الملف كبير جداً (الحد الأقصى 10 ميجابايت)" : "File too large (max 10MB)");
+        toast.error(language === "ar" ? "حجم الملف كبير جداً (الحد الأقصى 10 ميجابايت)" : "File too large (max 10MB)", {
+          description: language === "ar" ? "يرجى اختيار ملف أصغر" : "Please select a smaller file",
+        });
         return;
       }
 
@@ -159,7 +192,7 @@ export default function Documents() {
   };
 
   const selectedChecklist = checklistsQuery.data?.find((c) => c.id === selectedChecklistId);
-  const checklistItems = selectedChecklist?.items as any[] || [];
+  const checklistItems = selectedChecklist?.items as ChecklistItem[] || [];
 
   const completedCount = checklistItems.filter((item: any) => item.status === "verified").length;
   const totalCount = checklistItems.length;
@@ -221,12 +254,25 @@ export default function Documents() {
                   : "Generate your document checklist and upload your files"}
               </p>
             </div>
-            <Button variant="outline" className="gap-2" asChild>
-              <Link href="/documents/ocr">
-                <ScanLine className="h-4 w-4" />
-                {language === "ar" ? "مسح المستندات" : "Scan Documents"}
-              </Link>
-            </Button>
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="outline" className="gap-2">
+                  <ScanLine className="h-4 w-4" />
+                  {language === "ar" ? "مسح وترجمة" : "Scan & Translate"}
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-full sm:w-[600px] md:w-[800px] sm:max-w-none overflow-y-auto">
+                <SheetHeader className="mb-4">
+                  <SheetTitle>{language === "ar" ? "المسح الضوئي والترجمة" : "Scan & Translate"}</SheetTitle>
+                  <SheetDescription>
+                    {language === "ar"
+                      ? "استخدم الذكاء الاصطناعي لمسح المستندات واستخراج البيانات وترجمتها."
+                      : "Use AI to scan documents, extract data, and translate content."}
+                  </SheetDescription>
+                </SheetHeader>
+                <DocumentScanner />
+              </SheetContent>
+            </Sheet>
           </div>
 
           {/* Create New Checklist */}
@@ -320,7 +366,7 @@ export default function Documents() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {checklistsQuery.data.map((checklist) => {
-                  const items = checklist.items as any[];
+                  const items = checklist.items as ChecklistItem[];
                   const completed = items.filter((i: any) => i.status === "verified").length;
                   const total = items.length;
                   const percent = total > 0 ? (completed / total) * 100 : 0;
@@ -400,30 +446,101 @@ export default function Documents() {
                         </p>
                         <div className="flex items-center gap-2 mt-2">
                           {item.status === "pending" && (
-                            <Badge variant="outline" className="gap-1">
-                              <Clock className="h-3 w-3" />
-                              {language === "ar" ? "معلق" : "Pending"}
-                            </Badge>
+                            <HoverCard>
+                              <HoverCardTrigger>
+                                <Badge variant="outline" className="gap-1 cursor-help">
+                                  <Clock className="h-3 w-3" />
+                                  {language === "ar" ? "معلق" : "Pending"}
+                                </Badge>
+                              </HoverCardTrigger>
+                              <HoverCardContent className="w-80">
+                                <div className="space-y-1">
+                                  <h4 className="text-sm font-semibold">{language === "ar" ? "قيد المراجعة" : "Under Review"}</h4>
+                                  <p className="text-sm text-muted-foreground">
+                                    {language === "ar"
+                                      ? "مستندك قيد المراجعة حالياً. يستغرق هذا عادةً 24-48 ساعة."
+                                      : "Your document is currently being reviewed. This usually takes 24-48 hours."}
+                                  </p>
+                                </div>
+                              </HoverCardContent>
+                            </HoverCard>
                           )}
                           {item.status === "uploaded" && (
-                            <Badge variant="secondary" className="gap-1">
-                              <Upload className="h-3 w-3" />
-                              {language === "ar" ? "تم الرفع" : "Uploaded"}
-                            </Badge>
+                            <HoverCard>
+                              <HoverCardTrigger>
+                                <Badge variant="secondary" className="gap-1 cursor-help">
+                                  <Upload className="h-3 w-3" />
+                                  {language === "ar" ? "تم الرفع" : "Uploaded"}
+                                </Badge>
+                              </HoverCardTrigger>
+                              <HoverCardContent className="w-60">
+                                <p className="text-sm text-muted-foreground">
+                                  {language === "ar"
+                                    ? "تم رفع الملف بنجاح وبانتظار التحقق."
+                                    : "File uploaded successfully and pending verification."}
+                                </p>
+                              </HoverCardContent>
+                            </HoverCard>
                           )}
                           {item.status === "verified" && (
-                            <Badge variant="default" className="gap-1 bg-green-600">
-                              <CheckCircle2 className="h-3 w-3" />
-                              {language === "ar" ? "تم التحقق" : "Verified"}
-                            </Badge>
+                            <HoverCard>
+                              <HoverCardTrigger>
+                                <Badge variant="default" className="gap-1 bg-green-600 cursor-help">
+                                  <CheckCircle2 className="h-3 w-3" />
+                                  {language === "ar" ? "تم التحقق" : "Verified"}
+                                </Badge>
+                              </HoverCardTrigger>
+                              <HoverCardContent className="w-60">
+                                <div className="flex items-center gap-2">
+                                  <CheckCircle2 className="h-4 w-4 text-green-600" />
+                                  <p className="text-sm font-medium">
+                                    {language === "ar" ? "تم قبول المستند" : "Document Accepted"}
+                                  </p>
+                                </div>
+                                <p className="text-xs text-muted-foreground mt-1">
+                                  {format(new Date(), "PP", { locale: language === "ar" ? ar : enUS })}
+                                </p>
+                              </HoverCardContent>
+                            </HoverCard>
                           )}
                           {item.status === "rejected" && (
-                            <Badge variant="destructive" className="gap-1">
-                              <XCircle className="h-3 w-3" />
-                              {language === "ar" ? "مرفوض" : "Rejected"}
-                            </Badge>
+                            <Popover>
+                              <PopoverTrigger>
+                                <Badge variant="destructive" className="gap-1 cursor-pointer hover:bg-destructive/90">
+                                  <XCircle className="h-3 w-3" />
+                                  {language === "ar" ? "مرفوض" : "Rejected"}
+                                </Badge>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-80">
+                                <div className="space-y-2">
+                                  <h4 className="font-medium text-destructive flex items-center gap-2">
+                                    <XCircle className="h-4 w-4" />
+                                    {language === "ar" ? "سبب الرفض" : "Rejection Reason"}
+                                  </h4>
+                                  <p className="text-sm">
+                                    {language === "ar"
+                                      ? "الصورة غير واضحة أو منتهية الصلاحية. يرجى إعادة الرفع."
+                                      : "Image is blurry or document is expired. Please re-upload."}
+                                  </p>
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className="w-full mt-2"
+                                    onClick={() => handleFileUpload(item.documentType, selectedChecklist.id)}
+                                  >
+                                    <Upload className="h-3 w-3 mr-2" />
+                                    {language === "ar" ? "إعادة الرفع" : "Re-upload Document"}
+                                  </Button>
+                                </div>
+                              </PopoverContent>
+                            </Popover>
                           )}
                         </div>
+                        {item.status !== "uploaded" && (
+                          <div className="flex items-center gap-2 mt-2">
+                            {/* Placeholder to maintain spacing if needed, or remove if flex gap handles it */}
+                          </div>
+                        )}
                       </div>
                       <div className="flex flex-col gap-2">
                         <Button
@@ -444,7 +561,7 @@ export default function Documents() {
                             }
                           >
                             <CheckCircle2 className="h-4 w-4 mr-2" />
-                            {language === "ar" ? "تحقق" : "Verify"}
+                            {language === "ar" ? "جاهز" : "Mark as Ready"}
                           </Button>
                         )}
                       </div>

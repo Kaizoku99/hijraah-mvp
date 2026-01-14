@@ -2,6 +2,7 @@
 
 import { z } from 'zod'
 import { revalidatePath } from 'next/cache'
+import { unstable_cache } from 'next/cache'
 import {
     getPublishedGuides,
     getAllGuides,
@@ -18,6 +19,7 @@ import {
 } from '@/../server/guides'
 import { getAuthenticatedUser } from './auth'
 import { ActionError } from '@/lib/action-client'
+import { CACHE_TAGS, CACHE_DURATIONS, invalidateGuides } from '@/lib/cache'
 
 // Schemas
 const ListGuidesSchema = z.object({
@@ -83,15 +85,27 @@ export type CreateGuideInput = z.infer<typeof CreateGuideSchema>
 export type UpdateGuideInput = z.infer<typeof UpdateGuideSchema>
 
 /**
- * Get all published guides (public)
+ * Get all published guides (public) - CACHED
  */
+const getCachedPublishedGuides = unstable_cache(
+    async (category?: string, limit = 20, offset = 0) => {
+        return getPublishedGuides({ category, limit, offset })
+    },
+    ['published-guides'],
+    { tags: [CACHE_TAGS.GUIDES], revalidate: CACHE_DURATIONS.LONG }
+)
+
 export async function listGuides(input?: ListGuidesInput) {
     const validated = ListGuidesSchema.parse(input)
-    return getPublishedGuides(validated)
+    return getCachedPublishedGuides(
+        validated?.category,
+        validated?.limit ?? 20,
+        validated?.offset ?? 0
+    )
 }
 
 /**
- * Get all guides (admin)
+ * Get all guides (admin) - NOT CACHED (admin data)
  */
 export async function listAllGuides(input?: ListGuidesInput) {
     const user = await getAuthenticatedUser()
@@ -106,15 +120,23 @@ export async function listAllGuides(input?: ListGuidesInput) {
 }
 
 /**
- * Get guide by slug (public)
+ * Get guide by slug (public) - CACHED
  */
+const getCachedGuideBySlug = unstable_cache(
+    async (slug: string) => {
+        return getGuideBySlug(slug, true)
+    },
+    ['guide-by-slug'],
+    { tags: [CACHE_TAGS.GUIDES], revalidate: CACHE_DURATIONS.LONG }
+)
+
 export async function getGuide(input: z.infer<typeof BySlugSchema>) {
     const validated = BySlugSchema.parse(input)
-    return getGuideBySlug(validated.slug, true)
+    return getCachedGuideBySlug(validated.slug)
 }
 
 /**
- * Get guide by ID (admin)
+ * Get guide by ID (admin) - NOT CACHED (admin data)
  */
 export async function getGuideByIdAction(input: z.infer<typeof ByIdSchema>) {
     await getAuthenticatedUser()
@@ -123,14 +145,22 @@ export async function getGuideByIdAction(input: z.infer<typeof ByIdSchema>) {
 }
 
 /**
- * Get categories with counts
+ * Get categories with counts - CACHED
  */
+const getCachedCategories = unstable_cache(
+    async () => {
+        const counts = await getGuideCategoryCounts(true)
+        return {
+            categories: GUIDE_CATEGORIES,
+            counts,
+        }
+    },
+    ['guide-categories'],
+    { tags: [CACHE_TAGS.GUIDE_CATEGORIES], revalidate: CACHE_DURATIONS.LONG }
+)
+
 export async function getCategories() {
-    const counts = await getGuideCategoryCounts(true)
-    return {
-        categories: GUIDE_CATEGORIES,
-        counts,
-    }
+    return getCachedCategories()
 }
 
 /**
@@ -148,8 +178,12 @@ export async function createGuideAction(input: CreateGuideInput) {
     await getAuthenticatedUser()
     const validated = CreateGuideSchema.parse(input)
     const guide = await createGuide(validated)
+
+    // Invalidate caches
+    invalidateGuides()
     revalidatePath('/guides')
     revalidatePath('/admin/guides')
+
     return guide
 }
 
@@ -161,9 +195,13 @@ export async function updateGuideAction(input: UpdateGuideInput) {
     const validated = UpdateGuideSchema.parse(input)
     const { id, ...data } = validated
     const guide = await updateGuide(id, data)
+
+    // Invalidate caches
+    invalidateGuides()
     revalidatePath('/guides')
     revalidatePath('/admin/guides')
     revalidatePath(`/guides/${guide.slug}`)
+
     return guide
 }
 
@@ -174,8 +212,12 @@ export async function deleteGuideAction(input: z.infer<typeof ByIdSchema>) {
     await getAuthenticatedUser()
     const validated = ByIdSchema.parse(input)
     await deleteGuide(validated.id)
+
+    // Invalidate caches
+    invalidateGuides()
     revalidatePath('/guides')
     revalidatePath('/admin/guides')
+
     return { success: true }
 }
 
@@ -186,8 +228,12 @@ export async function toggleGuidePublishAction(input: z.infer<typeof TogglePubli
     await getAuthenticatedUser()
     const validated = TogglePublishSchema.parse(input)
     await toggleGuidePublish(validated.id, validated.isPublished)
+
+    // Invalidate caches
+    invalidateGuides()
     revalidatePath('/guides')
     revalidatePath('/admin/guides')
+
     return { success: true }
 }
 

@@ -50,7 +50,7 @@ export const SUBSCRIPTION_TIERS: Record<string, SubscriptionTier> = {
     limits: {
       chatMessages: 10,
       crsCalculations: 3,  // Allow 3 trial calculations
-      sopGenerations: 0,
+      sopGenerations: 1,   // Allow 1 trial SOP generation
       documentChecklists: 1,  // Allow 1 trial checklist
       whatsappSupport: false,
       prioritySupport: false,

@@ -306,13 +306,23 @@ export const MessageBranchPage = ({
 
 export type MessageResponseProps = ComponentProps<typeof Streamdown>;
 
+// Custom component to handle <suggestions> tag gracefully during streaming
+// The AI response may include <suggestions> tags which aren't valid HTML
+const SuggestionsHandler = () => null;
+
 export const MessageResponse = memo(
-  ({ className, ...props }: MessageResponseProps) => (
+  ({ className, components, ...props }: MessageResponseProps) => (
     <Streamdown
       className={cn(
         "size-full [&>*:first-child]:mt-0 [&>*:last-child]:mb-0",
         className
       )}
+      components={{
+        // Handle the custom <suggestions> tag by rendering nothing
+        // This prevents "unrecognized tag" warnings during streaming
+        ...components,
+        ...({ suggestions: SuggestionsHandler } as Record<string, React.ComponentType>),
+      }}
       {...props}
     />
   ),

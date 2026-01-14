@@ -69,6 +69,53 @@ export async function deleteDocumentChecklist(checklistId: number) {
   await db.delete(documentChecklists).where(eq(documentChecklists.id, checklistId));
 }
 
+/**
+ * Mark a specific checklist item as verified based on document type
+ */
+export async function markChecklistItemVerified(
+  userId: number,
+  documentItemId: string
+): Promise<boolean> {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  // Get user's checklists
+  const checklists = await db
+    .select()
+    .from(documentChecklists)
+    .where(eq(documentChecklists.userId, userId));
+
+  if (checklists.length === 0) {
+    console.log(`[Checklist] No checklists found for user ${userId}`);
+    return false;
+  }
+
+  // Update the matching item in each checklist
+  let updated = false;
+  for (const checklist of checklists) {
+    const items = checklist.items as ChecklistItem[];
+    const itemIndex = items.findIndex(
+      (item) => item.id === documentItemId || item.id.startsWith(`${documentItemId}_`)
+    );
+
+    if (itemIndex !== -1 && items[itemIndex].status !== "verified") {
+      items[itemIndex].status = "verified";
+
+      await db
+        .update(documentChecklists)
+        .set({ items: items, updatedAt: new Date() })
+        .where(eq(documentChecklists.id, checklist.id));
+
+      console.log(`[Checklist] Marked item "${items[itemIndex].title}" as verified for user ${userId}`);
+      updated = true;
+    }
+  }
+
+  return updated;
+}
+
 // Document functions
 export async function createDocument(document: InsertDocument): Promise<number> {
   const db = await getDb();

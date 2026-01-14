@@ -229,3 +229,65 @@ export async function deleteSop(input: z.infer<typeof SopIdSchema>) {
 
     return { success: true as const }
 }
+
+const RegenerateSectionSchema = z.object({
+    sopId: z.number(),
+    section: z.enum(['introduction', 'body', 'conclusion']),
+})
+
+/**
+ * Regenerate a specific section of the SOP
+ */
+export async function regenerateSopSection(input: z.infer<typeof RegenerateSectionSchema>) {
+    const user = await getAuthenticatedUser()
+    const validated = RegenerateSectionSchema.parse(input)
+
+    const sop = await getSopGeneration(validated.sopId)
+
+    if (!sop || sop.userId !== user.id) {
+        throw new ActionError('SOP not found', 'NOT_FOUND')
+    }
+
+    const currentContent = sop.generatedSop || ''
+
+    // Split content into sections (rough heuristic: first paragraph = intro, last = conclusion)
+    const paragraphs = currentContent.split(/\n\n+/).filter((p: string) => p.trim())
+
+    const sectionPrompts: Record<string, string> = {
+        introduction: `Rewrite ONLY the introduction paragraph of this SOP to be more engaging and compelling. Keep it concise (2-3 sentences max). Original SOP: ${currentContent}`,
+        body: `Rewrite the main body paragraphs of this SOP to be more detailed and persuasive. Original SOP: ${currentContent}`,
+        conclusion: `Rewrite ONLY the conclusion paragraph of this SOP to be more impactful and memorable. Keep it concise. Original SOP: ${currentContent}`,
+    }
+
+    const response = await generateChatResponse({
+        messages: [{ role: 'user', content: sectionPrompts[validated.section] } as any],
+        systemInstruction: `You are an expert immigration consultant. Return ONLY the ${validated.section} section, nothing else. Do not include any explanations or labels.`,
+        maxOutputTokens: 1024,
+    })
+
+    // Reconstruct the SOP with the regenerated section
+    let newContent = currentContent
+    if (validated.section === 'introduction' && paragraphs.length > 0) {
+        newContent = response + '\n\n' + paragraphs.slice(1).join('\n\n')
+    } else if (validated.section === 'conclusion' && paragraphs.length > 0) {
+        newContent = paragraphs.slice(0, -1).join('\n\n') + '\n\n' + response
+    } else {
+        // For body, we replace everything except first and last paragraphs
+        if (paragraphs.length > 2) {
+            newContent = paragraphs[0] + '\n\n' + response + '\n\n' + paragraphs[paragraphs.length - 1]
+        } else {
+            newContent = response
+        }
+    }
+
+    await updateSopGeneration(validated.sopId, {
+        generatedSop: newContent,
+        version: (sop.version || 1) + 1,
+        status: 'revised',
+    })
+
+    revalidatePath('/sop')
+
+    return { content: newContent, section: validated.section }
+}
+

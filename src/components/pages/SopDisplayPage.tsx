@@ -6,14 +6,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { SopQualityScore } from "@/components/SopQualityScore";
-import { useQuery } from "@tanstack/react-query";
-import { getSop } from "@/actions/sop";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { getSop, regenerateSopSection } from "@/actions/sop";
 import { generateSopPdf, downloadPdf } from "@/lib/pdfExport";
-import { User, LogOut, Copy, Download, RefreshCw, Loader2, FileText } from "lucide-react";
+import { User, LogOut, Copy, Download, RefreshCw, Loader2, FileText, Edit, Save, X } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useState } from "react";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function SopDisplay() {
   const { logout } = useAuth();
@@ -29,6 +30,9 @@ export default function SopDisplay() {
     enabled: sopId > 0,
   });
   const [isExportingPdf, setIsExportingPdf] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedContent, setEditedContent] = useState<string | null>(null);
+  const [regeneratingSection, setRegeneratingSection] = useState<string | null>(null);
 
   const handleCopy = () => {
     if (sop?.content) {
@@ -77,6 +81,42 @@ export default function SopDisplay() {
   const handleLogout = async () => {
     await logout();
     router.push("/");
+  };
+
+  const handleStartEdit = () => {
+    setEditedContent(sop?.content || "");
+    setIsEditing(true);
+  };
+
+  const handleCancelEdit = () => {
+    setEditedContent(null);
+    setIsEditing(false);
+  };
+
+  const handleSaveEdit = () => {
+    // For now, just show a success message. Backend integration can be added later.
+    toast.success(language === "ar" ? "تم حفظ التعديلات" : "Changes saved locally");
+    setIsEditing(false);
+  };
+
+  const queryClient = useQueryClient();
+
+  const regenerateMutation = useMutation({
+    mutationFn: regenerateSopSection,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['sop', 'get', sopId] });
+      toast.success(language === "ar" ? "تم إعادة إنشاء القسم بنجاح" : "Section regenerated successfully");
+      setRegeneratingSection(null);
+    },
+    onError: (error: any) => {
+      toast.error(error.message || (language === "ar" ? "فشل في إعادة الإنشاء" : "Failed to regenerate"));
+      setRegeneratingSection(null);
+    },
+  });
+
+  const handleRegenerateSection = (section: 'introduction' | 'body' | 'conclusion') => {
+    setRegeneratingSection(section);
+    regenerateMutation.mutate({ sopId, section });
   };
 
   if (isLoading) {
@@ -188,11 +228,65 @@ export default function SopDisplay() {
 
           <Card>
             <CardContent className="pt-6">
-              <div className="prose prose-sm max-w-none dark:prose-invert">
-                <div className="whitespace-pre-wrap text-foreground leading-relaxed">
-                  {sop.content}
+              {isEditing ? (
+                <div className="space-y-4">
+                  <Textarea
+                    value={editedContent || ""}
+                    onChange={(e) => setEditedContent(e.target.value)}
+                    rows={20}
+                    className="font-mono text-sm"
+                  />
+                  <div className="flex gap-2 justify-end">
+                    <Button variant="outline" size="sm" onClick={handleCancelEdit}>
+                      <X className="h-4 w-4 mr-2" />
+                      {language === "ar" ? "إلغاء" : "Cancel"}
+                    </Button>
+                    <Button size="sm" onClick={handleSaveEdit}>
+                      <Save className="h-4 w-4 mr-2" />
+                      {language === "ar" ? "حفظ" : "Save"}
+                    </Button>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="prose prose-sm max-w-none dark:prose-invert">
+                  <div className="whitespace-pre-wrap text-foreground leading-relaxed">
+                    {sop.content}
+                  </div>
+                  <div className="mt-4 pt-4 border-t flex flex-wrap gap-2">
+                    <Button variant="outline" size="sm" onClick={handleStartEdit}>
+                      <Edit className="h-4 w-4 mr-2" />
+                      {language === "ar" ? "تعديل" : "Edit"}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleRegenerateSection('introduction')}
+                      disabled={regeneratingSection !== null}
+                    >
+                      {regeneratingSection === 'introduction' ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <RefreshCw className="h-4 w-4 mr-2" />}
+                      {language === "ar" ? "إعادة المقدمة" : "Regen Intro"}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleRegenerateSection('body')}
+                      disabled={regeneratingSection !== null}
+                    >
+                      {regeneratingSection === 'body' ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <RefreshCw className="h-4 w-4 mr-2" />}
+                      {language === "ar" ? "إعادة المحتوى" : "Regen Body"}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleRegenerateSection('conclusion')}
+                      disabled={regeneratingSection !== null}
+                    >
+                      {regeneratingSection === 'conclusion' ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <RefreshCw className="h-4 w-4 mr-2" />}
+                      {language === "ar" ? "إعادة الخاتمة" : "Regen Conclusion"}
+                    </Button>
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
 

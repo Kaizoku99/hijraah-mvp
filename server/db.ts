@@ -172,6 +172,21 @@ export async function updateUserSubscription(
   }).where(eq(users.id, userId));
 }
 
+export async function updateUserBasicInfo(userId: number, updates: { name?: string; email?: string }) {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  const cleanUpdates: any = {};
+  if (updates.name !== undefined) cleanUpdates.name = updates.name;
+  if (updates.email !== undefined) cleanUpdates.email = updates.email;
+
+  if (Object.keys(cleanUpdates).length === 0) return;
+
+  await db.update(users).set(cleanUpdates).where(eq(users.id, userId));
+}
+
 // Chat conversation functions
 export async function createConversation(conversation: InsertConversation): Promise<number> {
   const db = await getDb();

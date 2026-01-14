@@ -28,16 +28,197 @@ import {
   CheckCircle2,
   Clock,
   AlertCircle,
+  ArrowRightCircle,
+  Sparkles,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
+import OnboardingWizard, { isOnboardingComplete } from "@/components/OnboardingWizard";
+import { ImmigrationJourney } from "@/components/ImmigrationJourney";
+import { useState, useEffect } from "react";
+
+// Proper type for checklist items
+interface ChecklistItem {
+  name: string;
+  status: 'pending' | 'uploaded' | 'verified' | 'completed';
+}
+
+function DashboardFocusCard({
+  profileCompletion,
+  hasCrsScore,
+  docCompletion,
+  language,
+  router
+}: {
+  profileCompletion: number;
+  hasCrsScore: boolean;
+  docCompletion: { completed: number; total: number };
+  language: string;
+  router: any
+}) {
+  // Determine user state
+  let state: 'profile' | 'crs' | 'documents' | 'complete' = 'profile';
+
+  if (profileCompletion < 100) {
+    state = 'profile';
+  } else if (!hasCrsScore) {
+    state = 'crs';
+  } else if (docCompletion.total > 0 && docCompletion.completed < docCompletion.total) {
+    state = 'documents';
+  } else {
+    state = 'complete';
+  }
+
+  const content = {
+    profile: {
+      title: language === "ar" ? "أكمل ملفك الشخصي" : "Complete Your Profile",
+      description: language === "ar"
+        ? `أنت في منتصف الطريق! إكمال ملفك الشخصي يزيد من دقة حساب نقاط CRS.`
+        : `You are ${profileCompletion}% there. completing your profile improves CRS score accuracy.`,
+      action: language === "ar" ? "الذهاب للملف الشخصي" : "Go to Profile",
+      icon: User,
+      href: "/profile",
+      color: "text-blue-600",
+      bg: "bg-blue-50/50"
+    },
+    crs: {
+      title: language === "ar" ? "احسب نقاط CRS" : "Calculate Your CRS Score",
+      description: language === "ar"
+        ? "اكتشف مدى أهليتك للهجرة إلى كندا الآن."
+        : "Find out your eligibility for Canadian immigration right now.",
+      action: language === "ar" ? "بدء الحساب" : "Start Calculator",
+      icon: Calculator,
+      href: "/tools/crs",
+      color: "text-purple-600",
+      bg: "bg-purple-50/50"
+    },
+    documents: {
+      title: language === "ar" ? "رفع المستندات المطلوبة" : "Upload Required Documents",
+      description: language === "ar"
+        ? `لديك ${docCompletion.total - docCompletion.completed} مستندات بانتظار الرفع.`
+        : `You have ${docCompletion.total - docCompletion.completed} pending documents to upload.`,
+      action: language === "ar" ? "عرض القائمة" : "View Checklist",
+      icon: FileText,
+      href: "/documents",
+      color: "text-amber-600",
+      bg: "bg-amber-50/50"
+    },
+    complete: {
+      title: language === "ar" ? "أنت جاهز للتقديم!" : "You're Ready to Apply",
+      description: language === "ar"
+        ? "تحدث مع مساعدنا الذكي للبدء في إجراءات التقديم."
+        : "Talk to our AI assistant to guide you through the submission process.",
+      action: language === "ar" ? "تحدث مع هجرة" : "Talk to Hijraah AI",
+      icon: Sparkles,
+      href: "/chat",
+      color: "text-green-600",
+      bg: "bg-green-50/50"
+    }
+  }[state];
+
+  return (
+    <Card className={`mb-6 border-l-4 ${content.bg} overflow-hidden`} style={{ borderLeftColor: 'currentColor' }}>
+      <div className={`${content.color}`}>
+        <CardHeader className="pb-3">
+          <div className="flex items-start justify-between">
+            <div className="space-y-1">
+              <CardTitle className="text-xl flex items-center gap-2">
+                <content.icon className="h-6 w-6" />
+                {content.title}
+              </CardTitle>
+              <CardDescription className="text-base">
+                {content.description}
+              </CardDescription>
+            </div>
+            <Button onClick={() => router.push(content.href)} className="shrink-0 gap-2">
+              {content.action}
+              {language === "ar" ? <ArrowRightCircle className="h-4 w-4 rotate-180" /> : <ArrowRightCircle className="h-4 w-4" />}
+            </Button>
+          </div>
+        </CardHeader>
+      </div>
+    </Card>
+  );
+}
+
+function PricingRecommendation({
+  sopsCount,
+  chatCount,
+  checklistCount,
+  language,
+}: {
+  sopsCount: number;
+  chatCount: number;
+  checklistCount: number;
+  language: string;
+}) {
+  // Determine recommended tier based on usage
+  let recommendedTier: 'free' | 'essential' | 'premium' = 'free';
+  let reason = '';
+
+  if (sopsCount > 1 || chatCount > 30) {
+    recommendedTier = 'premium';
+    reason = language === "ar"
+      ? "استخدامك يتجاوز الخطة الأساسية. Premium يمنحك SOPs غير محدودة!"
+      : "Your usage exceeds Essential. Premium gives you unlimited SOPs!";
+  } else if (sopsCount > 0 || chatCount > 15 || checklistCount > 2) {
+    recommendedTier = 'essential';
+    reason = language === "ar"
+      ? "للحصول على المزيد من الرسائل والمستندات، جرّب الخطة الأساسية."
+      : "For more messages and documents, try the Essential plan.";
+  } else {
+    return null; // Free tier user with low usage - don't show recommendation
+  }
+
+  const tierInfo = {
+    essential: {
+      name: language === "ar" ? "أساسي" : "Essential",
+      price: "$29",
+      color: "border-blue-500 bg-blue-50/50"
+    },
+    premium: {
+      name: language === "ar" ? "مميز" : "Premium",
+      price: "$79",
+      color: "border-purple-500 bg-purple-50/50"
+    }
+  }[recommendedTier];
+
+  return (
+    <Card className={`mb-6 border-l-4 ${tierInfo?.color}`}>
+      <CardHeader className="pb-2">
+        <CardTitle className="text-sm flex items-center gap-2">
+          <Crown className="h-4 w-4 text-amber-500" />
+          {language === "ar" ? "ترقية مقترحة" : "Recommended Upgrade"}
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="flex items-center justify-between">
+        <div>
+          <p className="text-sm text-muted-foreground">{reason}</p>
+        </div>
+        <Link href="/pricing">
+          <Button size="sm" variant="outline">
+            {tierInfo?.name} - {tierInfo?.price}/{language === "ar" ? "شهر" : "mo"}
+          </Button>
+        </Link>
+      </CardContent>
+    </Card>
+  );
+}
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
   const { t, language } = useLanguage();
   const router = useRouter();
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
+  // Check for first-time user on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined' && !isOnboardingComplete()) {
+      setShowOnboarding(true);
+    }
+  }, []);
 
   const { data: profile, isLoading: profileLoading } = useQuery({
     queryKey: ['profile', 'get'],
@@ -209,6 +390,21 @@ export default function Dashboard() {
             </p>
           </div>
 
+          <DashboardFocusCard
+            profileCompletion={profileCompletion}
+            hasCrsScore={!!latestCrs}
+            docCompletion={docCompletion}
+            language={language}
+            router={router}
+          />
+
+          <PricingRecommendation
+            sopsCount={sops?.length || 0}
+            chatCount={conversations?.length || 0}
+            checklistCount={checklists?.length || 0}
+            language={language}
+          />
+
           {/* Stats Overview */}
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* CRS Score Card */}
@@ -242,7 +438,7 @@ export default function Dashboard() {
                     <span className="text-2xl font-bold text-muted-foreground">—</span>
                     <Link href="/calculator">
                       <Button variant="link" className="p-0 h-auto block mt-1 text-xs">
-                        {language === "ar" ? "احسب الآن" : "Calculate Now"} →
+                        {language === "ar" ? "احسب الآن" : "Calculate Now"} {language === "ar" ? "←" : "→"}
                       </Button>
                     </Link>
                   </div>
@@ -272,7 +468,7 @@ export default function Dashboard() {
                 )}
                 <Link href="/documents">
                   <Button variant="link" className="p-0 h-auto block mt-1 text-xs">
-                    {language === "ar" ? "إدارة المستندات" : "Manage"} →
+                    {language === "ar" ? "إدارة المستندات" : "Manage"} {language === "ar" ? "←" : "→"}
                   </Button>
                 </Link>
               </CardContent>
@@ -295,7 +491,7 @@ export default function Dashboard() {
                 </div>
                 <Link href="/sop">
                   <Button variant="link" className="p-0 h-auto block mt-1 text-xs">
-                    {sops?.length ? (language === "ar" ? "عرض الكل" : "View All") : (language === "ar" ? "إنشاء جديد" : "Create New")} →
+                    {sops?.length ? (language === "ar" ? "عرض الكل" : "View All") : (language === "ar" ? "إنشاء جديد" : "Create New")} {language === "ar" ? "←" : "→"}
                   </Button>
                 </Link>
               </CardContent>
@@ -317,7 +513,7 @@ export default function Dashboard() {
                 {profileCompletion < 100 && (
                   <Link href="/profile">
                     <Button variant="link" className="p-0 h-auto block mt-1 text-xs">
-                      {language === "ar" ? "أكمل الملف" : "Complete"} →
+                      {language === "ar" ? "أكمل الملف" : "Complete"} {language === "ar" ? "←" : "→"}
                     </Button>
                   </Link>
                 )}
@@ -372,7 +568,7 @@ export default function Dashboard() {
                 <Link href="/profile">
                   <Button className="gap-2">
                     {language === "ar" ? "أكمل الملف الشخصي" : "Complete Profile"}
-                    <ArrowRight className="h-4 w-4" />
+                    <ArrowRight className={`h-4 w-4 ${language === "ar" ? "rotate-180" : ""}`} />
                   </Button>
                 </Link>
               </CardContent>
@@ -446,86 +642,28 @@ export default function Dashboard() {
               </CardContent>
             </Card>
 
-            {/* Next Steps */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Clock className="h-5 w-5" />
-                  {t("dashboard.nextSteps")}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {(!profile || profileCompletion < 100) && (
-                    <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/50">
-                      <div className="h-6 w-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold flex-shrink-0">
-                        1
-                      </div>
-                      <div className="flex-1">
-                        <p className="font-medium">
-                          {language === "ar" ? "أكمل ملفك الشخصي" : "Complete your profile"}
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          {profileCompletion}% {language === "ar" ? "مكتمل" : "complete"}
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                  {!latestCrs && (
-                    <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/50">
-                      <div className="h-6 w-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold flex-shrink-0">
-                        {(!profile || profileCompletion < 100) ? "2" : "1"}
-                      </div>
-                      <div className="flex-1">
-                        <p className="font-medium">
-                          {language === "ar" ? "احسب نقاط CRS الخاصة بك" : "Calculate your CRS score"}
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          {language === "ar"
-                            ? "اكتشف أهليتك لنظام الدخول السريع"
-                            : "Discover your eligibility for Express Entry"}
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                  {docCompletion.total === 0 && (
-                    <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/50">
-                      <div className="h-6 w-6 rounded-full bg-muted text-muted-foreground flex items-center justify-center text-sm font-bold flex-shrink-0">
-                        {(!profile || profileCompletion < 100) ? "3" : latestCrs ? "1" : "2"}
-                      </div>
-                      <div className="flex-1">
-                        <p className="font-medium">
-                          {language === "ar" ? "جهز مستنداتك" : "Prepare your documents"}
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          {language === "ar"
-                            ? "احصل على قائمة مخصصة بالمستندات المطلوبة"
-                            : "Get a personalized list of required documents"}
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                  {profileCompletion === 100 && latestCrs && docCompletion.total > 0 && (
-                    <div className="flex items-center gap-3 p-3 rounded-lg bg-green-50 dark:bg-green-950/20">
-                      <CheckCircle2 className="h-6 w-6 text-green-600" />
-                      <div className="flex-1">
-                        <p className="font-medium text-green-900 dark:text-green-100">
-                          {language === "ar" ? "أنت على المسار الصحيح!" : "You're on track!"}
-                        </p>
-                        <p className="text-sm text-green-800 dark:text-green-200">
-                          {language === "ar"
-                            ? "استمر في تحديث مستنداتك وتحسين نقاطك"
-                            : "Keep updating your documents and improving your score"}
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
+            {/* Next Steps / Journey */}
+            <ImmigrationJourney
+              profileCompletion={profileCompletion}
+              hasCrsScore={!!latestCrs}
+              documentsUploaded={docCompletion.completed}
+              totalDocuments={docCompletion.total}
+            />
           </div>
         </div>
       </main>
+
+      {/* Onboarding Wizard for first-time users */}
+      {showOnboarding && (
+        <OnboardingWizard
+          onComplete={() => {
+            setShowOnboarding(false);
+            router.push("/calculator");
+          }}
+          onSkip={() => setShowOnboarding(false)}
+          existingProfile={profile}
+        />
+      )}
     </div>
   );
 }

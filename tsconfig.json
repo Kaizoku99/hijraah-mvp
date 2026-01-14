@@ -24,6 +24,9 @@
     ],
     "baseUrl": ".",
     "paths": {
+      "mem0ai/oss": [
+        "./node_modules/mem0ai/dist/oss/index.d.ts"
+      ],
       "@/*": [
         "./src/*"
       ],

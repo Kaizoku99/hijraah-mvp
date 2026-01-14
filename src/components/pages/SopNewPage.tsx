@@ -8,19 +8,31 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageToggle } from "@/components/LanguageToggle";
-import { useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { generateSop } from "@/actions/sop";
+import { getProfile } from "@/actions/profile";
 import { FileText, User, LogOut, Loader2, ArrowRight, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
+import { useDebounce } from "@/hooks/useDebounce";
+import { cn } from "@/lib/utils";
+
+const SOP_DRAFT_KEY = "hijraah_sop_draft";
+const MIN_CHAR_COUNT = 100;
 
 export default function SopNew() {
   const { logout } = useAuth();
   const { t, language } = useLanguage();
   const router = useRouter();
   const [step, setStep] = useState(1);
+  const [generationStep, setGenerationStep] = useState<string | null>(null);
+
+  const { data: profile } = useQuery({
+    queryKey: ['profile', 'get'],
+    queryFn: getProfile,
+  });
 
   const [formData, setFormData] = useState({
     background: "",
@@ -36,9 +48,82 @@ export default function SopNew() {
     targetInstitution: "",
   });
 
+  const debouncedFormData = useDebounce(formData, 1000);
+
+  // Load draft from localStorage
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem(SOP_DRAFT_KEY);
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          // Only merge if not empty to avoid overwriting state if initialized differently
+          if (Object.keys(parsed).length > 0) {
+            setFormData(prev => ({ ...prev, ...parsed }));
+            toast.info(language === "ar" ? "تم استعادة المسودة" : "Draft restored");
+          }
+        } catch { }
+      }
+    }
+  }, [language]);
+
+  // Pre-fill from profile if fields are empty and no draft was loaded (simplified check)
+  useEffect(() => {
+    if (profile && !localStorage.getItem(SOP_DRAFT_KEY)) {
+      setFormData(prev => {
+        const newData = { ...prev };
+        let changed = false;
+
+        if (!newData.education && profile.educationLevel) {
+          newData.education = language === "ar"
+            ? `أحمل شهادة ${profile.educationLevel} في تخصص ${profile.fieldOfStudy || ""}...`
+            : `I hold a ${profile.educationLevel} degree in ${profile.fieldOfStudy || ""}...`;
+          changed = true;
+        }
+
+        if (!newData.workExperience && profile.currentOccupation) {
+          newData.workExperience = language === "ar"
+            ? `أعمل حالياً كـ ${profile.currentOccupation} ولدي ${profile.yearsOfExperience || 0} سنوات خبرة...`
+            : `I am currently working as a ${profile.currentOccupation} with ${profile.yearsOfExperience || 0} years of experience...`;
+          changed = true;
+        }
+
+        return changed ? newData : prev;
+      });
+    }
+  }, [profile, language]);
+
+  // Autosave
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      // Don't save empty state
+      const hasData = Object.values(debouncedFormData).some(v => v.length > 0);
+      if (hasData) {
+        localStorage.setItem(SOP_DRAFT_KEY, JSON.stringify(debouncedFormData));
+      }
+    }
+  }, [debouncedFormData]);
+
+  const generationSteps = [
+    language === "ar" ? "تحليل الخلفية..." : "Analyzing background...",
+    language === "ar" ? "إنشاء المقدمة..." : "Creating introduction...",
+    language === "ar" ? "كتابة المحتوى..." : "Writing body content...",
+    language === "ar" ? "إضافة الخاتمة..." : "Adding conclusion...",
+    language === "ar" ? "المراجعة النهائية..." : "Final review...",
+  ];
+
   const generateMutation = useMutation({
-    mutationFn: generateSop,
+    mutationFn: async (data: Parameters<typeof generateSop>[0]) => {
+      // Simulate progress steps
+      for (let i = 0; i < generationSteps.length; i++) {
+        setGenerationStep(generationSteps[i]);
+        await new Promise(resolve => setTimeout(resolve, 800));
+      }
+      setGenerationStep(null);
+      return generateSop(data);
+    },
     onSuccess: (data) => {
+      localStorage.removeItem(SOP_DRAFT_KEY);
       toast.success(language === "ar" ? "تم إنشاء خطاب النوايا بنجاح" : "SOP generated successfully");
       router.push(`/sop/${data.sopId}`);
     },
@@ -52,11 +137,14 @@ export default function SopNew() {
   };
 
   const handleGenerate = () => {
-    if (!formData.background || !formData.whyCanada || !formData.careerGoals) {
+    const requiredFields = ['background', 'whyCanada', 'careerGoals', 'education', 'workExperience'];
+    const missing = requiredFields.filter(f => !formData[f as keyof typeof formData]);
+
+    if (missing.length > 0) {
       toast.error(
         language === "ar"
-          ? "يرجى ملء جميع الحقول المطلوبة"
-          : "Please fill in all required fields"
+          ? "يرجى ملء جميع الحقول المطلوبة بمحتوى كافٍ"
+          : "Please fill in all required fields with sufficient content"
       );
       return;
     }
@@ -82,6 +170,57 @@ export default function SopNew() {
     router.push("/");
   };
 
+  const CharCount = ({ text, min = MIN_CHAR_COUNT }: { text: string, min?: number }) => {
+    const count = text.length;
+    return (
+      <div className={cn("text-xs text-right mt-1", count < min ? "text-amber-500" : "text-green-500")}>
+        {count} / {min} {language === "ar" ? "حرف (مستحسن)" : "chars (recommended)"}
+      </div>
+    );
+  };
+
+  // AI Prompt Suggestions based on profile
+  const getSuggestions = (field: string): string[] => {
+    const suggestions: Record<string, { ar: string[], en: string[] }> = {
+      background: {
+        ar: ["ابدأ بذكر مكان نشأتك وعائلتك", "اذكر ما شكّل شخصيتك", "صف اهتماماتك المبكرة"],
+        en: ["Start with where you grew up", "Mention what shaped your character", "Describe your early interests"]
+      },
+      education: {
+        ar: ["اذكر شهاداتك الجامعية", "صف تخصصك الأكاديمي", "اذكر أي إنجازات أكاديمية"],
+        en: ["State your university degrees", "Describe your major", "Mention academic achievements"]
+      },
+      whyCanada: {
+        ar: ["تحدث عن الفرص في كندا", "اذكر جودة المعيشة", "صف البيئة المتعددة الثقافات"],
+        en: ["Discuss opportunities in Canada", "Mention quality of life", "Describe multicultural environment"]
+      },
+      careerGoals: {
+        ar: ["حدد أهدافك على المدى القريب والبعيد", "اربط أهدافك بكندا"],
+        en: ["Define short and long-term goals", "Connect your goals to Canada"]
+      }
+    };
+    return suggestions[field]?.[language as 'ar' | 'en'] || [];
+  };
+
+  const SuggestionChips = ({ field, onClick }: { field: string, onClick: (text: string) => void }) => {
+    const suggestions = getSuggestions(field);
+    if (suggestions.length === 0) return null;
+    return (
+      <div className="flex flex-wrap gap-2 mt-2">
+        {suggestions.map((s, i) => (
+          <button
+            key={i}
+            type="button"
+            onClick={() => onClick(s)}
+            className="text-xs px-2 py-1 rounded-full bg-secondary hover:bg-secondary/80 transition-colors"
+          >
+            💡 {s}
+          </button>
+        ))}
+      </div>
+    );
+  };
+
   const renderStep1 = () => (
     <div className="space-y-6">
       <div>
@@ -100,11 +239,13 @@ export default function SopNew() {
           rows={5}
           className="mt-2"
         />
+        <CharCount text={formData.background} />
+        <SuggestionChips field="background" onClick={(s) => handleChange("background", formData.background + " " + s)} />
       </div>
 
       <div>
         <Label htmlFor="education">
-          {language === "ar" ? "تعليمك" : "Your Education"}
+          {language === "ar" ? "تعليمك *" : "Your Education *"}
         </Label>
         <Textarea
           id="education"
@@ -118,11 +259,13 @@ export default function SopNew() {
           rows={4}
           className="mt-2"
         />
+        <CharCount text={formData.education} />
+        <SuggestionChips field="education" onClick={(s) => handleChange("education", formData.education + " " + s)} />
       </div>
 
       <div>
         <Label htmlFor="workExperience">
-          {language === "ar" ? "خبرتك العملية" : "Your Work Experience"}
+          {language === "ar" ? "خبرتك العملية *" : "Your Work Experience *"}
         </Label>
         <Textarea
           id="workExperience"
@@ -136,6 +279,7 @@ export default function SopNew() {
           rows={4}
           className="mt-2"
         />
+        <CharCount text={formData.workExperience} />
       </div>
 
       <div>
@@ -154,6 +298,7 @@ export default function SopNew() {
           rows={3}
           className="mt-2"
         />
+        <CharCount text={formData.motivation} min={50} />
       </div>
     </div>
   );
@@ -176,6 +321,8 @@ export default function SopNew() {
           rows={5}
           className="mt-2"
         />
+        <CharCount text={formData.whyCanada} />
+        <SuggestionChips field="whyCanada" onClick={(s) => handleChange("whyCanada", formData.whyCanada + " " + s)} />
       </div>
 
       <div>
@@ -194,6 +341,8 @@ export default function SopNew() {
           rows={4}
           className="mt-2"
         />
+        <CharCount text={formData.careerGoals} />
+        <SuggestionChips field="careerGoals" onClick={(s) => handleChange("careerGoals", formData.careerGoals + " " + s)} />
       </div>
 
       <div>
@@ -250,6 +399,7 @@ export default function SopNew() {
           rows={4}
           className="mt-2"
         />
+        <CharCount text={formData.whyThisProgram} min={50} />
       </div>
 
       <div>
@@ -268,6 +418,7 @@ export default function SopNew() {
           rows={4}
           className="mt-2"
         />
+        <CharCount text={formData.uniqueStrengths} min={50} />
       </div>
 
       <div>
@@ -286,6 +437,7 @@ export default function SopNew() {
           rows={4}
           className="mt-2"
         />
+        <CharCount text={formData.challenges} min={50} />
       </div>
     </div>
   );
@@ -321,7 +473,6 @@ export default function SopNew() {
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="flex-1 container py-8">
         <div className="max-w-3xl mx-auto">
           <div className="mb-8">
@@ -374,7 +525,7 @@ export default function SopNew() {
               <div className="flex items-center justify-between mt-8">
                 {step > 1 ? (
                   <Button variant="outline" onClick={() => setStep(step - 1)}>
-                    <ArrowLeft className="h-4 w-4 mr-2" />
+                    <ArrowLeft className={cn("h-4 w-4 mr-2", language === "ar" && "rotate-180")} />
                     {language === "ar" ? "السابق" : "Previous"}
                   </Button>
                 ) : (
@@ -384,7 +535,7 @@ export default function SopNew() {
                 {step < 3 ? (
                   <Button onClick={() => setStep(step + 1)}>
                     {language === "ar" ? "التالي" : "Next"}
-                    <ArrowRight className="h-4 w-4 ml-2" />
+                    <ArrowRight className={cn("h-4 w-4 ml-2", language === "ar" && "rotate-180")} />
                   </Button>
                 ) : (
                   <Button
@@ -394,7 +545,7 @@ export default function SopNew() {
                     {generateMutation.isPending ? (
                       <>
                         <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        {language === "ar" ? "جاري الإنشاء..." : "Generating..."}
+                        {generationStep || (language === "ar" ? "جاري الإنشاء..." : "Generating...")}
                       </>
                     ) : (
                       <>
@@ -408,8 +559,7 @@ export default function SopNew() {
             </CardContent>
           </Card>
         </div>
-      </main>
-    </div>
+      </main >
+    </div >
   );
 }
-

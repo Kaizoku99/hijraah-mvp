@@ -11,6 +11,7 @@ const envSchema = z.object({
     SUPABASE_SERVICE_ROLE_KEY: z.string().min(1).optional(),
     BUILT_IN_FORGE_API_URL: z.string().optional(),
     BUILT_IN_FORGE_API_KEY: z.string().optional(),
+    MISTRAL_API_KEY: z.string().min(1).optional(),
     NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
 });
 

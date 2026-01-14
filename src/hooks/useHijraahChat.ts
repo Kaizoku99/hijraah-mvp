@@ -23,6 +23,7 @@ export interface HijraahChatMessage {
   role: "user" | "assistant";
   content: string;
   sources?: ChatSource[];
+  suggestions?: string[];
   createdAt?: Date;
 }
 
@@ -61,7 +62,7 @@ export function useHijraahChat(options: UseHijraahChatOptions = {}) {
       prepareSendMessagesRequest: ({ messages }) => {
         const currentConversationId = conversationIdRef.current;
         const currentLanguage = languageRef.current;
-        console.log("[useHijraahChat] Preparing request with conversationId:", currentConversationId);
+        // console.log("[useHijraahChat] Preparing request with conversationId:", currentConversationId);
 
         return {
           body: {
@@ -88,9 +89,9 @@ export function useHijraahChat(options: UseHijraahChatOptions = {}) {
       onError?.(err);
     },
     onFinish: ({ message }) => {
-      console.log("[useHijraahChat] onFinish called, full message:", JSON.stringify(message, null, 2));
-      console.log("[useHijraahChat] message.parts:", message.parts);
-      console.log("[useHijraahChat] message.parts length:", message.parts?.length);
+      // console.log("[useHijraahChat] onFinish called, full message:", JSON.stringify(message, null, 2));
+      // console.log("[useHijraahChat] message.parts:", message.parts);
+      // console.log("[useHijraahChat] message.parts length:", message.parts?.length);
 
       // Extract text from message parts
       const text = message.parts
@@ -111,7 +112,7 @@ export function useHijraahChat(options: UseHijraahChatOptions = {}) {
           };
         }) || [];
 
-      console.log("[useHijraahChat] Extracted text length:", text?.length, "sources:", sources.length);
+      // console.log("[useHijraahChat] Extracted text length:", text?.length, "sources:", sources.length);
 
       if (sources.length > 0) {
         setCurrentSources(sources);
@@ -128,7 +129,7 @@ export function useHijraahChat(options: UseHijraahChatOptions = {}) {
   const sendMessage = useCallback(async (content: string) => {
     if (!content.trim()) return;
 
-    console.log("[useHijraahChat] Sending message:", content);
+    // console.log("[useHijraahChat] Sending message:", content);
 
     // Clear current sources before sending new message
     setCurrentSources([]);
@@ -137,7 +138,7 @@ export function useHijraahChat(options: UseHijraahChatOptions = {}) {
       await aiSendMessage({
         text: content,
       });
-      console.log("[useHijraahChat] Message sent successfully");
+      // console.log("[useHijraahChat] Message sent successfully");
     } catch (err) {
       console.error("[useHijraahChat] Error sending message:", err);
     }
@@ -171,6 +172,20 @@ export function useHijraahChat(options: UseHijraahChatOptions = {}) {
           };
         }) || [];
 
+      // Extract suggestions (if any)
+      let suggestions: string[] = [];
+      const suggestionsMatch = content.match(/<suggestions>([\s\S]*?)<\/suggestions>/);
+      let cleanContent = content;
+
+      if (suggestionsMatch) {
+        try {
+          suggestions = JSON.parse(suggestionsMatch[1]);
+          cleanContent = content.replace(/<suggestions>[\s\S]*?<\/suggestions>/, "").trim();
+        } catch (e) {
+          console.error("Failed to parse suggestions:", e);
+        }
+      }
+
       // For the last assistant message, prefer currentSources if available
       const isLastAssistant =
         msg.role === "assistant" &&
@@ -183,8 +198,9 @@ export function useHijraahChat(options: UseHijraahChatOptions = {}) {
       return {
         id: msg.id,
         role: msg.role as "user" | "assistant",
-        content,
+        content: cleanContent,
         sources,
+        suggestions: suggestions.length > 0 ? suggestions : undefined,
         createdAt: undefined as Date | undefined,
       };
     });

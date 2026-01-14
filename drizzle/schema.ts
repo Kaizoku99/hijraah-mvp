@@ -416,6 +416,30 @@ export const usageTracking = pgTable("mvp_usage_tracking", {
     .notNull(),
 });
 
+// Working Memory for AI SDK memory (persistent AI scratchpad)
+export const workingMemory = pgTable("mvp_working_memory", {
+  id: text("id").primaryKey(),
+  scope: text("scope").notNull(), // 'user' or 'chat'
+  chatId: text("chat_id"),
+  userId: text("user_id"),
+  content: text("content").notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+});
+
+// AI Memory Messages (for conversation history in memory provider)
+export const memoryMessages = pgTable("mvp_memory_messages", {
+  id: serial("id").primaryKey(),
+  chatId: text("chat_id").notNull(),
+  userId: text("user_id"),
+  role: text("role").notNull(),
+  content: text("content").notNull(),
+  timestamp: timestamp("timestamp", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+});
+
 // ============================================
 // TYPE EXPORTS
 // ============================================
@@ -458,6 +482,12 @@ export type InsertSupportMessage = typeof supportMessages.$inferInsert;
 
 export type UsageTracking = typeof usageTracking.$inferSelect;
 export type InsertUsageTracking = typeof usageTracking.$inferInsert;
+
+export type WorkingMemory = typeof workingMemory.$inferSelect;
+export type InsertWorkingMemory = typeof workingMemory.$inferInsert;
+
+export type MemoryMessage = typeof memoryMessages.$inferSelect;
+export type InsertMemoryMessage = typeof memoryMessages.$inferInsert;
 
 // Export enum types for use in code
 export type MvpDocumentStatus = typeof mvpDocumentStatusEnum.enumValues[number];

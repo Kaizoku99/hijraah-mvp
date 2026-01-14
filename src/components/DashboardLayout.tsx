@@ -26,10 +26,10 @@ import { CSSProperties, useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { DashboardLayoutSkeleton } from './DashboardLayoutSkeleton';
 import { Button } from "./ui/button";
+import { SidebarDocuments } from "./SidebarDocuments";
 
 const menuItems = [
-  { icon: LayoutDashboard, label: "Page 1", path: "/" },
-  { icon: Users, label: "Page 2", path: "/some-path" },
+  { icon: LayoutDashboard, label: "Dashboard", path: "/" },
 ];
 
 const SIDEBAR_WIDTH_KEY = "sidebar-width";
@@ -200,6 +200,7 @@ function DashboardLayoutContent({
                 );
               })}
             </SidebarMenu>
+            <SidebarDocuments />
           </SidebarContent>
 
           <SidebarFooter className="p-3">

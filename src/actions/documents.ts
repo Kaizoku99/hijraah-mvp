@@ -1,9 +1,10 @@
 'use server'
 
 import { z } from 'zod'
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, unstable_cache } from 'next/cache'
 import { getAuthenticatedUser } from './auth'
 import { ActionError } from '@/lib/action-client'
+import { CACHE_TAGS, CACHE_DURATIONS, userTag, invalidateUserDocuments } from '@/lib/cache'
 import {
     createDocumentChecklist,
     getUserDocumentChecklists,
@@ -86,6 +87,7 @@ export async function generateDocumentChecklist(input: GenerateChecklistInput) {
     // Track usage
     await incrementUsage(user.id, 'document')
 
+    invalidateUserDocuments(user.id)
     revalidatePath('/documents')
     revalidatePath('/dashboard')
 
@@ -95,9 +97,17 @@ export async function generateDocumentChecklist(input: GenerateChecklistInput) {
 /**
  * Get all checklists for the current user
  */
+const getCachedChecklists = unstable_cache(
+    async (userId: number) => {
+        return getUserDocumentChecklists(userId)
+    },
+    ['user-checklists'],
+    { tags: [CACHE_TAGS.CHECKLISTS], revalidate: CACHE_DURATIONS.SHORT }
+)
+
 export async function getChecklists() {
     const user = await getAuthenticatedUser()
-    return getUserDocumentChecklists(user.id)
+    return getCachedChecklists(user.id)
 }
 
 /**
@@ -131,6 +141,7 @@ export async function updateChecklistItems(input: z.infer<typeof UpdateChecklist
 
     await updateDocumentChecklist(validated.checklistId, { items: validated.items })
 
+    invalidateUserDocuments(user.id)
     revalidatePath('/documents')
 
     return { success: true as const }
@@ -151,6 +162,7 @@ export async function deleteChecklist(input: z.infer<typeof ChecklistIdSchema>) 
 
     await dbDeleteChecklist(validated.checklistId)
 
+    invalidateUserDocuments(user.id)
     revalidatePath('/documents')
     revalidatePath('/dashboard')
 
@@ -188,6 +200,7 @@ export async function uploadDocument(input: UploadDocumentInput) {
         status: 'uploaded',
     })
 
+    invalidateUserDocuments(user.id)
     revalidatePath('/documents')
 
     return { documentId, fileUrl: url }
@@ -196,9 +209,17 @@ export async function uploadDocument(input: UploadDocumentInput) {
 /**
  * Get all documents for the current user
  */
+const getCachedDocuments = unstable_cache(
+    async (userId: number) => {
+        return getUserDocuments(userId)
+    },
+    ['user-documents'],
+    { tags: [CACHE_TAGS.DOCUMENTS], revalidate: CACHE_DURATIONS.SHORT }
+)
+
 export async function getDocuments() {
     const user = await getAuthenticatedUser()
-    return getUserDocuments(user.id)
+    return getCachedDocuments(user.id)
 }
 
 /**
@@ -224,6 +245,7 @@ export async function deleteDocument(input: z.infer<typeof DocumentIdSchema>) {
 
     await dbDeleteDocument(validated.documentId)
 
+    invalidateUserDocuments(user.id)
     revalidatePath('/documents')
 
     return { success: true as const }

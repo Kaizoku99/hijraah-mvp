@@ -1,7 +1,5 @@
 'use client'
 
-'use client'
-
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -12,7 +10,8 @@ import {
   listConversations,
   getConversationWithMessages,
   createNewConversation,
-  deleteConversation
+  deleteConversation,
+  updateConversationTitleAction
 } from "@/actions/chat";
 import { useHijraahChat, HijraahChatMessage, ChatSource } from "@/hooks/useHijraahChat";
 import {
@@ -31,7 +30,14 @@ import {
   Menu,
   Copy,
   Check,
+  Pencil,
+  ThumbsUp,
+  ThumbsDown,
+  Edit2,
+  Search,
+  Tag
 } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect, useCallback } from "react";
@@ -43,6 +49,8 @@ import {
   Message,
   MessageContent,
   MessageResponse,
+  MessageActions,
+  MessageAction
 } from "@/components/ai-elements/message";
 import { Loader } from "@/components/ai-elements/loader";
 import { Suggestions, Suggestion } from "@/components/ai-elements/suggestion";
@@ -123,6 +131,57 @@ function ConversationEmptyState({
     { icon: Sparkles, text: "How can I improve my Express Entry score?" },
   ];
 
+  const [showSample, setShowSample] = useState(false);
+
+  const sampleMessages = language === "ar" ? [
+    { role: "user", content: "كيف يتم حساب نقاط العمر في ملف Express Entry؟" },
+    { role: "assistant", content: "في نظام التصنيف الشامل (CRS)، يتم منح نقاط للعمر كالتالي:\n\n• **20-29 سنة:** 110 نقاط (الحد الأقصى) للأعزب، أو 100 للمتزوج.\n• **30 سنة:** 105 نقاط للأعزب.\n• **45 سنة فأكثر:** 0 نقطة.\n\nتفقد النقاط تدريجياً بعد سن 29. هل تود حساب نقاطك الحالية؟" }
+  ] : [
+    { role: "user", content: "How are age points calculated in Express Entry?" },
+    { role: "assistant", content: "In the CRS system, age points are awarded as follows:\n\n• **20-29 years:** 110 points (max) if single, or 100 if married.\n• **30 years:** 105 points if single.\n• **45+ years:** 0 points.\n\nYou start losing points gradually after age 29. Would you like to calculate your current score?" }
+  ];
+
+  if (showSample) {
+    return (
+      <div className="flex flex-col h-full max-w-3xl mx-auto w-full p-4 gap-6">
+        <div className="flex items-center justify-between mb-2">
+          <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
+            {language === "ar" ? "مثال للمحادثة" : "Conversation Preview"}
+          </h3>
+          <Button variant="ghost" size="sm" onClick={() => setShowSample(false)}>
+            {language === "ar" ? "إغلاق المثال" : "Close Preview"}
+          </Button>
+        </div>
+
+        {sampleMessages.map((msg, idx) => (
+          // @ts-ignore - borrowing Message component logic loosely
+          <Message key={idx} from={msg.role} className="group">
+            {msg.role === "assistant" ? (
+              <div className="flex items-start gap-3">
+                <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center flex-shrink-0">
+                  <Bot className="h-4 w-4 text-white" />
+                </div>
+                <MessageContent className="bg-muted rounded-2xl rounded-tl-md px-4 py-3">
+                  <MessageResponse>{msg.content}</MessageResponse>
+                </MessageContent>
+              </div>
+            ) : (
+              <MessageContent className="bg-primary text-primary-foreground rounded-2xl rounded-tr-md px-4 py-3">
+                {msg.content}
+              </MessageContent>
+            )}
+          </Message>
+        ))}
+
+        <div className="mt-4 flex justify-center">
+          <Button onClick={() => onSuggestionClick(language === "ar" ? "أريد حساب نقاطي" : "I want to calculate my score")}>
+            {language === "ar" ? "ابدأ محادثتك الخاصة الآن" : "Start your own chat now"}
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col items-center justify-center h-full py-12 px-4">
       <div className="relative mb-6">
@@ -135,11 +194,21 @@ function ConversationEmptyState({
       <h3 className="text-2xl font-bold mb-2 text-center">
         {language === "ar" ? "مرحباً! أنا مساعدك للهجرة" : "Hi! I'm your Immigration Assistant"}
       </h3>
-      <p className="text-muted-foreground text-center mb-8 max-w-md">
+      <p className="text-muted-foreground text-center mb-6 max-w-md">
         {language === "ar"
           ? "يمكنني مساعدتك في أسئلة الهجرة إلى كندا، حسابات CRS، والمزيد."
           : "I can help you with Canada immigration questions, CRS calculations, document requirements, and more."}
       </p>
+
+      <Button
+        variant="outline"
+        size="sm"
+        className="mb-8 gap-2 text-muted-foreground"
+        onClick={() => setShowSample(true)}
+      >
+        <MessageSquare className="h-4 w-4" />
+        {language === "ar" ? "شاهد مثالاً للمحادثة" : "See a sample conversation"}
+      </Button>
 
       <div className="w-full max-w-2xl">
         <p className="text-sm text-muted-foreground mb-3 text-center">
@@ -172,6 +241,8 @@ function ChatInput({
   onStop,
   isStreaming,
   language,
+  responseLanguage,
+  onResponseLanguageChange,
 }: {
   value: string;
   onChange: (value: string) => void;
@@ -179,6 +250,8 @@ function ChatInput({
   onStop: () => void;
   isStreaming: boolean;
   language: string;
+  responseLanguage: "auto" | "ar" | "en";
+  onResponseLanguageChange: (lang: "auto" | "ar" | "en") => void;
 }) {
   return (
     <div className="border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 p-4">
@@ -201,6 +274,29 @@ function ChatInput({
             className="flex-1 resize-none bg-transparent border-0 outline-none focus:ring-0 px-3 py-2 max-h-32 min-h-[44px] text-sm placeholder:text-muted-foreground"
             style={{ fieldSizing: 'content' } as React.CSSProperties}
           />
+
+
+
+          <div className="flex flex-col gap-1">
+            <Button
+              variant="ghost"
+              size="icon"
+              className={cn("h-6 w-6 rounded-lg", responseLanguage === 'ar' && "text-primary bg-primary/10")}
+              onClick={() => onResponseLanguageChange(responseLanguage === 'ar' ? 'auto' : 'ar')}
+              title={language === "ar" ? "اطلب الإجابة بالعربية" : "Ask for Arabic answer"}
+            >
+              <div className="text-[10px] font-bold">ع</div>
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className={cn("h-6 w-6 rounded-lg", responseLanguage === 'en' && "text-primary bg-primary/10")}
+              onClick={() => onResponseLanguageChange(responseLanguage === 'en' ? 'auto' : 'en')}
+              title={language === "ar" ? "اطلب الإجابة بالإنجليزية" : "Ask for English answer"}
+            >
+              <div className="text-[10px] font-bold">En</div>
+            </Button>
+          </div>
 
           {isStreaming ? (
             <Button
@@ -261,6 +357,17 @@ export default function ChatPage() {
     idParam ? parseInt(idParam) : null
   );
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [editingConversationId, setEditingConversationId] = useState<number | null>(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [responseLanguage, setResponseLanguage] = useState<"auto" | "ar" | "en">("auto");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
+  const categories = [
+    { id: "immigration", label: language === "ar" ? "هجرة" : "Immigration" },
+    { id: "documents", label: language === "ar" ? "مستندات" : "Documents" },
+    { id: "crs", label: language === "ar" ? "CRS" : "CRS" },
+    { id: "general", label: language === "ar" ? "عام" : "General" },
+  ];
   const queryClient = useQueryClient();
 
   // Fetch conversations list from Server Action
@@ -279,9 +386,11 @@ export default function ChatPage() {
   // Use Vercel AI SDK for streaming chat
   const {
     messages: streamMessages,
+    rawMessages,
     input,
     setInput,
     isLoading: isStreaming,
+    status,
     sendMessage,
     stop,
     setMessages,
@@ -322,6 +431,15 @@ export default function ChatPage() {
     },
   });
 
+  // Rename conversation mutation
+  const renameConversationMutation = useMutation({
+    mutationFn: updateConversationTitleAction,
+    onSuccess: () => {
+      setEditingConversationId(null);
+      refetchConversations();
+    },
+  });
+
   // Sync selectedConversationId with URL param
   useEffect(() => {
     if (idParam) {
@@ -333,16 +451,37 @@ export default function ChatPage() {
   }, [idParam, selectedConversationId]);
 
   // Debug logging
-  console.log("[ChatPage] isStreaming:", isStreaming, "streamMessages:", streamMessages.length, "conversationData:", conversationData?.messages?.length);
+  console.log("[ChatPage] status:", status, "isStreaming:", isStreaming, "streamMessages:", streamMessages.length, "rawMessages:", rawMessages?.length, "conversationData:", conversationData?.messages?.length);
+  if (rawMessages?.length > 0) {
+    const lastRaw = rawMessages[rawMessages.length - 1];
+    console.log("[ChatPage] Last rawMessage role:", lastRaw.role, "parts:", lastRaw.parts?.length);
+  }
 
   // Combine database messages with streaming messages
   const displayMessages = useCallback((): HijraahChatMessage[] => {
-    const dbMessages: HijraahChatMessage[] = (conversationData?.messages || []).map((msg) => ({
-      id: String(msg.id),
-      role: msg.role as "user" | "assistant",
-      content: msg.content,
-      createdAt: new Date(msg.createdAt),
-    }));
+    const dbMessages: HijraahChatMessage[] = (conversationData?.messages || []).map((msg) => {
+      const content = msg.content;
+      let suggestions: string[] = [];
+      const suggestionsMatch = content.match(/<suggestions>([\s\S]*?)<\/suggestions>/);
+      let cleanContent = content;
+
+      if (suggestionsMatch) {
+        try {
+          suggestions = JSON.parse(suggestionsMatch[1]);
+          cleanContent = content.replace(/<suggestions>[\s\S]*?<\/suggestions>/, "").trim();
+        } catch (e) {
+          console.error("Failed to parse suggestions in DB message:", e);
+        }
+      }
+
+      return {
+        id: String(msg.id),
+        role: msg.role as "user" | "assistant",
+        content: cleanContent,
+        suggestions: suggestions.length > 0 ? suggestions : undefined,
+        createdAt: new Date(msg.createdAt),
+      };
+    });
 
     console.log("[ChatPage] displayMessages - dbMessages:", dbMessages.length, "streamMessages:", streamMessages.length);
 
@@ -363,8 +502,18 @@ export default function ChatPage() {
   };
 
   const handleSendMessage = async (messageText?: string) => {
-    const text = messageText || input;
+    let text = messageText || input;
     if (!text.trim() || !selectedConversationId || isStreaming) return;
+
+    // Append language instruction if not already handled and not auto
+    if (!messageText && responseLanguage !== 'auto') {
+      if (responseLanguage === 'ar') {
+        text += "\n\n(Please answer in Arabic)";
+      } else if (responseLanguage === 'en') {
+        text += "\n\n(Please answer in English)";
+      }
+    }
+
     await sendMessage(text);
     setInput("");
   };
@@ -379,8 +528,16 @@ export default function ChatPage() {
         }
       });
     } else {
+
       setInput(suggestion);
-      handleSendMessage(suggestion);
+      // Determine if we need to append language instruction
+      let finalMessage = suggestion;
+      if (responseLanguage === 'ar') {
+        finalMessage += "\n\n(Please answer in Arabic)";
+      } else if (responseLanguage === 'en') {
+        finalMessage += "\n\n(Please answer in English)";
+      }
+      handleSendMessage(finalMessage);
     }
   };
 
@@ -389,6 +546,33 @@ export default function ChatPage() {
     if (confirm(language === "ar" ? "هل أنت متأكد من حذف هذه المحادثة؟" : "Are you sure you want to delete this conversation?")) {
       deleteConversationMutation.mutate({ conversationId: id });
     }
+  };
+
+  const handleRenameConversation = (e: React.MouseEvent, id: number, title: string) => {
+    e.stopPropagation();
+    setEditingConversationId(id);
+    setEditTitle(title);
+  };
+
+  const saveRename = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (editingConversationId && editTitle.trim()) {
+      renameConversationMutation.mutate({
+        conversationId: editingConversationId,
+        title: editTitle.trim()
+      });
+    }
+  };
+
+  const handleFeedback = (messageId: string, type: 'up' | 'down') => {
+    // Determine the message text to show based on language
+    const feedbackText = language === "ar"
+      ? (type === 'up' ? "شكراً لملاحظاتك!" : "سنعمل على تحسين ذلك.")
+      : (type === 'up' ? "Thanks for difference!" : "We'll improve this.");
+
+    // Simple toast or console log for now as we don't have a backend table for this yet
+    console.log(`Feedback for ${messageId}: ${type}`);
+    // You might want to add a toast here if you have a toast component available
   };
 
   const handleLogout = async () => {
@@ -473,48 +657,113 @@ export default function ChatPage() {
               )}
               {language === "ar" ? "محادثة جديدة" : "New Chat"}
             </Button>
+            <div className="mt-2 relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder={language === "ar" ? "بحث في المحادثات..." : "Search conversations..."}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-9 h-9 rounded-xl"
+              />
+            </div>
+            {/* Category Filter Chips */}
+            <div className="flex flex-wrap gap-1 mt-2">
+              <button
+                onClick={() => setCategoryFilter(null)}
+                className={cn(
+                  "text-xs px-2 py-1 rounded-full transition-colors",
+                  categoryFilter === null ? "bg-primary text-primary-foreground" : "bg-secondary hover:bg-secondary/80"
+                )}
+              >
+                {language === "ar" ? "الكل" : "All"}
+              </button>
+              {categories.map((cat) => (
+                <button
+                  key={cat.id}
+                  onClick={() => setCategoryFilter(categoryFilter === cat.id ? null : cat.id)}
+                  className={cn(
+                    "text-xs px-2 py-1 rounded-full transition-colors flex items-center gap-1",
+                    categoryFilter === cat.id ? "bg-primary text-primary-foreground" : "bg-secondary hover:bg-secondary/80"
+                  )}
+                >
+                  <Tag className="h-3 w-3" />
+                  {cat.label}
+                </button>
+              ))}
+            </div>
           </div>
           <ScrollArea className="flex-1">
             <div className="p-2 space-y-1">
-              {conversations?.map((conv) => (
-                <div
-                  key={conv.id}
-                  className={cn(
-                    "group flex items-center justify-between p-3 rounded-xl cursor-pointer transition-all",
-                    selectedConversationId === conv.id
-                      ? "bg-primary/10 border border-primary/20"
-                      : "hover:bg-accent"
-                  )}
-                  onClick={() => {
-                    setSelectedConversationId(conv.id);
-                    router.push(`/chat?id=${conv.id}`);
-                  }}
-                >
-                  <div className="flex items-center gap-3 flex-1 min-w-0">
-                    <div className={cn(
-                      "h-8 w-8 rounded-lg flex items-center justify-center flex-shrink-0",
+              {conversations
+                ?.filter((conv) => {
+                  if (!searchQuery.trim()) return true;
+                  const title = conv.title?.toLowerCase() || "";
+                  return title.includes(searchQuery.toLowerCase());
+                })
+                .map((conv) => (
+                  <div
+                    key={conv.id}
+                    className={cn(
+                      "group flex items-center justify-between p-3 rounded-xl cursor-pointer transition-all",
                       selectedConversationId === conv.id
-                        ? "bg-primary/20"
-                        : "bg-muted"
-                    )}>
-                      <MessageSquare className="h-4 w-4" />
-                    </div>
-                    <span className="text-sm truncate">
-                      {conv.title || (language === "ar" ? "محادثة جديدة" : "New Chat")}
-                    </span>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="opacity-0 group-hover:opacity-100 h-7 w-7 rounded-lg"
-                    onClick={(e) => {
-                      handleDeleteConversation(e, conv.id);
+                        ? "bg-primary/10 border border-primary/20"
+                        : "hover:bg-accent"
+                    )}
+                    onClick={() => {
+                      setSelectedConversationId(conv.id);
+                      router.push(`/chat?id=${conv.id}`);
                     }}
                   >
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </Button>
-                </div>
-              ))}
+                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                      <div className={cn(
+                        "h-8 w-8 rounded-lg flex items-center justify-center flex-shrink-0",
+                        selectedConversationId === conv.id
+                          ? "bg-primary/20"
+                          : "bg-muted"
+                      )}>
+                        <MessageSquare className="h-4 w-4" />
+                      </div>
+                      {editingConversationId === conv.id ? (
+                        <form onSubmit={saveRename} className="flex-1 min-w-0 flex items-center gap-2" onClick={e => e.stopPropagation()}>
+                          <input
+                            autoFocus
+                            value={editTitle}
+                            onChange={(e) => setEditTitle(e.target.value)}
+                            onBlur={() => setEditingConversationId(null)}
+                            className="flex-1 bg-background border rounded px-2 py-1 text-sm h-7 min-w-0"
+                          />
+                          <button type="submit" className="hidden" />
+                        </form>
+                      ) : (
+                        <span className="text-sm truncate">
+                          {conv.title || (language === "ar" ? "محادثة جديدة" : "New Chat")}
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      {!editingConversationId && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-7 w-7 rounded-lg text-muted-foreground hover:text-foreground"
+                          onClick={(e) => handleRenameConversation(e, conv.id, conv.title || "")}
+                        >
+                          <Pencil className="h-3.5 w-3.5" />
+                        </Button>
+                      )}
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7 rounded-lg text-muted-foreground hover:text-destructive"
+                        onClick={(e) => {
+                          handleDeleteConversation(e, conv.id);
+                        }}
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
             </div>
           </ScrollArea>
         </div>
@@ -639,6 +888,32 @@ export default function ChatPage() {
                                   </div>
                                 )}
 
+                                {/* Feedback Actions */}
+                                {!isStreaming && (
+                                  <div className="mt-2 flex items-center justify-end">
+                                    <MessageActions>
+                                      <MessageAction
+                                        tooltip={language === "ar" ? "مفيد" : "Helpful"}
+                                        onClick={() => handleFeedback(message.id, 'up')}
+                                      >
+                                        <ThumbsUp className="h-4 w-4" />
+                                      </MessageAction>
+                                      <MessageAction
+                                        tooltip={language === "ar" ? "غير مفيد" : "Not helpful"}
+                                        onClick={() => handleFeedback(message.id, 'down')}
+                                      >
+                                        <ThumbsDown className="h-4 w-4" />
+                                      </MessageAction>
+                                      <MessageAction
+                                        tooltip={language === "ar" ? "نسخ" : "Copy"}
+                                        onClick={() => navigator.clipboard.writeText(message.content)}
+                                      >
+                                        <Copy className="h-4 w-4" />
+                                      </MessageAction>
+                                    </MessageActions>
+                                  </div>
+                                )}
+
                                 <div className="flex items-center gap-1 mt-1">
                                   <CopyButton text={message.content} />
                                 </div>
@@ -663,9 +938,13 @@ export default function ChatPage() {
                         </Message>
                       ))}
 
-                      {isStreaming && streamMessages.length === 0 && (
-                        <TypingIndicator />
-                      )}
+                      {/* Show typing indicator when streaming and waiting for assistant response */}
+                      {isStreaming && (
+                        allMessages.length === 0 ||
+                        allMessages[allMessages.length - 1]?.role === 'user'
+                      ) && (
+                          <TypingIndicator />
+                        )}
                     </>
                   )}
                 </StickToBottom.Content>
@@ -676,10 +955,15 @@ export default function ChatPage() {
               {allMessages.length > 0 && !isStreaming && (
                 <div className="px-4 pb-2">
                   <Suggestions>
-                    {(language === "ar"
-                      ? ["المزيد من التفاصيل", "كيف أبدأ؟", "ما الخطوة التالية؟"]
-                      : ["More details", "How do I start?", "What's the next step?"]
-                    ).map((suggestion) => (
+                    {(
+                      // Use suggestions from the last assistant message if available
+                      allMessages[allMessages.length - 1].role === "assistant" &&
+                        allMessages[allMessages.length - 1].suggestions
+                        ? allMessages[allMessages.length - 1].suggestions
+                        : (language === "ar"
+                          ? ["المزيد من التفاصيل", "كيف أبدأ؟", "ما الخطوة التالية؟"]
+                          : ["More details", "How do I start?", "What's the next step?"])
+                    )?.map((suggestion) => (
                       <Suggestion
                         key={suggestion}
                         suggestion={suggestion}
@@ -697,6 +981,8 @@ export default function ChatPage() {
                 onStop={stop}
                 isStreaming={isStreaming}
                 language={language}
+                responseLanguage={responseLanguage}
+                onResponseLanguageChange={setResponseLanguage}
               />
             </>
           ) : (

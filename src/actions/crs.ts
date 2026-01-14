@@ -1,10 +1,11 @@
 'use server'
 
 import { z } from 'zod'
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, unstable_cache } from 'next/cache'
 import { getAuthenticatedUser } from './auth'
 import { ActionError } from '@/lib/action-client'
-import { calculateCRS, CrsInput } from '@/../server/crs-calculator'
+import { calculateCRS, CrsInput } from '@/lib/crs-calculator'
+import { CACHE_TAGS, CACHE_DURATIONS, userTag, invalidateUserCrs } from '@/lib/cache'
 import {
     createCrsAssessment,
     getUserCrsAssessments,
@@ -110,6 +111,7 @@ export async function calculateCrsScore(input: CalculateCrsInput) {
             hasCanadianStudyExperience: crsInput.hasCanadianEducation,
         })
 
+        invalidateUserCrs(user.id)
         revalidatePath('/calculator')
         revalidatePath('/dashboard')
     }
@@ -120,15 +122,31 @@ export async function calculateCrsScore(input: CalculateCrsInput) {
 /**
  * Get user's CRS assessment history
  */
+const getCachedCrsHistory = unstable_cache(
+    async (userId: number) => {
+        return getUserCrsAssessments(userId)
+    },
+    ['user-crs-history'],
+    { tags: [CACHE_TAGS.CRS_HISTORY], revalidate: CACHE_DURATIONS.SHORT }
+)
+
 export async function getCrsHistory() {
     const user = await getAuthenticatedUser()
-    return getUserCrsAssessments(user.id)
+    return getCachedCrsHistory(user.id)
 }
 
 /**
  * Get latest CRS assessment
  */
+const getCachedLatestCrs = unstable_cache(
+    async (userId: number) => {
+        return getLatestCrsAssessment(userId)
+    },
+    ['user-latest-crs'],
+    { tags: [CACHE_TAGS.CRS_LATEST], revalidate: CACHE_DURATIONS.SHORT }
+)
+
 export async function getLatestCrs() {
     const user = await getAuthenticatedUser()
-    return getLatestCrsAssessment(user.id)
+    return getCachedLatestCrs(user.id)
 }
