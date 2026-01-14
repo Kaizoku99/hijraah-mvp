@@ -4,7 +4,7 @@
  * Enhanced to support RAG sources and reasoning display
  */
 
-import { useChat as useAIChat } from "@ai-sdk/react";
+import { useChat as useAIChat } from "@ai-sdk-tools/store";
 import { DefaultChatTransport } from "ai";
 import { useCallback, useMemo, useState, useRef, useEffect } from "react";
 

@@ -1,7 +1,11 @@
 'use client'
 
-import LoginPage from "@/components/pages/LoginPage"
+import { LoginForm } from "@/components/login-form"
 
 export default function SignUp() {
-  return <LoginPage defaultTab="signup" />
+  return <div className="flex min-h-svh flex-col items-center justify-center bg-muted p-6 md:p-10">
+    <div className="w-full max-w-sm md:max-w-3xl">
+      <LoginForm defaultView="signup" />
+    </div>
+  </div>
 }

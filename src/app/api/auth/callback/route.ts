@@ -1,6 +1,5 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
-import { cookies } from 'next/headers'
 
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url)
@@ -8,46 +7,84 @@ export async function GET(request: NextRequest) {
   const next = searchParams.get('next') ?? '/dashboard'
 
   if (code) {
-    const cookieStore = await cookies()
+    const isProduction = process.env.NODE_ENV === 'production'
+
+    // Track cookies that need to be set on the response
+    const cookiesToSet: { name: string; value: string; options: any }[] = []
+
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
       {
         cookies: {
           getAll() {
-            return cookieStore.getAll()
+            return request.cookies.getAll()
           },
-          setAll(cookiesToSet) {
-            try {
-              cookiesToSet.forEach(({ name, value, options }) =>
-                cookieStore.set(name, value, options)
-              )
-            } catch {
-              // The `setAll` method was called from a Server Component.
-              // This can be ignored if you have middleware refreshing
-              // user sessions.
-            }
+          setAll(cookies) {
+            // Capture cookies to set on the response later
+            cookies.forEach(({ name, value, options }) => {
+              console.log(`[Auth Callback] Capturing cookie: ${name}`)
+              cookiesToSet.push({ name, value, options })
+            })
           },
         },
+        cookieOptions: {
+          domain: isProduction ? '.hijraah.com' : undefined,
+          path: '/',
+          sameSite: 'lax' as const,
+          secure: isProduction,
+        }
       }
     )
 
-    const { error } = await supabase.auth.exchangeCodeForSession(code)
+    console.log('[Auth Callback] Exchanging code for session, Code:', code ? '***' : 'Missing')
+    const { error, data } = await supabase.auth.exchangeCodeForSession(code)
 
-    if (!error) {
-      const forwardedHost = request.headers.get('x-forwarded-host') // original origin before load balancer
-      const isLocalEnv = process.env.NODE_ENV === 'development'
-      if (isLocalEnv) {
-        // we can be sure that there is no load balancer in between, so no need to watch for X-Forwarded-Host
-        return NextResponse.redirect(`${origin}${next}`)
-      } else if (forwardedHost) {
-        return NextResponse.redirect(`https://${forwardedHost}${next}`)
-      } else {
-        return NextResponse.redirect(`${origin}${next}`)
-      }
+    if (error) {
+      console.error('[Auth Callback] Error exchanging code:', error)
+      return NextResponse.redirect(`${origin}/login?error=auth_callback_error`)
     }
+
+    if (data.session) {
+      console.log('[Auth Callback] Session exchanged successfully. User:', data.session.user.id)
+    }
+
+    // Build redirect URL
+    const forwardedHost = request.headers.get('x-forwarded-host')
+    const isLocalEnv = process.env.NODE_ENV === 'development'
+
+    let redirectUrl: string
+    if (isLocalEnv) {
+      redirectUrl = `${origin}${next}`
+    } else if (forwardedHost) {
+      redirectUrl = `https://${forwardedHost}${next}`
+    } else {
+      redirectUrl = `${origin}${next}`
+    }
+
+    // Create redirect response and attach cookies
+    const response = NextResponse.redirect(redirectUrl)
+
+    // Set all captured cookies on the redirect response
+    cookiesToSet.forEach(({ name, value, options }) => {
+      console.log(`[Auth Callback] Setting cookie on response: ${name}`, {
+        domain: options?.domain || 'default',
+        secure: options?.secure || false
+      })
+      response.cookies.set(name, value, {
+        ...options,
+        // Ensure domain is set for cross-subdomain sharing
+        domain: isProduction ? '.hijraah.com' : options?.domain,
+        secure: isProduction,
+        sameSite: 'lax',
+        path: '/',
+      })
+    })
+
+    console.log(`[Auth Callback] Redirecting to: ${redirectUrl} with ${cookiesToSet.length} cookies`)
+    return response
   }
 
-  // Return the user to an error page with instructions
+  // No code provided - return error
   return NextResponse.redirect(`${origin}/login?error=auth_callback_error`)
 }

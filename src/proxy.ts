@@ -1,12 +1,21 @@
+
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function proxy(request: NextRequest) {
+    console.log('[Proxy] Processing request:', request.nextUrl.pathname)
+    const allCookies = request.cookies.getAll()
+    console.log('[Proxy] Cookies found:', allCookies.map(c => c.name).join(', '))
+    console.log('[Proxy] Supabase URL configured:', process.env.NEXT_PUBLIC_SUPABASE_URL ? 'Yes' : 'NO!')
+    console.log('[Proxy] Supabase Anon Key configured:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'Yes' : 'NO!')
+
     let response = NextResponse.next({
         request: {
             headers: request.headers,
         },
     })
+
+    const isProduction = process.env.NODE_ENV === 'production'
 
     const supabase = createServerClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -28,12 +37,28 @@ export async function proxy(request: NextRequest) {
                     })
                 },
             },
+            cookieOptions: {
+                domain: isProduction ? '.hijraah.com' : undefined,
+                path: '/',
+                sameSite: 'lax' as const,
+                secure: isProduction,
+            }
         }
     )
 
-    // This will refresh session if expired - required for Server Components
+    // Use getClaims() instead of getUser() per Supabase docs:
+    // "Never trust getSession() inside server code. Use getClaims() because it 
+    // validates the JWT signature against the project's published public keys every time."
     // https://supabase.com/docs/guides/auth/server-side/nextjs
-    await supabase.auth.getUser()
+    const { data, error } = await supabase.auth.getClaims()
+
+    if (error) {
+        console.error('[Proxy] Error fetching claims:', error.message)
+    } else if (data?.claims) {
+        console.log('[Proxy] User authenticated:', data.claims.sub)
+    } else {
+        console.log('[Proxy] No user session found')
+    }
 
     return response
 }

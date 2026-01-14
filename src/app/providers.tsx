@@ -8,6 +8,7 @@ import { TooltipProvider } from '@/components/ui/tooltip'
 import { Toaster } from '@/components/ui/sonner'
 import ErrorBoundary from '@/components/ErrorBoundary'
 import { MobileNav } from '@/components/MobileNav'
+import { Provider as AIStoreProvider } from '@ai-sdk-tools/store'
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(() => new QueryClient({
@@ -24,13 +25,15 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <QueryClientProvider client={queryClient}>
         <LanguageProvider>
           <ThemeProvider defaultTheme="light">
-            <TooltipProvider>
-              <Toaster />
-              <div className="pb-16 md:pb-0">
-                {children}
-              </div>
-              <MobileNav />
-            </TooltipProvider>
+            <AIStoreProvider>
+              <TooltipProvider>
+                <Toaster />
+                <div className="pb-16 md:pb-0">
+                  {children}
+                </div>
+                <MobileNav />
+              </TooltipProvider>
+            </AIStoreProvider>
           </ThemeProvider>
         </LanguageProvider>
       </QueryClientProvider>

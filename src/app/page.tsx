@@ -8,6 +8,7 @@ import { LanguageToggle } from "@/components/LanguageToggle";
 import { MessageSquare, Calculator, FileText, BookOpen, ArrowRight, CheckCircle } from "lucide-react";
 import { getLoginUrl } from "@/const";
 import Link from "next/link";
+import Image from "next/image";
 import CountUp from "react-countup";
 
 export default function Home() {
@@ -52,9 +53,15 @@ export default function Home() {
       <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
         <div className="container flex h-16 items-center justify-between">
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-              {language === "ar" ? "هجرة" : "Hijraah"}
-            </h1>
+            <Link href="/" className="relative h-10 w-40">
+              <Image
+                src="/Hijraah_logo.png"
+                alt="Hijraah"
+                fill
+                className="object-contain object-left"
+                priority
+              />
+            </Link>
           </div>
           <div className="flex items-center gap-4">
             <LanguageToggle />
@@ -72,7 +79,7 @@ export default function Home() {
       </header>
 
       {/* Hero Section */}
-      <section className="py-20 md:py-32 bg-gradient-to-b from-blue-50 to-background">
+      <section id="main-content" className="py-20 md:py-32 bg-gradient-to-b from-secondary/50 to-background">
         <div className="container">
           <div className="max-w-4xl mx-auto text-center space-y-8">
             <h2 className="text-4xl md:text-6xl font-bold tracking-tight">
@@ -194,7 +201,7 @@ export default function Home() {
       </section>
 
       {/* Benefits Section */}
-      <section className="py-20 bg-blue-50">
+      <section className="py-20 bg-secondary/30">
         <div className="container">
           <div className="max-w-3xl mx-auto">
             <h3 className="text-3xl md:text-4xl font-bold mb-8 text-center">
@@ -213,7 +220,7 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
+      <section className="py-20 bg-gradient-to-r from-primary to-chart-3 text-primary-foreground">
         <div className="container text-center">
           <h3 className="text-3xl md:text-4xl font-bold mb-6">
             {language === "ar" ? "ابدأ رحلتك اليوم" : "Start Your Journey Today"}

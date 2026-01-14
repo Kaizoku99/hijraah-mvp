@@ -18,6 +18,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getProfile, createProfile, updateProfile } from "@/actions/profile";
 import { User, LogOut, Loader2, Save, CheckCircle, ArrowLeft, ArrowRight, Info } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
@@ -66,6 +67,28 @@ export default function Profile() {
 
   const [step, setStep] = useState(1);
   const totalSteps = 5;
+  const [shakeStep, setShakeStep] = useState(false);
+  const [errors, setErrors] = useState<Record<string, boolean>>({});
+
+  // CRS Impact Icon Component
+  const CrsImpactIcon = () => (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <div className="inline-flex items-center justify-center ml-2 h-5 w-5 rounded-full bg-amber-100 text-amber-600 cursor-help">
+            <span className="text-[10px] font-bold">CRS</span>
+          </div>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p className="text-xs">
+            {language === "ar"
+              ? "هذا الحقل يؤثر بشكل مباشر على نقاط CRS الخاصة بك"
+              : "This field directly impacts your CRS score"}
+          </p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
 
   // Load draft from localStorage on mount
   useEffect(() => {
@@ -149,8 +172,51 @@ export default function Profile() {
     router.push("/");
   };
 
+  const validateStep = (currentStep: number): boolean => {
+    const newErrors: Record<string, boolean> = {};
+    let isValid = true;
+
+    if (currentStep === 1) {
+      if (!formData.dateOfBirth) newErrors.dateOfBirth = true;
+      if (!formData.nationality) newErrors.nationality = true;
+      if (!formData.currentCountry) newErrors.currentCountry = true;
+      if (!formData.maritalStatus) newErrors.maritalStatus = true;
+    } else if (currentStep === 2) {
+      if (!formData.educationLevel) newErrors.educationLevel = true;
+      // fieldOfStudy is often optional but good practice to require if education > high school
+    } else if (currentStep === 3) {
+      if (!formData.yearsOfExperience) newErrors.yearsOfExperience = true;
+      if (!formData.nocCode) newErrors.nocCode = true;
+    } else if (currentStep === 4) {
+      if (!formData.englishLevel) newErrors.englishLevel = true;
+    } else if (currentStep === 5) {
+      if (!formData.immigrationPathway) newErrors.immigrationPathway = true;
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      isValid = false;
+      setShakeStep(true);
+      setTimeout(() => setShakeStep(false), 500); // Reset shake after animation
+      toast.error(language === "ar" ? "يرجى ملء الحقول المطلوبة" : "Please fill in all required fields");
+    } else {
+      setErrors({});
+    }
+
+    return isValid;
+  };
+
+  const handleNext = () => {
+    if (validateStep(step)) {
+      setStep(step + 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!validateStep(step)) return;
 
     const profileData = {
       ...formData,
@@ -182,6 +248,14 @@ export default function Profile() {
 
   const handleChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+    // Clear error for this field if it exists
+    if (errors[field]) {
+      setErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[field];
+        return newErrors;
+      });
+    }
   };
 
 
@@ -211,10 +285,14 @@ export default function Profile() {
       {/* Header */}
       <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
         <div className="container flex h-16 items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-              {language === "ar" ? "هجرة" : "Hijraah"}
-            </h1>
+          <Link href="/" className="relative h-8 w-32">
+            <Image
+              src="/Hijraah_logo.png"
+              alt="Hijraah"
+              fill
+              className="object-contain object-left"
+              priority
+            />
           </Link>
           <div className="flex items-center gap-4">
             <Link href="/dashboard">
@@ -259,11 +337,11 @@ export default function Profile() {
               </CardContent>
             </Card>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className={cn("space-y-6 transition-transform duration-100", shakeStep && "animate-shake")}>
 
               {/* Step 1: Personal Information */}
               {step === 1 && (
-                <Card>
+                <Card className={cn(errors.dateOfBirth || errors.nationality || errors.currentCountry || errors.maritalStatus ? "border-destructive" : "")}>
                   <CardHeader>
                     <CardTitle>{language === "ar" ? "المعلومات الشخصية" : "Personal Information"}</CardTitle>
                     <CardDescription>
@@ -275,9 +353,10 @@ export default function Profile() {
                   <CardContent className="space-y-4">
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="dateOfBirth">
+                        <Label htmlFor="dateOfBirth" className={errors.dateOfBirth ? "text-destructive" : ""}>
                           {language === "ar" ? "تاريخ الميلاد" : "Date of Birth"}
                           <span className="text-destructive"> *</span>
+                          <CrsImpactIcon />
                         </Label>
                         <DatePicker
                           value={formData.dateOfBirth ? new Date(formData.dateOfBirth) : undefined}
@@ -287,8 +366,9 @@ export default function Profile() {
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="nationality">
+                        <Label htmlFor="nationality" className={errors.nationality ? "text-destructive" : ""}>
                           {language === "ar" ? "الجنسية" : "Nationality"}
+                          <span className="text-destructive"> *</span>
                         </Label>
                         <CountrySelect
                           value={formData.nationality}
@@ -298,11 +378,10 @@ export default function Profile() {
                         />
                       </div>
 
-
-
                       <div className="space-y-2">
-                        <Label htmlFor="currentCountry">
+                        <Label htmlFor="currentCountry" className={errors.currentCountry ? "text-destructive" : ""}>
                           {language === "ar" ? "البلد الحالي" : "Current Country"}
+                          <span className="text-destructive"> *</span>
                         </Label>
                         <CountrySelect
                           value={formData.currentCountry}
@@ -313,14 +392,16 @@ export default function Profile() {
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="maritalStatus">
+                        <Label htmlFor="maritalStatus" className={errors.maritalStatus ? "text-destructive" : ""}>
                           {language === "ar" ? "الحالة الاجتماعية" : "Marital Status"}
+                          <span className="text-destructive"> *</span>
+                          <CrsImpactIcon />
                         </Label>
                         <Select
                           value={formData.maritalStatus}
                           onValueChange={(value) => handleChange("maritalStatus", value)}
                         >
-                          <SelectTrigger id="maritalStatus">
+                          <SelectTrigger id="maritalStatus" className={errors.maritalStatus ? "border-destructive" : ""}>
                             <SelectValue
                               placeholder={language === "ar" ? "اختر الحالة الاجتماعية" : "Select marital status"}
                             />
@@ -340,7 +421,7 @@ export default function Profile() {
 
               {/* Step 2: Education */}
               {step === 2 && (
-                <Card>
+                <Card className={cn(errors.educationLevel ? "border-destructive" : "")}>
                   <CardHeader>
                     <CardTitle>{language === "ar" ? "التعليم" : "Education"}</CardTitle>
                     <CardDescription>
@@ -353,10 +434,11 @@ export default function Profile() {
                         <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger asChild>
-                              <Label htmlFor="educationLevel" className="cursor-help flex items-center gap-1">
+                              <Label htmlFor="educationLevel" className={cn("cursor-help flex items-center gap-1", errors.educationLevel ? "text-destructive" : "")}>
                                 {language === "ar" ? "المستوى التعليمي" : "Education Level"}
                                 <span className="text-destructive"> *</span>
                                 <Info className="h-3 w-3 text-muted-foreground" />
+                                <CrsImpactIcon />
                               </Label>
                             </TooltipTrigger>
                             <TooltipContent side="top" className="max-w-[250px]">
@@ -372,7 +454,7 @@ export default function Profile() {
                           value={formData.educationLevel}
                           onValueChange={(value) => handleChange("educationLevel", value)}
                         >
-                          <SelectTrigger id="educationLevel">
+                          <SelectTrigger id="educationLevel" className={errors.educationLevel ? "border-destructive" : ""}>
                             <SelectValue
                               placeholder={language === "ar" ? "اختر المستوى التعليمي" : "Select education level"}
                             />
@@ -411,7 +493,7 @@ export default function Profile() {
 
               {/* Step 3: Work Experience */}
               {step === 3 && (
-                <Card>
+                <Card className={cn(errors.yearsOfExperience || errors.nocCode ? "border-destructive" : "")}>
                   <CardHeader>
                     <CardTitle>{language === "ar" ? "الخبرة العملية" : "Work Experience"}</CardTitle>
                     <CardDescription>
@@ -421,8 +503,10 @@ export default function Profile() {
                   <CardContent className="space-y-4">
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="yearsOfExperience">
+                        <Label htmlFor="yearsOfExperience" className={errors.yearsOfExperience ? "text-destructive" : ""}>
                           {language === "ar" ? "سنوات الخبرة" : "Years of Experience"}
+                          <span className="text-destructive"> *</span>
+                          <CrsImpactIcon />
                         </Label>
                         <Input
                           id="yearsOfExperience"
@@ -431,6 +515,7 @@ export default function Profile() {
                           value={formData.yearsOfExperience}
                           onChange={(e) => handleChange("yearsOfExperience", e.target.value)}
                           placeholder="0"
+                          className={errors.yearsOfExperience ? "border-destructive" : ""}
                         />
                       </div>
 
@@ -450,8 +535,9 @@ export default function Profile() {
                         <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger asChild>
-                              <Label htmlFor="nocCode" className="cursor-help flex items-center gap-1">
+                              <Label htmlFor="nocCode" className={cn("cursor-help flex items-center gap-1", errors.nocCode ? "text-destructive" : "")}>
                                 {language === "ar" ? "رمز NOC" : "NOC Code"}
+                                <span className="text-destructive"> *</span>
                                 <Info className="h-3 w-3 text-muted-foreground" />
                               </Label>
                             </TooltipTrigger>
@@ -469,6 +555,7 @@ export default function Profile() {
                           value={formData.nocCode}
                           onChange={(e) => handleChange("nocCode", e.target.value)}
                           placeholder="e.g., 21232"
+                          className={errors.nocCode ? "border-destructive" : ""}
                         />
                         <p className="text-xs text-muted-foreground">
                           {language === "ar"
@@ -483,7 +570,7 @@ export default function Profile() {
 
               {/* Step 4: Language Proficiency */}
               {step === 4 && (
-                <Card>
+                <Card className={cn(errors.englishLevel ? "border-destructive" : "")}>
                   <CardHeader>
                     <CardTitle>{language === "ar" ? "إتقان اللغة" : "Language Proficiency"}</CardTitle>
                     <CardDescription>
@@ -493,14 +580,16 @@ export default function Profile() {
                   <CardContent className="space-y-4">
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="englishLevel">
+                        <Label htmlFor="englishLevel" className={errors.englishLevel ? "text-destructive" : ""}>
                           {language === "ar" ? "مستوى الإنجليزية" : "English Level"}
+                          <span className="text-destructive"> *</span>
+                          <CrsImpactIcon />
                         </Label>
                         <Select
                           value={formData.englishLevel}
                           onValueChange={(value) => handleChange("englishLevel", value)}
                         >
-                          <SelectTrigger id="englishLevel">
+                          <SelectTrigger id="englishLevel" className={errors.englishLevel ? "border-destructive" : ""}>
                             <SelectValue
                               placeholder={language === "ar" ? "اختر مستوى الإنجليزية" : "Select English level"}
                             />
@@ -520,6 +609,7 @@ export default function Profile() {
                       <div className="space-y-2">
                         <Label htmlFor="ieltsScore">
                           {language === "ar" ? "درجة IELTS" : "IELTS Score"}
+                          <CrsImpactIcon />
                         </Label>
                         <Input
                           id="ieltsScore"
@@ -572,7 +662,7 @@ export default function Profile() {
 
               {/* Step 5: Immigration Goals */}
               {step === 5 && (
-                <Card>
+                <Card className={cn(errors.immigrationPathway ? "border-destructive" : "")}>
                   <CardHeader>
                     <CardTitle>{language === "ar" ? "أهداف الهجرة" : "Immigration Goals"}</CardTitle>
                     <CardDescription>
@@ -599,14 +689,15 @@ export default function Profile() {
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="immigrationPathway">
+                        <Label htmlFor="immigrationPathway" className={errors.immigrationPathway ? "text-destructive" : ""}>
                           {language === "ar" ? "مسار الهجرة" : "Immigration Pathway"}
+                          <span className="text-destructive"> *</span>
                         </Label>
                         <Select
                           value={formData.immigrationPathway}
                           onValueChange={(value) => handleChange("immigrationPathway", value)}
                         >
-                          <SelectTrigger id="immigrationPathway">
+                          <SelectTrigger id="immigrationPathway" className={errors.immigrationPathway ? "border-destructive" : ""}>
                             <SelectValue
                               placeholder={language === "ar" ? "اختر مسار الهجرة" : "Select immigration pathway"}
                             />
@@ -653,7 +744,7 @@ export default function Profile() {
                 {step < totalSteps ? (
                   <Button
                     type="button"
-                    onClick={() => setStep(step + 1)}
+                    onClick={() => handleNext()}
                     className="gap-2"
                   >
                     {language === "ar" ? "الخطوة التالية" : "Next Step"}

@@ -35,12 +35,27 @@ export async function createSupabaseServerClient() {
                     }
                 },
             },
+            cookieOptions: {
+                domain: process.env.NODE_ENV === 'production' ? '.hijraah.com' : undefined,
+                path: '/',
+                sameSite: 'lax' as const,
+                secure: process.env.NODE_ENV === 'production',
+            }
         }
     )
 }
 
 export async function getAuthUser(): Promise<User | null> {
     const supabase = await createSupabaseServerClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user }, error } = await supabase.auth.getUser();
+
+    if (error) {
+        console.error('[getAuthUser] Error fetching user:', error.message)
+    } else if (!user) {
+        console.log('[getAuthUser] No user found in session')
+    } else {
+        console.log('[getAuthUser] User found:', user.id)
+    }
+
     return user;
 }

@@ -66,6 +66,10 @@ import {
   ReasoningTrigger,
   ReasoningContent,
 } from "@/components/ai-elements/reasoning";
+import { ChatLiveRegion } from "@/components/accessibility/ChatLiveRegion";
+import { CRSScoreDisplay } from "@/components/artifacts/CRSScoreDisplay";
+import { DocumentValidator } from "@/components/artifacts/DocumentValidator";
+import { ComparisonTable } from "@/components/artifacts/ComparisonTable";
 
 // Conversation scroll components
 function ConversationScrollButton() {
@@ -354,6 +358,7 @@ export default function ChatPage() {
   const searchParams = useSearchParams();
   const idParam = searchParams.get("id");
 
+  const isNewChat = searchParams.get("new") === "true";
   const [selectedConversationId, setSelectedConversationId] = useState<number | null>(
     idParam ? parseInt(idParam) : null
   );
@@ -493,9 +498,9 @@ export default function ChatPage() {
     return dbMessages;
   }, [conversationData?.messages, streamMessages]);
 
-  const handleNewChat = () => {
+  const handleNewChat = useCallback(() => {
     createConversationMutation.mutate({ language: language as "ar" | "en" });
-  };
+  }, [createConversationMutation.mutate, language]);
 
   const handleSendMessage = async (messageText?: string) => {
     let text = messageText || input;
@@ -575,16 +580,24 @@ export default function ChatPage() {
   };
 
   useEffect(() => {
-    if (conversations && conversations.length === 0 && !createConversationMutation.isPending) {
+    if (
+      (conversations && conversations.length === 0 && !createConversationMutation.isPending) ||
+      (isNewChat && !selectedConversationId && !createConversationMutation.isPending)
+    ) {
       handleNewChat();
     }
-  }, [conversations]);
+  }, [conversations, isNewChat, selectedConversationId, createConversationMutation.isPending, handleNewChat]);
 
   useEffect(() => {
-    if (conversations && conversations.length > 0 && !selectedConversationId) {
+    // Only auto-select if:
+    // 1. We have conversations
+    // 2. No conversation is currently selected
+    // 3. The user did NOT explicitly ask for a new chat (via ?new=true)
+    if (conversations && conversations.length > 0 && !selectedConversationId && !isNewChat) {
       setSelectedConversationId(conversations[0].id);
     }
-  }, [conversations, selectedConversationId]);
+    // If it IS a new chat request and we have no selected ID, ensure the UI reflects that (it should be null already)
+  }, [conversations, selectedConversationId, isNewChat]);
 
   useEffect(() => {
     setMessages([]);
@@ -594,6 +607,7 @@ export default function ChatPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <ChatLiveRegion messages={allMessages} isStreaming={isStreaming} />
       {/* Header */}
       <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
         <div className="container flex h-14 items-center justify-between">
@@ -770,7 +784,7 @@ export default function ChatPage() {
         )}
 
         {/* Main Chat Area */}
-        <div className="flex-1 flex flex-col min-w-0">
+        <div id="main-content" className="flex-1 flex flex-col min-w-0">
           {selectedConversationId ? (
             <>
               <StickToBottom className="flex-1 relative overflow-hidden" resize="smooth" initial="smooth">

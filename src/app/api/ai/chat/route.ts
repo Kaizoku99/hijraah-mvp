@@ -4,6 +4,7 @@
  */
 
 import { streamText, UIMessage, convertToModelMessages } from 'ai';
+import { after } from 'next/server';
 import { google, generateChatTitle } from '@/../server/_core/gemini';
 import { getAuthenticatedUser } from '@/actions/auth';
 import { ragQuery, buildRagContext } from '@/../server/rag';
@@ -21,6 +22,8 @@ import { checkUsageLimit, incrementUsage } from '@/../server/usage';
 
 // Allow streaming responses up to 60 seconds
 export const maxDuration = 60;
+
+import { calculateCRSTool, validateDocumentTool, generateComparisonTool } from '../tools';
 
 export async function POST(req: Request) {
     try {
@@ -174,6 +177,11 @@ export async function POST(req: Request) {
             system: systemInstruction,
             messages: await convertToModelMessages(messages),
             temperature: 0.7,
+            tools: {
+                calculateCRS: calculateCRSTool,
+                validateDocument: validateDocumentTool,
+                compareItems: generateComparisonTool
+            },
             onFinish: async ({ text }) => {
                 // Save AI response to database
                 try {
@@ -195,27 +203,37 @@ export async function POST(req: Request) {
                         conversation.title.length < 3;
 
                     if (needsTitle && userQuery) {
-                        // Generate title async - don't block the response
-                        generateChatTitle(userQuery, language)
-                            .then(async (generatedTitle) => {
+                        // Generate title async using after() to prevent serverless termination
+                        after(async () => {
+                            try {
+                                const generatedTitle = await generateChatTitle(userQuery, language);
                                 await updateConversationTitle(
                                     activeConversationId!,
                                     generatedTitle
                                 );
                                 console.log(`[Chat] Generated title: "${generatedTitle}" for conversation ${activeConversationId}`);
-                            })
-                            .catch(err => console.error('Title generation failed:', err));
+                            } catch (err) {
+                                console.error('Title generation failed:', err);
+                            }
+                        });
                     }
 
                     // Add conversation to memory (async, don't block)
-                    addMemoryToChat(
-                        user.id.toString(),
-                        activeConversationId!.toString(),
-                        [
-                            { role: 'user', content: userQuery },
-                            { role: 'assistant', content: text },
-                        ]
-                    ).catch(err => console.error('Memory add failed:', err));
+                    // Add conversation to memory (async, don't block)
+                    after(async () => {
+                        try {
+                            await addMemoryToChat(
+                                user.id.toString(),
+                                activeConversationId!.toString(),
+                                [
+                                    { role: 'user', content: userQuery },
+                                    { role: 'assistant', content: text },
+                                ]
+                            );
+                        } catch (err) {
+                            console.error('Memory add failed:', err);
+                        }
+                    });
                 } catch (error) {
                     console.error('Error saving message:', error);
                 }

@@ -9,6 +9,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { createCheckout, getInvoices } from "@/actions/subscription";
 import { Check, Crown, Sparkles, Star, Zap, User, LogOut, ArrowLeft, Loader2 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -92,9 +93,9 @@ export default function Pricing() {
         ? "للمتقدمين الجادين للهجرة"
         : "For serious immigration applicants",
       icon: Star,
-      color: "text-blue-600",
-      bgColor: "bg-blue-50",
-      borderColor: "border-blue-200",
+      color: "text-primary",
+      bgColor: "bg-primary/10",
+      borderColor: "border-primary/20",
       features: language === "ar" ? [
         "50 رسالة محادثة يومياً",
         "حسابات CRS غير محدودة",
@@ -185,10 +186,14 @@ export default function Pricing() {
       {/* Header */}
       <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
         <div className="container flex h-16 items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-              {language === "ar" ? "هجرة" : "Hijraah"}
-            </h1>
+          <Link href="/" className="relative h-8 w-32">
+            <Image
+              src="/Hijraah_logo.png"
+              alt="Hijraah"
+              fill
+              className="object-contain object-left"
+              priority
+            />
           </Link>
           <div className="flex items-center gap-4">
             {user ? (

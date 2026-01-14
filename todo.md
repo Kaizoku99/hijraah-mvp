@@ -538,9 +538,9 @@
 - [x] Deleted `components/pages/HomePage.tsx` (unused, `app/page.tsx` is the active landing page)
 
 ### Accessibility Items to Verify
-- [ ] Skip navigation links (marked done but no `aria-skip-link` found in codebase)
-- [ ] Focus trap in modals
-- [ ] aria-live regions for dynamic content
+- [x] Skip navigation links (marked done but no `aria-skip-link` found in codebase)
+- [x] Focus trap in modals
+- [x] aria-live regions for dynamic content
 
 ### Notes
 - `app/dashboard/page.tsx` now contains ALL dashboard features in one consolidated file

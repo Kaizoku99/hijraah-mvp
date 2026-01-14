@@ -128,6 +128,7 @@ export function AIChatBox({
 
   // Filter out system messages
   const displayMessages = messages.filter((msg) => msg.role !== "system");
+  const lastAssistantMessage = displayMessages.filter(m => m.role === 'assistant').pop()?.content;
 
   // Calculate min-height for last assistant message to push user message to top
   const [minHeightForLastMessage, setMinHeightForLastMessage] = useState(0);
@@ -332,6 +333,11 @@ export function AIChatBox({
           )}
         </Button>
       </form>
+
+      {/* Screen reader announcements for new AI messages */}
+      <div className="sr-only" aria-live="polite" aria-atomic="true">
+        {lastAssistantMessage}
+      </div>
     </div>
   );
 }

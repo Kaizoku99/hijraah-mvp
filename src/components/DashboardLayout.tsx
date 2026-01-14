@@ -24,6 +24,7 @@ import { useIsMobile } from "@/hooks/useMobile";
 import { LayoutDashboard, LogOut, PanelLeft, Users } from "lucide-react";
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import Image from "next/image";
 import { DashboardLayoutSkeleton } from './DashboardLayoutSkeleton';
 import { Button } from "./ui/button";
 import { SidebarDocuments } from "./SidebarDocuments";
@@ -171,9 +172,15 @@ function DashboardLayoutContent({
               </button>
               {!isCollapsed ? (
                 <div className="flex items-center gap-2 min-w-0">
-                  <span className="font-semibold tracking-tight truncate">
-                    Navigation
-                  </span>
+                  <div className="relative h-8 w-32">
+                    <Image
+                      src="/Hijraah_logo.png"
+                      alt="Hijraah"
+                      fill
+                      className="object-contain object-left"
+                      priority
+                    />
+                  </div>
                 </div>
               ) : null}
             </div>

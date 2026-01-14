@@ -11,9 +11,20 @@ if (!supabaseUrl || !supabaseAnonKey) {
   console.warn('Supabase environment variables not set. Auth features will not work.')
 }
 
+// Cookie domain for cross-subdomain sharing (www.hijraah.com <-> hijraah.com)
+const isProduction = typeof window !== 'undefined' && window.location.hostname.includes('hijraah.com')
+
 export const supabase = createBrowserClient(
   supabaseUrl || 'https://placeholder.supabase.co',
-  supabaseAnonKey || 'placeholder-key'
+  supabaseAnonKey || 'placeholder-key',
+  {
+    cookieOptions: {
+      domain: isProduction ? '.hijraah.com' : undefined,
+      path: '/',
+      sameSite: 'lax' as const,
+      secure: isProduction,
+    }
+  }
 )
 
 console.log('[Supabase Client] Client created successfully')

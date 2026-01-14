@@ -104,7 +104,7 @@ function DashboardFocusCard({
         : "Talk to our AI assistant to guide you through the submission process.",
       action: language === "ar" ? "تحدث مع هجرة" : "Talk to Hijraah AI",
       icon: Sparkles,
-      href: "/chat",
+      href: "/chat?new=true",
       color: "text-green-600",
       bg: "bg-green-50/50 dark:bg-green-950/20"
     }
@@ -304,7 +304,7 @@ export default function Dashboard() {
       icon: MessageSquare,
       title: language === "ar" ? "محادثة جديدة" : "New Chat",
       description: language === "ar" ? "ابدأ محادثة مع المساعد" : "Start a conversation",
-      href: "/chat",
+      href: "/chat?new=true",
       color: "bg-blue-500",
     },
     {
@@ -363,7 +363,7 @@ export default function Dashboard() {
         </div>
       </header>
 
-      <main className="container py-8">
+      <main id="main-content" className="container py-8">
         {/* Welcome Section */}
         <div className="mb-6">
           <h2 className="text-3xl font-bold mb-2">

@@ -9,6 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 import { listSops } from "@/actions/sop";
 import { FileText, User, LogOut, Plus, Loader2, Calendar, Eye } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
@@ -30,7 +31,7 @@ export default function SopList() {
 
   const statusLabels = {
     draft: { en: "Draft", ar: "مسودة", color: "bg-gray-100 text-gray-800" },
-    generated: { en: "Generated", ar: "تم الإنشاء", color: "bg-blue-100 text-blue-800" },
+    generated: { en: "Generated", ar: "تم الإنشاء", color: "bg-primary/10 text-primary" },
     revised: { en: "Revised", ar: "تم المراجعة", color: "bg-yellow-100 text-yellow-800" },
     final: { en: "Final", ar: "نهائي", color: "bg-green-100 text-green-800" },
   };
@@ -40,10 +41,14 @@ export default function SopList() {
       {/* Header */}
       <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
         <div className="container flex h-16 items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-              {language === "ar" ? "هجرة" : "Hijraah"}
-            </h1>
+          <Link href="/" className="relative h-8 w-32">
+            <Image
+              src="/Hijraah_logo.png"
+              alt="Hijraah"
+              fill
+              className="object-contain object-left"
+              priority
+            />
           </Link>
           <div className="flex items-center gap-4">
             <Link href="/dashboard">

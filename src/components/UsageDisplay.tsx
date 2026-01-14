@@ -119,7 +119,7 @@ export function UsageDisplay() {
         used: usage.chat.used,
         limit: usage.chat.limit,
         colorClass:
-          "text-blue-600 bg-blue-50 dark:bg-blue-900/20 dark:text-blue-400",
+          "text-primary bg-primary/10 dark:bg-primary/20 dark:text-primary",
       },
       {
         icon: <Calculator className="h-3.5 w-3.5" />,
@@ -229,7 +229,7 @@ export function UsageDisplay() {
             <Link href="/pricing" className="block">
               <Button
                 className={`w-full ${hasLimitReached
-                  ? "bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white"
+                  ? "bg-gradient-to-r from-primary to-chart-3 text-primary-foreground hover:opacity-90"
                   : ""
                   }`}
                 variant={hasLimitReached ? "default" : "outline"}
