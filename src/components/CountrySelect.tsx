@@ -46,6 +46,7 @@ export const COUNTRIES = [
     { value: "comoros", labelAr: "جزر القمر", labelEn: "Comoros" },
     { value: "djibouti", labelAr: "جيبوتي", labelEn: "Djibouti" },
     { value: "somalia", labelAr: "الصومال", labelEn: "Somalia" },
+    { value: "iran", labelAr: "إيران", labelEn: "Iran" },
     // Common Destination Countries
     { value: "canada", labelAr: "كندا", labelEn: "Canada" },
     { value: "usa", labelAr: "الولايات المتحدة", labelEn: "United States" },
@@ -92,7 +93,7 @@ export function CountrySelect({
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-[300px] p-0" align="start">
+            <PopoverContent className="w-[min(300px,calc(100vw-32px))] p-0" align="start">
                 <Command>
                     <CommandInput
                         placeholder={language === "ar" ? "ابحث عن بلد..." : "Search country..."}

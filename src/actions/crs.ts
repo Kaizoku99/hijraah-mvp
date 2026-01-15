@@ -81,12 +81,11 @@ export async function calculateCrsScore(input: CalculateCrsInput) {
     // Calculate CRS score
     const result = calculateCRS(crsInput as CrsInput)
 
-    // Track usage
-    await incrementUsage(user.id, 'crs')
+    // Track usage and save assessment in parallel
+    const promises: Promise<any>[] = [incrementUsage(user.id, 'crs')];
 
-    // Save assessment if requested
     if (saveAssessment) {
-        await createCrsAssessment({
+        promises.push(createCrsAssessment({
             userId: user.id,
             totalScore: result.totalScore,
             coreScore: result.breakdown.coreHumanCapital,
@@ -109,8 +108,12 @@ export async function calculateCrsScore(input: CalculateCrsInput) {
             hasProvincialNomination: crsInput.hasProvincialNomination,
             hasJobOffer: crsInput.hasValidJobOffer,
             hasCanadianStudyExperience: crsInput.hasCanadianEducation,
-        })
+        }));
+    }
 
+    await Promise.all(promises);
+
+    if (saveAssessment) {
         invalidateUserCrs(user.id)
         revalidatePath('/calculator')
         revalidatePath('/dashboard')

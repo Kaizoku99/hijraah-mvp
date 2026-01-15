@@ -22,6 +22,8 @@ export const CACHE_TAGS = {
     CRS_LATEST: 'crs-latest',
     CHECKLISTS: 'checklists',
     DOCUMENTS: 'documents',
+    SOP: 'sop',
+    CHAT: 'chat',
 } as const
 
 // ============================================================================
@@ -82,6 +84,20 @@ export function invalidateUserCrs(userId: number | string): void {
 export function invalidateUserDocuments(userId: number | string): void {
     revalidateTag(userTag(CACHE_TAGS.CHECKLISTS, userId), 'max')
     revalidateTag(userTag(CACHE_TAGS.DOCUMENTS, userId), 'max')
+}
+
+/**
+ * Invalidate user SOP caches
+ */
+export function invalidateUserSop(userId: number | string): void {
+    revalidateTag(userTag(CACHE_TAGS.SOP, userId), 'max')
+}
+
+/**
+ * Invalidate user Chat caches
+ */
+export function invalidateUserChat(userId: number | string): void {
+    revalidateTag(userTag(CACHE_TAGS.CHAT, userId), 'max')
 }
 
 // ============================================================================

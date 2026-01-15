@@ -157,18 +157,18 @@ export default function SopDisplay() {
       <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
         <div className="container flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+            <h1 className="text-2xl font-bold text-primary">
               {language === "ar" ? "هجرة" : "Hijraah"}
             </h1>
           </Link>
           <div className="flex items-center gap-4">
-            <Link href="/dashboard">
+            <Link href="/dashboard" className="hidden md:block">
               <Button variant="ghost" size="sm">
                 {t("nav.dashboard")}
               </Button>
             </Link>
             <LanguageToggle />
-            <Link href="/profile">
+            <Link href="/profile" className="hidden md:block">
               <Button variant="ghost" size="sm" className="gap-2">
                 <User className="h-4 w-4" />
                 <span className="hidden sm:inline">{t("nav.profile")}</span>

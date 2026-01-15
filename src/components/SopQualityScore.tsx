@@ -128,7 +128,7 @@ export function SopQualityScore({ sopId }: SopQualityScoreProps) {
             <Sparkles className="h-5 w-5 text-primary" />
             {isRtl ? "نتيجة تحليل الجودة" : "Quality Analysis Results"}
           </div>
-          <Button variant="outline" size="sm" onClick={handleAnalyze} disabled={isAnalyzing}>
+          <Button variant="outline" size="sm" className="h-10 px-4" onClick={handleAnalyze} disabled={isAnalyzing}>
             {isAnalyzing ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (

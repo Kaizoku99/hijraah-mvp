@@ -51,42 +51,51 @@ export async function processOcrBase64(input: z.infer<typeof ProcessBase64Schema
         const result = await processDocumentOcrBase64(validated.base64Data, validated.mimeType)
         console.log('[OCR Action] processDocumentOcrBase64 successful');
 
-        // Track usage
-        await incrementUsage(user.id, 'document')
-        console.log(`[OCR Action] Usage incremented for user ${user.id}`);
+        console.log('[OCR Action] processDocumentOcrBase64 successful');
 
-        // Classify document and auto-update checklist
-        let classification: DocumentClassification | null = null;
-        try {
-            console.log('[OCR Action] Classifying document...');
+        // Parallelize independent side effects: Usage tracking and Document Classification
+        // This reduces the total time the user waits for the response
+        const [_, classification] = await Promise.all([
+            (async () => {
+                // Track usage
+                await incrementUsage(user.id, 'document')
+                console.log(`[OCR Action] Usage incremented for user ${user.id}`);
+            })(),
+            (async () => {
+                // Classify document and auto-update checklist
+                try {
+                    console.log('[OCR Action] Classifying document...');
 
-            // Get user's name for identity verification
-            const { getUserById } = await import('@/../server/db');
-            const dbUser = await getUserById(user.id);
-            const userProfileName = dbUser?.name || null;
-            console.log(`[OCR Action] User profile name: ${userProfileName || '(not set)'}`);
+                    // Get user's name for identity verification
+                    const { getUserById } = await import('@/../server/db');
+                    const dbUser = await getUserById(user.id);
+                    const userProfileName = dbUser?.name || null;
+                    console.log(`[OCR Action] User profile name: ${userProfileName || '(not set)'}`);
 
-            // Get user's checklist items
-            const checklists = await getUserDocumentChecklists(user.id);
-            const checklistItemIds = checklists.flatMap((c) =>
-                (c.items as any[]).map((item) => item.id)
-            );
+                    // Get user's checklist items
+                    const checklists = await getUserDocumentChecklists(user.id);
+                    const checklistItemIds = checklists.flatMap((c) =>
+                        (c.items as any[]).map((item) => item.id)
+                    );
 
-            classification = await classifyDocument(result.extractedText, checklistItemIds, userProfileName);
-            console.log(`[OCR Action] Classification result: type=${classification.documentType}, confidence=${classification.confidence}, valid=${classification.validationResult.isValid}, nameMatch=${classification.identityVerification.nameMatches}`);
+                    const cls = await classifyDocument(result.extractedText, checklistItemIds, userProfileName);
+                    console.log(`[OCR Action] Classification result: type=${cls.documentType}, confidence=${cls.confidence}, valid=${cls.validationResult.isValid}, nameMatch=${cls.identityVerification.nameMatches}`);
 
-            // If valid, update checklist
-            if (classification.validationResult.isValid && classification.confidence > 0.7) {
-                const matchingItem = findMatchingChecklistItem(classification.documentType, checklistItemIds);
-                if (matchingItem) {
-                    await markChecklistItemVerified(user.id, matchingItem);
-                    console.log(`[OCR Action] Checklist item '${matchingItem}' marked as verified`);
+                    // If valid, update checklist
+                    if (cls.validationResult.isValid && cls.confidence > 0.7) {
+                        const matchingItem = findMatchingChecklistItem(cls.documentType, checklistItemIds);
+                        if (matchingItem) {
+                            await markChecklistItemVerified(user.id, matchingItem);
+                            console.log(`[OCR Action] Checklist item '${matchingItem}' marked as verified`);
+                        }
+                    }
+                    return cls;
+                } catch (classifyError) {
+                    console.error('[OCR Action] Classification error (non-fatal):', classifyError);
+                    return null;
                 }
-            }
-        } catch (classifyError) {
-            console.error('[OCR Action] Classification error (non-fatal):', classifyError);
-            // Don't fail the whole request if classification fails
-        }
+            })()
+        ]);
 
         return {
             ...result,

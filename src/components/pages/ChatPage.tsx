@@ -38,12 +38,19 @@ import {
   Tag
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect, useCallback } from "react";
 import { StickToBottom, useStickToBottomContext } from "use-stick-to-bottom";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import PullToRefresh from "react-simple-pull-to-refresh";
 
 // AI Elements Components
 import {
@@ -56,6 +63,14 @@ import {
 import { Loader } from "@/components/ai-elements/loader";
 import { Suggestions, Suggestion } from "@/components/ai-elements/suggestion";
 import {
+  PromptInput,
+  PromptInputTextarea,
+  PromptInputFooter,
+  PromptInputTools,
+  PromptInputButton,
+  PromptInputSubmit,
+} from "@/components/ai-elements/prompt-input";
+import {
   Sources,
   SourcesTrigger,
   SourcesContent,
@@ -66,6 +81,20 @@ import {
   ReasoningTrigger,
   ReasoningContent,
 } from "@/components/ai-elements/reasoning";
+import {
+  ChainOfThought,
+  ChainOfThoughtHeader,
+  ChainOfThoughtContent,
+  ChainOfThoughtStep,
+} from "@/components/ai-elements/chain-of-thought";
+import {
+  InlineCitation,
+  InlineCitationText,
+  InlineCitationCard,
+  InlineCitationCardTrigger,
+  InlineCitationCardBody,
+  InlineCitationSource,
+} from "@/components/ai-elements/inline-citation";
 import { ChatLiveRegion } from "@/components/accessibility/ChatLiveRegion";
 import { CRSScoreDisplay } from "@/components/artifacts/CRSScoreDisplay";
 import { DocumentValidator } from "@/components/artifacts/DocumentValidator";
@@ -238,102 +267,6 @@ function ConversationEmptyState({
   );
 }
 
-// Chat input component
-function ChatInput({
-  value,
-  onChange,
-  onSend,
-  onStop,
-  isStreaming,
-  language,
-  responseLanguage,
-  onResponseLanguageChange,
-}: {
-  value: string;
-  onChange: (value: string) => void;
-  onSend: () => void;
-  onStop: () => void;
-  isStreaming: boolean;
-  language: string;
-  responseLanguage: "auto" | "ar" | "en";
-  onResponseLanguageChange: (lang: "auto" | "ar" | "en") => void;
-}) {
-  return (
-    <div className="border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 p-4">
-      <div className="max-w-3xl mx-auto">
-        <div className="relative flex items-end gap-2 p-2 rounded-2xl border bg-card shadow-sm">
-          <textarea
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                if (value.trim() && !isStreaming) {
-                  onSend();
-                }
-              }
-            }}
-            placeholder={language === "ar" ? "اكتب رسالتك هنا..." : "Type your message here..."}
-            disabled={isStreaming}
-            rows={1}
-            className="flex-1 resize-none bg-transparent border-0 outline-none focus:ring-0 px-3 py-2 max-h-32 min-h-[44px] text-sm placeholder:text-muted-foreground"
-            style={{ fieldSizing: 'content' } as React.CSSProperties}
-          />
-
-
-
-          <div className="flex flex-col gap-1">
-            <Button
-              variant="ghost"
-              size="icon"
-              className={cn("h-6 w-6 rounded-lg", responseLanguage === 'ar' && "text-primary bg-primary/10")}
-              onClick={() => onResponseLanguageChange(responseLanguage === 'ar' ? 'auto' : 'ar')}
-              title={language === "ar" ? "اطلب الإجابة بالعربية" : "Ask for Arabic answer"}
-            >
-              <div className="text-[10px] font-bold">ع</div>
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className={cn("h-6 w-6 rounded-lg", responseLanguage === 'en' && "text-primary bg-primary/10")}
-              onClick={() => onResponseLanguageChange(responseLanguage === 'en' ? 'auto' : 'en')}
-              title={language === "ar" ? "اطلب الإجابة بالإنجليزية" : "Ask for English answer"}
-            >
-              <div className="text-[10px] font-bold">En</div>
-            </Button>
-          </div>
-
-          {isStreaming ? (
-            <Button
-              onClick={onStop}
-              variant="destructive"
-              size="icon"
-              className="rounded-xl h-10 w-10 flex-shrink-0"
-            >
-              <StopCircle className="h-5 w-5" />
-            </Button>
-          ) : (
-            <Button
-              onClick={onSend}
-              disabled={!value.trim()}
-              size="icon"
-              className="rounded-xl h-10 w-10 flex-shrink-0"
-            >
-              <Send className="h-5 w-5" />
-            </Button>
-          )}
-        </div>
-
-        <p className="text-xs text-muted-foreground text-center mt-2">
-          {language === "ar"
-            ? "اضغط Enter للإرسال • Shift+Enter لسطر جديد"
-            : "Press Enter to send • Shift+Enter for new line"}
-        </p>
-      </div>
-    </div>
-  );
-}
-
 // Typing indicator
 function TypingIndicator() {
   return (
@@ -362,7 +295,7 @@ export default function ChatPage() {
   const [selectedConversationId, setSelectedConversationId] = useState<number | null>(
     idParam ? parseInt(idParam) : null
   );
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [editingConversationId, setEditingConversationId] = useState<number | null>(null);
   const [editTitle, setEditTitle] = useState("");
   const [responseLanguage, setResponseLanguage] = useState<"auto" | "ar" | "en">("auto");
@@ -615,25 +548,26 @@ export default function ChatPage() {
             <Button
               variant="ghost"
               size="icon"
-              className="md:hidden"
-              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="md:hidden h-11 w-11 touch-manipulation"
+              onClick={() => setSidebarOpen(true)}
+              aria-label={language === "ar" ? "فتح القائمة" : "Open menu"}
             >
               <Menu className="h-5 w-5" />
             </Button>
             <Link href="/" className="flex items-center gap-2">
-              <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+              <h1 className="text-xl font-bold text-primary">
                 {language === "ar" ? "هجرة" : "Hijraah"}
               </h1>
             </Link>
           </div>
           <div className="flex items-center gap-2">
-            <Link href="/dashboard">
+            <Link href="/dashboard" className="hidden md:block">
               <Button variant="ghost" size="sm">
                 {t("nav.dashboard")}
               </Button>
             </Link>
             <LanguageToggle />
-            <Link href="/profile">
+            <Link href="/profile" className="hidden md:block">
               <Button variant="ghost" size="icon">
                 <User className="h-4 w-4" />
               </Button>
@@ -646,16 +580,128 @@ export default function ChatPage() {
       </header>
 
       <div className="flex-1 flex overflow-hidden">
-        {/* Sidebar */}
-        <div className={cn(
-          "border-r bg-muted/30 flex flex-col transition-all duration-300",
-          sidebarOpen ? "w-72" : "w-0 md:w-72",
-          "md:relative absolute inset-y-0 left-0 z-40 md:z-0"
-        )}>
+        {/* Mobile Sidebar - Sheet Drawer */}
+        <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
+          <SheetContent side="left" className="w-72 p-0 flex flex-col">
+            <SheetHeader className="p-3 border-b">
+              <SheetTitle className="sr-only">
+                {language === "ar" ? "المحادثات" : "Conversations"}
+              </SheetTitle>
+              <Button
+                onClick={() => {
+                  handleNewChat();
+                  setSidebarOpen(false);
+                }}
+                className="w-full gap-2 rounded-xl h-11 touch-manipulation"
+                disabled={createConversationMutation.isPending}
+              >
+                {createConversationMutation.isPending ? (
+                  <Loader size={16} />
+                ) : (
+                  <Plus className="h-4 w-4" />
+                )}
+                {language === "ar" ? "محادثة جديدة" : "New Chat"}
+              </Button>
+              <div className="mt-2 relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder={language === "ar" ? "بحث في المحادثات..." : "Search conversations..."}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-9 h-11 rounded-xl touch-manipulation"
+                />
+              </div>
+              {/* Category Filter Chips */}
+              <div className="flex flex-wrap gap-1.5 mt-2">
+                <button
+                  onClick={() => setCategoryFilter(null)}
+                  className={cn(
+                    "text-xs px-3 py-1.5 rounded-full transition-colors min-h-[32px] touch-manipulation",
+                    categoryFilter === null ? "bg-primary text-primary-foreground" : "bg-secondary hover:bg-secondary/80 active:bg-secondary/70"
+                  )}
+                >
+                  {language === "ar" ? "الكل" : "All"}
+                </button>
+                {categories.map((cat) => (
+                  <button
+                    key={cat.id}
+                    onClick={() => setCategoryFilter(categoryFilter === cat.id ? null : cat.id)}
+                    className={cn(
+                      "text-xs px-3 py-1.5 rounded-full transition-colors flex items-center gap-1 min-h-[32px] touch-manipulation",
+                      categoryFilter === cat.id ? "bg-primary text-primary-foreground" : "bg-secondary hover:bg-secondary/80 active:bg-secondary/70"
+                    )}
+                  >
+                    <Tag className="h-3 w-3" />
+                    {cat.label}
+                  </button>
+                ))}
+              </div>
+            </SheetHeader>
+            <ScrollArea className="flex-1">
+              <PullToRefresh
+                onRefresh={async () => {
+                  await refetchConversations();
+                }}
+                pullingContent={
+                  <div className="flex justify-center py-2">
+                    <Loader size={16} />
+                  </div>
+                }
+                refreshingContent={
+                  <div className="flex justify-center py-2">
+                    <Loader size={16} />
+                  </div>
+                }
+              >
+                <div className="p-2 space-y-1">
+                  {conversations
+                    ?.filter((conv) => {
+                      if (!searchQuery.trim()) return true;
+                      const title = conv.title?.toLowerCase() || "";
+                      return title.includes(searchQuery.toLowerCase());
+                    })
+                    .map((conv) => (
+                      <button
+                        key={conv.id}
+                        className={cn(
+                          "w-full flex items-center justify-between p-3 rounded-xl cursor-pointer transition-all min-h-[56px] touch-manipulation text-left",
+                          selectedConversationId === conv.id
+                            ? "bg-primary/10 border border-primary/20"
+                            : "hover:bg-accent active:bg-accent/80"
+                        )}
+                        onClick={() => {
+                          setSelectedConversationId(conv.id);
+                          router.push(`/chat?id=${conv.id}`);
+                          setSidebarOpen(false);
+                        }}
+                      >
+                        <div className="flex items-center gap-3 flex-1 min-w-0">
+                          <div className={cn(
+                            "h-10 w-10 rounded-lg flex items-center justify-center flex-shrink-0",
+                            selectedConversationId === conv.id
+                              ? "bg-primary/20"
+                              : "bg-muted"
+                          )}>
+                            <MessageSquare className="h-5 w-5" />
+                          </div>
+                          <span className="text-sm truncate">
+                            {conv.title || (language === "ar" ? "محادثة جديدة" : "New Chat")}
+                          </span>
+                        </div>
+                      </button>
+                    ))}
+                </div>
+              </PullToRefresh>
+            </ScrollArea>
+          </SheetContent>
+        </Sheet>
+
+        {/* Desktop Sidebar - Fixed */}
+        <aside className="hidden md:flex w-72 border-r bg-muted/30 flex-col">
           <div className="p-3 border-b">
             <Button
               onClick={handleNewChat}
-              className="w-full gap-2 rounded-xl"
+              className="w-full gap-2 rounded-xl h-11"
               disabled={createConversationMutation.isPending}
             >
               {createConversationMutation.isPending ? (
@@ -671,15 +717,15 @@ export default function ChatPage() {
                 placeholder={language === "ar" ? "بحث في المحادثات..." : "Search conversations..."}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9 h-9 rounded-xl"
+                className="pl-9 h-10 rounded-xl"
               />
             </div>
             {/* Category Filter Chips */}
-            <div className="flex flex-wrap gap-1 mt-2">
+            <div className="flex flex-wrap gap-1.5 mt-2">
               <button
                 onClick={() => setCategoryFilter(null)}
                 className={cn(
-                  "text-xs px-2 py-1 rounded-full transition-colors",
+                  "text-xs px-3 py-1.5 rounded-full transition-colors",
                   categoryFilter === null ? "bg-primary text-primary-foreground" : "bg-secondary hover:bg-secondary/80"
                 )}
               >
@@ -690,7 +736,7 @@ export default function ChatPage() {
                   key={cat.id}
                   onClick={() => setCategoryFilter(categoryFilter === cat.id ? null : cat.id)}
                   className={cn(
-                    "text-xs px-2 py-1 rounded-full transition-colors flex items-center gap-1",
+                    "text-xs px-3 py-1.5 rounded-full transition-colors flex items-center gap-1",
                     categoryFilter === cat.id ? "bg-primary text-primary-foreground" : "bg-secondary hover:bg-secondary/80"
                   )}
                 >
@@ -701,87 +747,96 @@ export default function ChatPage() {
             </div>
           </div>
           <ScrollArea className="flex-1">
-            <div className="p-2 space-y-1">
-              {conversations
-                ?.filter((conv) => {
-                  if (!searchQuery.trim()) return true;
-                  const title = conv.title?.toLowerCase() || "";
-                  return title.includes(searchQuery.toLowerCase());
-                })
-                .map((conv) => (
-                  <div
-                    key={conv.id}
-                    className={cn(
-                      "group flex items-center justify-between p-3 rounded-xl cursor-pointer transition-all",
-                      selectedConversationId === conv.id
-                        ? "bg-primary/10 border border-primary/20"
-                        : "hover:bg-accent"
-                    )}
-                    onClick={() => {
-                      setSelectedConversationId(conv.id);
-                      router.push(`/chat?id=${conv.id}`);
-                    }}
-                  >
-                    <div className="flex items-center gap-3 flex-1 min-w-0">
-                      <div className={cn(
-                        "h-8 w-8 rounded-lg flex items-center justify-center flex-shrink-0",
+            <PullToRefresh
+              onRefresh={async () => {
+                await refetchConversations();
+              }}
+              pullingContent={
+                <div className="flex justify-center py-2">
+                  <Loader size={16} />
+                </div>
+              }
+              refreshingContent={
+                <div className="flex justify-center py-2">
+                  <Loader size={16} />
+                </div>
+              }
+            >
+              <div className="p-2 space-y-1">
+                {conversations
+                  ?.filter((conv) => {
+                    if (!searchQuery.trim()) return true;
+                    const title = conv.title?.toLowerCase() || "";
+                    return title.includes(searchQuery.toLowerCase());
+                  })
+                  .map((conv) => (
+                    <div
+                      key={conv.id}
+                      className={cn(
+                        "group flex items-center justify-between p-3 rounded-xl cursor-pointer transition-all min-h-[52px]",
                         selectedConversationId === conv.id
-                          ? "bg-primary/20"
-                          : "bg-muted"
-                      )}>
-                        <MessageSquare className="h-4 w-4" />
-                      </div>
-                      {editingConversationId === conv.id ? (
-                        <form onSubmit={saveRename} className="flex-1 min-w-0 flex items-center gap-2" onClick={e => e.stopPropagation()}>
-                          <input
-                            autoFocus
-                            value={editTitle}
-                            onChange={(e) => setEditTitle(e.target.value)}
-                            onBlur={() => setEditingConversationId(null)}
-                            className="flex-1 bg-background border rounded px-2 py-1 text-sm h-7 min-w-0"
-                          />
-                          <button type="submit" className="hidden" />
-                        </form>
-                      ) : (
-                        <span className="text-sm truncate">
-                          {conv.title || (language === "ar" ? "محادثة جديدة" : "New Chat")}
-                        </span>
+                          ? "bg-primary/10 border border-primary/20"
+                          : "hover:bg-accent"
                       )}
-                    </div>
-                    <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      {!editingConversationId && (
+                      onClick={() => {
+                        setSelectedConversationId(conv.id);
+                        router.push(`/chat?id=${conv.id}`);
+                      }}
+                    >
+                      <div className="flex items-center gap-3 flex-1 min-w-0">
+                        <div className={cn(
+                          "h-9 w-9 rounded-lg flex items-center justify-center flex-shrink-0",
+                          selectedConversationId === conv.id
+                            ? "bg-primary/20"
+                            : "bg-muted"
+                        )}>
+                          <MessageSquare className="h-4 w-4" />
+                        </div>
+                        {editingConversationId === conv.id ? (
+                          <form onSubmit={saveRename} className="flex-1 min-w-0 flex items-center gap-2" onClick={e => e.stopPropagation()}>
+                            <input
+                              autoFocus
+                              value={editTitle}
+                              onChange={(e) => setEditTitle(e.target.value)}
+                              onBlur={() => setEditingConversationId(null)}
+                              className="flex-1 bg-background border rounded px-2 py-1 text-sm h-8 min-w-0"
+                            />
+                            <button type="submit" className="hidden" />
+                          </form>
+                        ) : (
+                          <span className="text-sm truncate">
+                            {conv.title || (language === "ar" ? "محادثة جديدة" : "New Chat")}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        {!editingConversationId && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 rounded-lg text-muted-foreground hover:text-foreground"
+                            onClick={(e) => handleRenameConversation(e, conv.id, conv.title || "")}
+                          >
+                            <Pencil className="h-3.5 w-3.5" />
+                          </Button>
+                        )}
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-7 w-7 rounded-lg text-muted-foreground hover:text-foreground"
-                          onClick={(e) => handleRenameConversation(e, conv.id, conv.title || "")}
+                          className="h-8 w-8 rounded-lg text-muted-foreground hover:text-destructive"
+                          onClick={(e) => {
+                            handleDeleteConversation(e, conv.id);
+                          }}
                         >
-                          <Pencil className="h-3.5 w-3.5" />
+                          <Trash2 className="h-3.5 w-3.5" />
                         </Button>
-                      )}
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-7 w-7 rounded-lg text-muted-foreground hover:text-destructive"
-                        onClick={(e) => {
-                          handleDeleteConversation(e, conv.id);
-                        }}
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </Button>
+                      </div>
                     </div>
-                  </div>
-                ))}
-            </div>
+                  ))}
+              </div>
+            </PullToRefresh>
           </ScrollArea>
-        </div>
-
-        {sidebarOpen && (
-          <div
-            className="fixed inset-0 bg-black/50 z-30 md:hidden"
-            onClick={() => setSidebarOpen(false)}
-          />
-        )}
+        </aside>
 
         {/* Main Chat Area */}
         <div id="main-content" className="flex-1 flex flex-col min-w-0">
@@ -826,9 +881,59 @@ export default function ChatPage() {
                                   </Reasoning>
                                 )}
 
+                                {/* Chain of Thought - shows AI's thinking steps */}
+                                {message.reasoning && !isStreaming && (
+                                  <ChainOfThought className="mb-3">
+                                    <ChainOfThoughtHeader>
+                                      {language === "ar" ? "مسار التفكير" : "Chain of Thought"}
+                                    </ChainOfThoughtHeader>
+                                    <ChainOfThoughtContent>
+                                      {Array.isArray(message.reasoning) ? (
+                                        message.reasoning.map((step: string, idx: number) => (
+                                          <ChainOfThoughtStep
+                                            key={idx}
+                                            label={step}
+                                            status="complete"
+                                          />
+                                        ))
+                                      ) : (
+                                        <ChainOfThoughtStep
+                                          label={message.reasoning}
+                                          status="complete"
+                                        />
+                                      )}
+                                    </ChainOfThoughtContent>
+                                  </ChainOfThought>
+                                )}
+
                                 <MessageContent className="bg-muted rounded-2xl rounded-tl-md px-4 py-3">
                                   <MessageResponse>{message.content}</MessageResponse>
                                 </MessageContent>
+
+                                {/* AI Artifact Components - auto-render when data exists */}
+                                <CRSScoreDisplay />
+                                <DocumentValidator />
+                                <ComparisonTable />
+
+                                {/* Inline Citations - show if message has sources with URLs */}
+                                {message.sources && message.sources.length > 0 && message.sources.some(s => s.url) && (
+                                  <div className="mt-2 flex flex-wrap gap-2">
+                                    {message.sources.filter(s => s.url).slice(0, 3).map((source) => (
+                                      <InlineCitation key={source.id}>
+                                        <InlineCitationCard>
+                                          <InlineCitationCardTrigger sources={[source.url]} />
+                                          <InlineCitationCardBody>
+                                            <InlineCitationSource
+                                              title={source.title}
+                                              url={source.url}
+                                              description={source.relevance ? `${source.relevance}% ${language === "ar" ? "صلة" : "relevant"}` : undefined}
+                                            />
+                                          </InlineCitationCardBody>
+                                        </InlineCitationCard>
+                                      </InlineCitation>
+                                    ))}
+                                  </div>
+                                )}
 
                                 {/* Sources display - show if message has sources */}
                                 {message.sources && message.sources.length > 0 && (
@@ -982,16 +1087,77 @@ export default function ChatPage() {
                 </div>
               )}
 
-              <ChatInput
-                value={input}
-                onChange={setInput}
-                onSend={() => handleSendMessage()}
-                onStop={stop}
-                isStreaming={isStreaming}
-                language={language}
-                responseLanguage={responseLanguage}
-                onResponseLanguageChange={setResponseLanguage}
-              />
+              <div className="border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+                <div className="max-w-3xl mx-auto">
+                  <PromptInput
+                    onSubmit={async ({ text }) => {
+                      if (!text.trim() || isStreaming) return;
+                      let finalText = text;
+                      if (responseLanguage === 'ar') {
+                        finalText += "\n\n(Please answer in Arabic)";
+                      } else if (responseLanguage === 'en') {
+                        finalText += "\n\n(Please answer in English)";
+                      }
+                      await sendMessage(finalText);
+                    }}
+                    className="rounded-2xl border bg-card shadow-sm"
+                  >
+                    <PromptInputTextarea
+                      value={input}
+                      onChange={(e) => setInput(e.target.value)}
+                      placeholder={language === "ar" ? "اكتب رسالتك هنا..." : "Type your message here..."}
+                      disabled={isStreaming}
+                      className="min-h-[44px] text-base touch-manipulation"
+                    />
+                    <PromptInputFooter className="p-2">
+                      <PromptInputTools>
+                        <PromptInputButton
+                          className={cn(
+                            "h-10 w-10 touch-manipulation",
+                            responseLanguage === 'ar' && "text-primary bg-primary/10"
+                          )}
+                          onClick={() => setResponseLanguage(responseLanguage === 'ar' ? 'auto' : 'ar')}
+                          aria-label={language === "ar" ? "اطلب الإجابة بالعربية" : "Ask for Arabic answer"}
+                        >
+                          <span className="text-sm font-bold">ع</span>
+                        </PromptInputButton>
+                        <PromptInputButton
+                          className={cn(
+                            "h-10 w-10 touch-manipulation",
+                            responseLanguage === 'en' && "text-primary bg-primary/10"
+                          )}
+                          onClick={() => setResponseLanguage(responseLanguage === 'en' ? 'auto' : 'en')}
+                          aria-label={language === "ar" ? "اطلب الإجابة بالإنجليزية" : "Ask for English answer"}
+                        >
+                          <span className="text-sm font-bold">En</span>
+                        </PromptInputButton>
+                      </PromptInputTools>
+                      {isStreaming ? (
+                        <Button
+                          type="button"
+                          onClick={stop}
+                          variant="destructive"
+                          size="icon"
+                          className="rounded-xl h-12 w-12 touch-manipulation"
+                          aria-label={language === "ar" ? "إيقاف" : "Stop"}
+                        >
+                          <StopCircle className="h-5 w-5" />
+                        </Button>
+                      ) : (
+                        <PromptInputSubmit
+                          disabled={!input.trim()}
+                          className="rounded-xl h-12 w-12 touch-manipulation"
+                        />
+                      )}
+                    </PromptInputFooter>
+                  </PromptInput>
+                  <p className="text-xs text-muted-foreground text-center mt-2 hidden md:block">
+                    {language === "ar"
+                      ? "اضغط Enter للإرسال • Shift+Enter لسطر جديد"
+                      : "Press Enter to send • Shift+Enter for new line"}
+                  </p>
+                </div>
+              </div>
             </>
           ) : (
             <div className="flex-1 flex items-center justify-center">

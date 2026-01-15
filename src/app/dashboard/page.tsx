@@ -348,22 +348,22 @@ export default function Dashboard() {
               {language === "ar" ? "هجرة" : "Hijraah"}
             </h1>
           </Link>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 md:gap-4">
             <UsageDisplay />
             <LanguageToggle />
-            <Link href="/profile">
-              <Button variant="ghost" size="icon">
+            <Link href="/profile" className="hidden md:block">
+              <Button variant="ghost" size="icon-lg" aria-label="Profile">
                 <User className="h-5 w-5" />
               </Button>
             </Link>
-            <Button variant="ghost" size="icon" onClick={handleLogout}>
+            <Button variant="ghost" size="icon-lg" onClick={handleLogout} aria-label="Logout">
               <LogOut className="h-5 w-5" />
             </Button>
           </div>
         </div>
       </header>
 
-      <main id="main-content" className="container py-8">
+      <main id="main-content" className="container py-8 pb-24 md:pb-8">
         {/* Welcome Section */}
         <div className="mb-6">
           <h2 className="text-3xl font-bold mb-2">
@@ -396,7 +396,7 @@ export default function Dashboard() {
         />
 
         {/* Stats Grid */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
+        <div className="grid grid-cols-2 gap-4 md:gap-6 lg:grid-cols-4 mb-8">
           {/* CRS Score Card */}
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -483,7 +483,7 @@ export default function Dashboard() {
           <h3 className="text-xl font-semibold mb-4">
             {language === "ar" ? "الإجراءات السريعة" : "Quick Actions"}
           </h3>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
             {quickActions.map((action, index) => {
               const Icon = action.icon
               return (

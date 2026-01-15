@@ -73,17 +73,25 @@ export function ImmigrationJourney({
             </CardHeader>
             <CardContent>
                 <div className="relative space-y-0">
-                    {/* Vertical Line */}
-                    <div className={`absolute top-2 bottom-8 w-0.5 bg-muted ${language === "ar" ? "right-[15px]" : "left-[15px]"}`} />
+                    {/* Vertical Line removed - now handled per step */}
 
                     {steps.map((step, index) => (
                         <div key={step.id} className={`relative flex gap-4 pb-8 last:pb-0 ${language === "ar" ? "flex-row-reverse text-right" : ""}`}>
+                            {/* Connector Line Segment */}
+                            <div className={cn(
+                                "absolute w-0.5 bg-muted z-0",
+                                language === "ar" ? "right-[15px]" : "left-[15px]",
+                                index === 0 ? "top-4 bottom-0" :
+                                    index === steps.length - 1 ? "top-0 h-4" :
+                                        "top-0 bottom-0"
+                            )} />
+
                             {/* Icon/Status Bubble */}
                             <div className={`relative z-10 flex h-8 w-8 items-center justify-center rounded-full bg-background ring-2 ${step.isCompleted
-                                    ? "ring-green-500 text-green-500"
-                                    : step.isActive
-                                        ? "ring-blue-500 text-blue-500"
-                                        : "ring-muted text-muted-foreground"
+                                ? "ring-green-500 text-green-500"
+                                : step.isActive
+                                    ? "ring-blue-500 text-blue-500"
+                                    : "ring-muted text-muted-foreground"
                                 }`}>
                                 {step.isCompleted ? (
                                     <CheckCircle2 className="h-5 w-5" />

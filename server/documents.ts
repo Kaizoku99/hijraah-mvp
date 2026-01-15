@@ -297,6 +297,58 @@ export function generateDocumentChecklist(
     });
   }
 
+
+  // Australia Specific Pathways
+  if (["skilled_independent", "state_nominated", "study_visa"].includes(immigrationPathway)) {
+    baseDocuments.push({
+      id: "skills_assessment",
+      documentType: "skills_assessment",
+      title: "Skills Assessment Result",
+      titleAr: "نتيجة تقييم المهارات",
+      description: "Positive skills assessment from a relevant assessing authority",
+      descriptionAr: "تقييم مهارات إيجابي من جهة تقييم معتمدة",
+      required: true,
+      status: "pending",
+    });
+
+    if (immigrationPathway === "state_nominated") {
+      baseDocuments.push({
+        id: "state_nomination",
+        documentType: "state_nomination",
+        title: "State Nomination Approval",
+        titleAr: "موافقة ترشيح الولاية",
+        description: "Nomination approval from an Australian state or territory",
+        descriptionAr: "موافقة الترشيح من ولاية أو إقليم أسترالي",
+        required: true,
+        status: "pending",
+      });
+    }
+
+    if (immigrationPathway === "study_visa") {
+      baseDocuments.push({
+        id: "coe",
+        documentType: "coe",
+        title: "Confirmation of Enrolment (CoE)",
+        titleAr: "تأكيد التسجيل (CoE)",
+        description: "Official CoE from an Australian education provider",
+        descriptionAr: "تأكيد التسجيل الرسمي من مؤسسة تعليمية أسترالية",
+        required: true,
+        status: "pending",
+      });
+
+      baseDocuments.push({
+        id: "oshc",
+        documentType: "oshc",
+        title: "Overseas Student Health Cover (OSHC)",
+        titleAr: "تأمين صحي للطلاب الدوليين",
+        description: "Proof of OSHC insurance for the duration of your stay",
+        descriptionAr: "إثبات التأمين الصحي طوال فترة إقامتك",
+        required: true,
+        status: "pending",
+      });
+    }
+  }
+
   // Country-specific documents
   const countrySpecificDocs = getCountrySpecificDocuments(sourceCountry);
   baseDocuments.push(...countrySpecificDocs);

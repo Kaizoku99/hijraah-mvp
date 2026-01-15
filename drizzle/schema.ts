@@ -10,6 +10,7 @@ import {
   pgEnum,
   uuid,
   numeric,
+  index,
 } from "drizzle-orm/pg-core";
 
 // ============================================
@@ -35,6 +36,9 @@ export const mvpImmigrationPathwayEnum = pgEnum("mvp_immigration_pathway", [
   "express_entry",
   "study_permit",
   "family_sponsorship",
+  "skilled_independent",
+  "state_nominated",
+  "study_visa",
   "other",
 ]);
 
@@ -177,6 +181,10 @@ export const userProfiles = pgTable("mvp_user_profiles", {
   updatedAt: timestamp("updated_at", { withTimezone: true })
     .defaultNow()
     .notNull(),
+}, (table) => {
+  return {
+    userIdIdx: index("mvp_user_profiles_user_id_idx").on(table.userId),
+  }
 });
 
 // Conversations for AI chat
@@ -193,6 +201,10 @@ export const conversations = pgTable("mvp_conversations", {
   updatedAt: timestamp("updated_at", { withTimezone: true })
     .defaultNow()
     .notNull(),
+}, (table) => {
+  return {
+    userIdIdx: index("mvp_conversations_user_id_idx").on(table.userId),
+  }
 });
 
 // Messages within conversations
@@ -206,6 +218,10 @@ export const messages = pgTable("mvp_messages", {
   createdAt: timestamp("created_at", { withTimezone: true })
     .defaultNow()
     .notNull(),
+}, (table) => {
+  return {
+    conversationIdIdx: index("mvp_messages_conversation_id_idx").on(table.conversationId),
+  }
 });
 
 // CRS Score Assessments
@@ -241,6 +257,39 @@ export const crsAssessments = pgTable("mvp_crs_assessments", {
   createdAt: timestamp("created_at", { withTimezone: true })
     .defaultNow()
     .notNull(),
+}, (table) => {
+  return {
+    userIdIdx: index("mvp_crs_assessments_user_id_idx").on(table.userId),
+  }
+});
+
+// Australia Points Assessments
+export const australiaAssessments = pgTable("mvp_australia_assessments", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  ageScore: integer("age_score").default(0).notNull(),
+  englishScore: integer("english_score").default(0).notNull(),
+  overseasExperienceScore: integer("overseas_experience_score").default(0).notNull(),
+  australianExperienceScore: integer("australian_experience_score").default(0).notNull(),
+  educationScore: integer("education_score").default(0).notNull(),
+  specialistEducationScore: integer("specialist_education_score").default(0).notNull(),
+  australianStudyScore: integer("australian_study_score").default(0).notNull(),
+  professionalYearScore: integer("professional_year_score").default(0).notNull(),
+  communityLanguageScore: integer("community_language_score").default(0).notNull(),
+  regionalStudyScore: integer("regional_study_score").default(0).notNull(),
+  partnerScore: integer("partner_score").default(0).notNull(),
+  nominationScore: integer("nomination_score").default(0).notNull(),
+  totalScore: integer("total_score").notNull(),
+  breakdown: json("breakdown"), // Store detailed breakdown
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+}, (table) => {
+  return {
+    userIdIdx: index("mvp_australia_assessments_user_id_idx").on(table.userId),
+  }
 });
 
 // Document Checklists
@@ -258,6 +307,10 @@ export const documentChecklists = pgTable("mvp_document_checklists", {
   updatedAt: timestamp("updated_at", { withTimezone: true })
     .defaultNow()
     .notNull(),
+}, (table) => {
+  return {
+    userIdIdx: index("mvp_document_checklists_user_id_idx").on(table.userId),
+  }
 });
 
 // Documents (uploaded files)
@@ -285,6 +338,11 @@ export const documents = pgTable("mvp_documents", {
   updatedAt: timestamp("updated_at", { withTimezone: true })
     .defaultNow()
     .notNull(),
+}, (table) => {
+  return {
+    userIdIdx: index("mvp_documents_user_id_idx").on(table.userId),
+    checklistIdIdx: index("mvp_documents_checklist_id_idx").on(table.checklistId),
+  }
 });
 
 // SOP Generations
@@ -312,6 +370,10 @@ export const sopGenerations = pgTable("mvp_sop_generations", {
   updatedAt: timestamp("updated_at", { withTimezone: true })
     .defaultNow()
     .notNull(),
+}, (table) => {
+  return {
+    userIdIdx: index("mvp_sop_generations_user_id_idx").on(table.userId),
+  }
 });
 
 // Knowledge Base for RAG
@@ -379,6 +441,10 @@ export const supportTickets = pgTable("mvp_support_tickets", {
   updatedAt: timestamp("updated_at", { withTimezone: true })
     .defaultNow()
     .notNull(),
+}, (table) => {
+  return {
+    userIdIdx: index("mvp_support_tickets_user_id_idx").on(table.userId),
+  }
 });
 
 // Support Messages
@@ -394,6 +460,10 @@ export const supportMessages = pgTable("mvp_support_messages", {
   createdAt: timestamp("created_at", { withTimezone: true })
     .defaultNow()
     .notNull(),
+}, (table) => {
+  return {
+    ticketIdIdx: index("mvp_support_messages_ticket_id_idx").on(table.ticketId),
+  }
 });
 
 // Usage Tracking
@@ -414,6 +484,10 @@ export const usageTracking = pgTable("mvp_usage_tracking", {
   updatedAt: timestamp("updated_at", { withTimezone: true })
     .defaultNow()
     .notNull(),
+}, (table) => {
+  return {
+    userIdIdx: index("mvp_usage_tracking_user_id_idx").on(table.userId),
+  }
 });
 
 // Working Memory for AI SDK memory (persistent AI scratchpad)
@@ -458,6 +532,9 @@ export type InsertMessage = typeof messages.$inferInsert;
 
 export type CrsAssessment = typeof crsAssessments.$inferSelect;
 export type InsertCrsAssessment = typeof crsAssessments.$inferInsert;
+
+export type AustraliaAssessment = typeof australiaAssessments.$inferSelect;
+export type InsertAustraliaAssessment = typeof australiaAssessments.$inferInsert;
 
 export type DocumentChecklist = typeof documentChecklists.$inferSelect;
 export type InsertDocumentChecklist = typeof documentChecklists.$inferInsert;

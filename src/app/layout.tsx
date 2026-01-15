@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Noto_Sans_Arabic } from 'next/font/google'
 import './globals.css'
 import { Providers } from './providers'
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const notoSansArabic = Noto_Sans_Arabic({
   subsets: ['arabic'],
@@ -99,6 +100,7 @@ export default function RootLayout({
         <Providers>
           {children}
         </Providers>
+        <SpeedInsights />
       </body>
     </html>
   )

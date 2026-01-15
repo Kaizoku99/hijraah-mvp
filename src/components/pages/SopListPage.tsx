@@ -51,13 +51,13 @@ export default function SopList() {
             />
           </Link>
           <div className="flex items-center gap-4">
-            <Link href="/dashboard">
+            <Link href="/dashboard" className="hidden md:block">
               <Button variant="ghost" size="sm">
                 {t("nav.dashboard")}
               </Button>
             </Link>
             <LanguageToggle />
-            <Link href="/profile">
+            <Link href="/profile" className="hidden md:block">
               <Button variant="ghost" size="sm" className="gap-2">
                 <User className="h-4 w-4" />
                 <span className="hidden sm:inline">{t("nav.profile")}</span>

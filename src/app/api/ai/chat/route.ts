@@ -9,6 +9,7 @@ import { google, generateChatTitle } from '@/../server/_core/gemini';
 import { getAuthenticatedUser } from '@/actions/auth';
 import { ragQuery, buildRagContext } from '@/../server/rag';
 import { getWorkingMemory, addMemoryToChat, updateWorkingMemory } from '@/lib/memory';
+import { checkRateLimit } from '@/lib/ratelimit';
 import {
     createConversation,
     getConversation,
@@ -35,6 +36,25 @@ export async function POST(req: Request) {
 
         // Authenticate user
         const user = await getAuthenticatedUser();
+
+        // Rate Limit Check
+        if (user) {
+            const limit = await checkRateLimit(user.id.toString());
+            if (!limit.success) {
+                return new Response(
+                    JSON.stringify({ error: 'Too many requests. Please try again later.' }),
+                    {
+                        status: 429,
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-RateLimit-Limit': limit.limit.toString(),
+                            'X-RateLimit-Remaining': limit.remaining.toString(),
+                            'X-RateLimit-Reset': limit.reset.toString(),
+                        },
+                    }
+                );
+            }
+        }
 
         // Check usage limits
         const subscriptionStatus = await getSubscriptionStatus(user.id);
@@ -126,8 +146,9 @@ export async function POST(req: Request) {
 
         // Fetch User Profile for explicit context
         let profileContext = '';
+        let userProfile = null;
         try {
-            const userProfile = await getUserProfile(user.id);
+            userProfile = await getUserProfile(user.id);
             if (userProfile) {
                 profileContext = `\n\nUser Profile Information (Verified):\n` +
                     `- Name: ${user.name || 'Unknown'}\n` +
@@ -145,13 +166,17 @@ export async function POST(req: Request) {
             console.error('Profile fetch failed:', error);
         }
 
+        // Determine target destination (default to Canada)
+        const targetDest = userProfile?.targetDestination?.toLowerCase() || 'canada';
+        const isAustralia = targetDest === 'australia';
+
         // Build system instruction
         const baseSystemInstruction = language === 'ar'
-            ? `أنت "هجرة" - مساعد ذكي متخصص في الهجرة إلى كندا. أجب باللغة العربية.
+            ? `أنت "هجرة" - مساعد ذكي متخصص في الهجرة إلى ${isAustralia ? 'أستراليا' : 'كندا'}. أجب باللغة العربية.
         
         في نهاية إجابتك، اقترح دائماً 3 أسئلة متابعة قصيرة ذات صلة بصيغة مصفوفة JSON داخل وسوم <suggestions>، مثال:
         <suggestions>["كيفية التقديم؟", "ما هي التكلفة؟", "المستندات المطلوبة"]</suggestions>`
-            : `You are "Hijraah" - a specialized AI immigration assistant helping people immigrate to Canada.
+            : `You are "Hijraah" - a specialized AI immigration assistant helping people immigrate to ${isAustralia ? 'Australia' : 'Canada'}.
         
         At the end of your response, ALWAYS suggest 3 short, relevant follow-up questions formatted as a JSON array inside <suggestions> tags, e.g.:
         <suggestions>["How to apply?", "What is the cost?", "Required documents"]</suggestions>`;

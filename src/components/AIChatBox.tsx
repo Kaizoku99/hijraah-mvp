@@ -116,7 +116,7 @@ export function AIChatBox({
   isLoading = false,
   placeholder = "Type your message...",
   className,
-  height = "600px",
+  height = "100%",
   emptyStateMessage = "Start a conversation with AI",
   suggestedPrompts,
 }: AIChatBoxProps) {
@@ -321,10 +321,10 @@ export function AIChatBox({
         />
         <Button
           type="submit"
-          size="icon"
+          size="icon-lg"
           disabled={!input.trim() || isLoading}
           aria-label="Send message"
-          className="shrink-0 h-[38px] w-[38px]"
+          className="shrink-0"
         >
           {isLoading ? (
             <Loader2 className="size-4 animate-spin" />

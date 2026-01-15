@@ -34,7 +34,7 @@ const ProfileCreateSchema = z.object({
     ieltsScore: preprocessEmpty(z.string().optional()),
     tefScore: preprocessEmpty(z.string().optional()),
     targetDestination: preprocessEmpty(z.string().optional()),
-    immigrationPathway: preprocessEmpty(z.enum(['express_entry', 'study_permit', 'family_sponsorship', 'other']).optional()),
+    immigrationPathway: preprocessEmpty(z.enum(['express_entry', 'study_permit', 'family_sponsorship', 'skilled_independent', 'state_nominated', 'study_visa', 'other']).optional()),
 })
 
 const ProfileUpdateSchema = ProfileCreateSchema

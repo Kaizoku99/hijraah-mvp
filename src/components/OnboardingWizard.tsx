@@ -35,6 +35,7 @@ interface OnboardingData {
     currentCountry: string;
     immigrationPathway: string;
     englishLevel: string;
+    targetDestination: string;
 }
 
 interface OnboardingWizardProps {
@@ -71,7 +72,9 @@ const COUNTRIES = [
     { value: "comoros", labelAr: "جزر القمر", labelEn: "Comoros" },
     { value: "djibouti", labelAr: "جيبوتي", labelEn: "Djibouti" },
     { value: "somalia", labelAr: "الصومال", labelEn: "Somalia" },
+    { value: "iran", labelAr: "إيران", labelEn: "Iran" },
     // Common Destination Countries (for current residence)
+    { value: "australia", labelAr: "أستراليا", labelEn: "Australia" },
     { value: "canada", labelAr: "كندا", labelEn: "Canada" },
     { value: "usa", labelAr: "الولايات المتحدة", labelEn: "United States" },
     { value: "uk", labelAr: "المملكة المتحدة", labelEn: "United Kingdom" },
@@ -82,11 +85,23 @@ const COUNTRIES = [
     { value: "other", labelAr: "أخرى", labelEn: "Other" },
 ];
 
+const DESTINATIONS = [
+    { value: "canada", labelAr: "كندا", labelEn: "Canada", icon: Globe, description: { ar: "نظام Express Entry", en: "Express Entry System" } },
+    { value: "australia", labelAr: "أستراليا", labelEn: "Australia", icon: Globe, description: { ar: "نظام SkillSelect", en: "SkillSelect System" } },
+];
+
 const PATHWAYS = [
     { value: "express_entry", labelAr: "Express Entry", labelEn: "Express Entry", icon: Rocket, description: { ar: "للعمال المهرة", en: "For skilled workers" } },
     { value: "study_permit", labelAr: "تصريح دراسة", labelEn: "Study Permit", icon: Target, description: { ar: "للطلاب", en: "For students" } },
     { value: "family_sponsorship", labelAr: "كفالة عائلية", labelEn: "Family Sponsorship", icon: Globe, description: { ar: "لم الشمل العائلي", en: "Family reunification" } },
     { value: "other", labelAr: "أخرى", labelEn: "Other", icon: MapPin, description: { ar: "مسارات أخرى", en: "Other pathways" } },
+];
+
+const AUSTRALIA_PATHWAYS = [
+    { value: "skilled_independent", labelAr: "هجرة الكفاءات (189)", labelEn: "Skilled Independent (189)", icon: Rocket, description: { ar: "نقاط مستقلة", en: "Points-based independent" } },
+    { value: "state_nominated", labelAr: "ترشيح الولاية (190)", labelEn: "State Nominated (190)", icon: MapPin, description: { ar: "برعاية ولاية", en: "State sponsored" } },
+    { value: "study_visa", labelAr: "تأشيرة طالب (500)", labelEn: "Student Visa (500)", icon: Target, description: { ar: "للدراسة", en: "For studying" } },
+    { value: "other", labelAr: "أخرى", labelEn: "Other", icon: Globe, description: { ar: "مسارات أخرى", en: "Other pathways" } },
 ];
 
 const ENGLISH_LEVELS = [
@@ -100,7 +115,7 @@ export default function OnboardingWizard({ onComplete, onSkip, existingProfile }
     const { language, setLanguage } = useLanguage();
     const queryClient = useQueryClient();
     const [step, setStep] = useState(1);
-    const totalSteps = 5;
+    const totalSteps = 6;
 
     const [data, setData] = useState<OnboardingData>(() => {
         // Try to restore from localStorage
@@ -119,6 +134,7 @@ export default function OnboardingWizard({ onComplete, onSkip, existingProfile }
             currentCountry: existingProfile?.currentCountry || "",
             immigrationPathway: existingProfile?.immigrationPathway || "express_entry",
             englishLevel: existingProfile?.englishLevel || "",
+            targetDestination: existingProfile?.targetDestination || "canada",
         };
     });
 
@@ -151,7 +167,7 @@ export default function OnboardingWizard({ onComplete, onSkip, existingProfile }
                 currentCountry: data.currentCountry,
                 immigrationPathway: data.immigrationPathway as "express_entry" | "study_permit" | "family_sponsorship" | "other",
                 englishLevel: data.englishLevel as "none" | "basic" | "intermediate" | "advanced" | "native",
-                targetDestination: "canada",
+                targetDestination: data.targetDestination,
             };
 
             if (existingProfile) {
@@ -192,9 +208,10 @@ export default function OnboardingWizard({ onComplete, onSkip, existingProfile }
             : "Let us help you on your journey to Canada",
         step1Title: language === "ar" ? "اختر لغتك المفضلة" : "Choose Your Preferred Language",
         step2Title: language === "ar" ? "من أين أنت؟" : "Where Are You From?",
-        step3Title: language === "ar" ? "ما هو مسار الهجرة المستهدف؟" : "What's Your Immigration Goal?",
-        step4Title: language === "ar" ? "ما هو مستوى لغتك الإنجليزية؟" : "What's Your English Level?",
-        step5Title: language === "ar" ? "أنت جاهز للبدء!" : "You're Ready to Start!",
+        step3Title: language === "ar" ? "إلى أين تريد الهجرة؟" : "Where Do You Want to Immigrate?",
+        step4Title: language === "ar" ? "ما هو مسار الهجرة المستهدف؟" : "What's Your Immigration Goal?",
+        step5Title: language === "ar" ? "ما هو مستوى لغتك الإنجليزية؟" : "What's Your English Level?",
+        step6Title: language === "ar" ? "أنت جاهز للبدء!" : "You're Ready to Start!",
         nationality: language === "ar" ? "الجنسية" : "Nationality",
         sourceCountry: language === "ar" ? "بلد المنشأ" : "Country of Origin",
         currentCountry: language === "ar" ? "بلد الإقامة الحالي" : "Current Country of Residence",
@@ -204,6 +221,7 @@ export default function OnboardingWizard({ onComplete, onSkip, existingProfile }
         skip: language === "ar" ? "تخطي" : "Skip for now",
         complete: language === "ar" ? "ابدأ رحلتك" : "Start Your Journey",
         calculateCrs: language === "ar" ? "احسب نقاط CRS" : "Calculate CRS Score",
+        calculatePoints: language === "ar" ? "احسب نقاطك" : "Calculate Points",
         generateChecklist: language === "ar" ? "إنشاء قائمة المستندات" : "Generate Document Checklist",
     };
 
@@ -281,16 +299,70 @@ export default function OnboardingWizard({ onComplete, onSkip, existingProfile }
                     <div className="space-y-6">
                         <div className="text-center">
                             <div className="h-16 w-16 mx-auto rounded-full bg-primary/10 flex items-center justify-center mb-4">
-                                <Target className="h-8 w-8 text-primary" />
+                                <Globe className="h-8 w-8 text-primary" />
                             </div>
                             <h2 className="text-xl font-bold">{t.step3Title}</h2>
+                        </div>
+                        <RadioGroup
+                            value={data.targetDestination}
+                            onValueChange={(v) => {
+                                setData({
+                                    ...data,
+                                    targetDestination: v,
+                                    // Reset pathway when destination changes
+                                    immigrationPathway: v === 'canada' ? 'express_entry' : 'skilled_independent'
+                                });
+                            }}
+                            className="grid grid-cols-1 gap-3"
+                        >
+                            {DESTINATIONS.map((dest) => (
+                                <Label
+                                    key={dest.value}
+                                    htmlFor={`dest-${dest.value}`}
+                                    className={cn(
+                                        "flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all",
+                                        data.targetDestination === dest.value
+                                            ? "border-primary bg-primary/5"
+                                            : "border-border hover:border-primary/50"
+                                    )}
+                                >
+                                    <RadioGroupItem value={dest.value} id={`dest-${dest.value}`} className="sr-only" />
+                                    <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                                        <dest.icon className="h-5 w-5 text-primary" />
+                                    </div>
+                                    <div className="flex-1">
+                                        <div className="font-medium">
+                                            {language === "ar" ? dest.labelAr : dest.labelEn}
+                                        </div>
+                                        <div className="text-xs text-muted-foreground">
+                                            {language === "ar" ? dest.description.ar : dest.description.en}
+                                        </div>
+                                    </div>
+                                    {data.targetDestination === dest.value && (
+                                        <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0" />
+                                    )}
+                                </Label>
+                            ))}
+                        </RadioGroup>
+                    </div>
+                );
+
+            case 4:
+                const activePathways = data.targetDestination === 'australia' ? AUSTRALIA_PATHWAYS : PATHWAYS;
+                return (
+                    <div className="space-y-6">
+                        <div className="text-center">
+                            <div className="h-16 w-16 mx-auto rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                                <Target className="h-8 w-8 text-primary" />
+                            </div>
+                            <h2 className="text-xl font-bold">{t.step4Title}</h2>
                         </div>
                         <RadioGroup
                             value={data.immigrationPathway}
                             onValueChange={(v) => setData({ ...data, immigrationPathway: v })}
                             className="grid grid-cols-1 sm:grid-cols-2 gap-3"
                         >
-                            {PATHWAYS.map((pathway) => (
+                            {activePathways.map((pathway) => (
                                 <Label
                                     key={pathway.value}
                                     htmlFor={pathway.value}
@@ -322,14 +394,14 @@ export default function OnboardingWizard({ onComplete, onSkip, existingProfile }
                     </div>
                 );
 
-            case 4:
+            case 5:
                 return (
                     <div className="space-y-6">
                         <div className="text-center">
                             <div className="h-16 w-16 mx-auto rounded-full bg-primary/10 flex items-center justify-center mb-4">
                                 <Languages className="h-8 w-8 text-primary" />
                             </div>
-                            <h2 className="text-xl font-bold">{t.step4Title}</h2>
+                            <h2 className="text-xl font-bold">{t.step5Title}</h2>
                         </div>
                         <RadioGroup
                             value={data.englishLevel}
@@ -360,14 +432,14 @@ export default function OnboardingWizard({ onComplete, onSkip, existingProfile }
                     </div>
                 );
 
-            case 5:
+            case 6:
                 return (
                     <div className="space-y-6 text-center">
                         <div className="h-20 w-20 mx-auto rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-lg">
                             <CheckCircle2 className="h-10 w-10 text-white" />
                         </div>
                         <div>
-                            <h2 className="text-2xl font-bold">{t.step5Title}</h2>
+                            <h2 className="text-2xl font-bold">{t.step6Title}</h2>
                             <p className="text-muted-foreground mt-2">
                                 {language === "ar"
                                     ? "اختر خطوتك الأولى للبدء"
@@ -382,7 +454,7 @@ export default function OnboardingWizard({ onComplete, onSkip, existingProfile }
                                 disabled={createProfileMutation.isPending || updateProfileMutation.isPending}
                             >
                                 <Rocket className="h-5 w-5" />
-                                {t.calculateCrs}
+                                {data.targetDestination === 'australia' ? t.calculatePoints : t.calculateCrs}
                             </Button>
                             <Button
                                 variant="outline"
@@ -432,7 +504,7 @@ export default function OnboardingWizard({ onComplete, onSkip, existingProfile }
                     {renderStep()}
 
                     {/* Navigation buttons */}
-                    {step < 5 && (
+                    {step < 6 && (
                         <div className="flex items-center justify-between mt-8 pt-4 border-t">
                             {step > 1 ? (
                                 <Button

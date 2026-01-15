@@ -546,3 +546,32 @@
 - `app/dashboard/page.tsx` now contains ALL dashboard features in one consolidated file
 - No more duplicate implementations
 
+---
+
+## Phase 21: Mobile First Optimization (from Deep Dive Analysis)
+
+### P0 - Critical Fixes (Immediate)
+- [x] **Chat Send Button**: Increase size from 38px to 44px (`h-11 w-11`)
+- [x] **Dashboard Header**: Increase icon touch targets to 44px
+- [x] **Mobile Navigation**: Add missing "Profile" tab to bottom bar
+- [x] **Global Padding**: Add `pb-20` to `layout.tsx` or main containers to clear bottom nav
+
+### P1 - High Priority (UX Friction)
+- [x] **DocumentScanner**: Fix close button size (currently 24px -> needs 32px+)
+- [x] **DocumentScanner**: Auto-scroll to preview when file is selected on mobile
+- [x] **Form Inputs**: Add `inputMode="email"` and `inputMode="numeric"` for better keyboard
+- [x] **Dashboard Grid**: Switch to 2x2 grid layout on mobile (currently 1x1 stack)
+- [x] **Toaster**: Fix `MobileNav` overlap (move to top-center on mobile or add offset)
+
+### P2 - Medium Priority (Layout & Polish)
+- [x] **CountrySelect**: Fix fixed `w-[300px]` width to be responsive (`max-w-[calc(100vw-32px)]`)
+- [x] **Chat Layout**: Fix fixed height `600px` issue (use `dvh` or flex-1)
+- [x] **SOP Writer**: Reduce textarea default rows on mobile (5 -> 3) to prevent keyboard occlusion
+- [x] **Loading States**: Add `app/loading.tsx` for better 3G/4G perceived performance
+- [x] **Immigration Journey**: Safety check for vertical line alignment on text wrap
+
+### P3 - Nice to Have
+- [x] **SOP Quality Score**: Increase "Re-analyze" button size
+- [x] **Login Form**: Add autocomplete attributes for password managers
+- [x] **Tab Bar**: Add "More" menu if nav items exceed 5
+

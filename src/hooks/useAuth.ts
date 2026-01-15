@@ -91,16 +91,39 @@ export function useAuth(options?: UseAuthOptions) {
     console.log('[useAuth] signInWithPassword success, user:', data.user?.id)
   }, [])
 
+  // Sign up with email - sends OTP code to email for verification
   const signUpWithEmail = useCallback(async (email: string, password: string, name?: string) => {
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        emailRedirectTo: `${window.location.origin}/api/auth/callback`,
+        // Don't use emailRedirectTo - this enables OTP code verification instead of magic link
         data: {
-          full_name: name || email.split('@')[0], // Use name or derive from email
+          full_name: name || email.split('@')[0],
         },
       },
+    })
+    if (error) throw error
+    // Return true if user needs to verify (no session = needs OTP verification)
+    return { needsVerification: !data.session }
+  }, [])
+
+  // Verify OTP code sent to email during signup
+  const verifyOtp = useCallback(async (email: string, token: string) => {
+    const { data, error } = await supabase.auth.verifyOtp({
+      email,
+      token,
+      type: 'signup',
+    })
+    if (error) throw error
+    return data
+  }, [])
+
+  // Resend OTP code for signup verification
+  const resendOtp = useCallback(async (email: string) => {
+    const { error } = await supabase.auth.resend({
+      type: 'signup',
+      email,
     })
     if (error) throw error
   }, [])
@@ -157,6 +180,8 @@ export function useAuth(options?: UseAuthOptions) {
     signInWithEmail,
     signUpWithEmail,
     signInWithMagicLink,
+    verifyOtp,
+    resendOtp,
     isLoading: state.loading,
   }
 }

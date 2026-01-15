@@ -26,7 +26,15 @@ import { checkUsageLimit, incrementUsage } from '@/../server/usage'
 // Schemas
 const GenerateChecklistSchema = z.object({
     sourceCountry: z.enum(['tunisia', 'jordan', 'lebanon', 'morocco', 'egypt', 'sudan', 'syria']),
-    immigrationPathway: z.enum(['express_entry', 'study_permit', 'work_permit', 'family_sponsorship']),
+    immigrationPathway: z.enum([
+        'express_entry',
+        'study_permit',
+        'work_permit',
+        'family_sponsorship',
+        'skilled_independent',
+        'state_nominated',
+        'study_visa'
+    ]),
 })
 
 const ChecklistIdSchema = z.object({

@@ -204,33 +204,41 @@ export default function Documents() {
       <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
         <div className="container flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+            <h1 className="text-2xl font-bold text-primary">
               {language === "ar" ? "هجرة" : "Hijraah"}
             </h1>
           </Link>
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" asChild>
-              <Link href="/dashboard">
-                {t("nav.dashboard")}
-              </Link>
-            </Button>
-            <Button variant="ghost" size="sm" asChild>
-              <Link href="/chat">
-                {t("nav.chat")}
-              </Link>
-            </Button>
-            <Button variant="ghost" size="sm" asChild>
-              <Link href="/calculator">
-                {t("nav.calculator")}
-              </Link>
-            </Button>
+            <div className="hidden md:block">
+              <Button variant="ghost" size="sm" asChild>
+                <Link href="/dashboard">
+                  {t("nav.dashboard")}
+                </Link>
+              </Button>
+            </div>
+            <div className="hidden md:block">
+              <Button variant="ghost" size="sm" asChild>
+                <Link href="/chat">
+                  {t("nav.chat")}
+                </Link>
+              </Button>
+            </div>
+            <div className="hidden md:block">
+              <Button variant="ghost" size="sm" asChild>
+                <Link href="/calculator">
+                  {t("nav.calculator")}
+                </Link>
+              </Button>
+            </div>
             <LanguageToggle />
-            <Button variant="ghost" size="sm" className="gap-2" asChild>
-              <Link href="/profile">
-                <User className="h-4 w-4" />
-                <span className="hidden sm:inline">{t("nav.profile")}</span>
-              </Link>
-            </Button>
+            <div className="hidden md:block">
+              <Button variant="ghost" size="sm" className="gap-2" asChild>
+                <Link href="/profile">
+                  <User className="h-4 w-4" />
+                  <span className="hidden sm:inline">{t("nav.profile")}</span>
+                </Link>
+              </Button>
+            </div>
             <Button variant="ghost" size="sm" onClick={handleLogout} className="gap-2">
               <LogOut className="h-4 w-4" />
               <span className="hidden sm:inline">{t("nav.logout")}</span>
@@ -301,6 +309,7 @@ export default function Documents() {
                         <SelectItem value="morocco">{language === "ar" ? "المغرب" : "Morocco"}</SelectItem>
                         <SelectItem value="egypt">{language === "ar" ? "مصر" : "Egypt"}</SelectItem>
                         <SelectItem value="sudan">{language === "ar" ? "السودان" : "Sudan"}</SelectItem>
+                        <SelectItem value="iran">{language === "ar" ? "إيران" : "Iran"}</SelectItem>
                         <SelectItem value="syria">{language === "ar" ? "سوريا" : "Syria"}</SelectItem>
                       </SelectContent>
                     </Select>

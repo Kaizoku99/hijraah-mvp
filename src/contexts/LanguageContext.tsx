@@ -67,6 +67,7 @@ const translations: Record<Language, Record<string, string>> = {
     "common.cancel": "Cancel",
     "common.continue": "Continue",
     "common.back": "Back",
+    "common.previous": "Previous",
     "common.next": "Next",
     "common.submit": "Submit",
     "common.close": "Close",
@@ -129,6 +130,42 @@ const translations: Record<Language, Record<string, string>> = {
     "auth.signUp": "Sign Up",
     "auth.signOut": "Sign Out",
     "auth.welcome": "Welcome to Hijraah",
+    "auth.welcomeBack": "Welcome back",
+    "auth.createAccount": "Create an account",
+    "auth.loginSubtitle": "Login to your Hijraah account",
+    "auth.signupSubtitle": "Enter your details below to create your account",
+    "auth.email": "Email",
+    "auth.password": "Password",
+    "auth.confirmPassword": "Confirm Password",
+    "auth.name": "Name",
+    "auth.submitLogin": "Login",
+    "auth.submitSignup": "Sign Up",
+    "auth.orContinue": "Or continue with",
+    "auth.continueGoogle": "Continue with Google",
+    "auth.continueApple": "Continue with Apple",
+    "auth.noAccount": "Don't have an account?",
+    "auth.hasAccount": "Already have an account?",
+    "auth.signUpLink": "Sign up",
+    "auth.loginLink": "Login",
+    "auth.bannerTitle": "Start your journey to Canada",
+    "auth.bannerSubtitle": "Join thousands of others realizing their dream with Hijraah.",
+    "auth.goBack": "Go back",
+
+    // OTP
+    "otp.title": "Verify your email",
+    "otp.subtitle": "Enter the 6-digit code sent to",
+    "otp.verify": "Verify",
+    "otp.resend": "Resend code",
+    "otp.resendIn": "Resend in",
+    "otp.sent": "Verification code sent to your email",
+    "otp.newCodeSent": "New code sent",
+    "otp.errorLength": "Please enter the 6-digit code",
+
+    // Validation
+    "val.email": "Invalid email address",
+    "val.passwordMin": "Password must be at least 6 characters",
+    "val.nameMin": "Name must be at least 2 characters",
+    "val.passwordMatch": "Passwords don't match",
   },
   ar: {
     // Navigation
@@ -178,6 +215,7 @@ const translations: Record<Language, Record<string, string>> = {
     "common.cancel": "إلغاء",
     "common.continue": "متابعة",
     "common.back": "رجوع",
+    "common.previous": "السابق",
     "common.next": "التالي",
     "common.submit": "إرسال",
     "common.close": "إغلاق",
@@ -237,9 +275,45 @@ const translations: Record<Language, Record<string, string>> = {
 
     // Auth
     "auth.signIn": "تسجيل الدخول",
-    "auth.signUp": "إنشاء حساب",
+    "auth.signUp": "إنشاء حساب جديد",
     "auth.signOut": "تسجيل الخروج",
-    "auth.welcome": "مرحبًا بك في هجرة",
+    "auth.welcome": "أهلاً بك في هجرة",
+    "auth.welcomeBack": "مرحبًا بعودتك",
+    "auth.createAccount": "إنشاء حساب جديد",
+    "auth.loginSubtitle": "تسجيل الدخول إلى حسابك",
+    "auth.signupSubtitle": "أدخل بياناتك لإنشاء حساب جديد",
+    "auth.email": "البريد الإلكتروني",
+    "auth.password": "كلمة المرور",
+    "auth.confirmPassword": "تأكيد كلمة المرور",
+    "auth.name": "الاسم الكامل",
+    "auth.submitLogin": "تسجيل الدخول",
+    "auth.submitSignup": "إنشاء حساب جديد",
+    "auth.orContinue": "أو سجل الدخول عبر",
+    "auth.continueGoogle": "المتابعة مع Google",
+    "auth.continueApple": "المتابعة مع Apple",
+    "auth.noAccount": "ليس لديك حساب بعد؟",
+    "auth.hasAccount": "لديك حساب بالفعل؟",
+    "auth.signUpLink": "إنشاء حساب جديد",
+    "auth.loginLink": "تسجيل الدخول",
+    "auth.bannerTitle": "ابدأ رحلة الهجرة إلى كندا",
+    "auth.bannerSubtitle": "انضم إلى آلاف الآخرين الذين يحققون أحلامهم مع هجرة.",
+    "auth.goBack": "العودة",
+
+    // OTP
+    "otp.title": "تحقق من بريدك الإلكتروني",
+    "otp.subtitle": "أدخل الرمز المكون من 6 أرقام المرسل إلى",
+    "otp.verify": "تحقق",
+    "otp.resend": "إعادة إرسال الرمز",
+    "otp.resendIn": "إعادة الإرسال في",
+    "otp.sent": "تم إرسال رمز التحقق إلى بريدك الإلكتروني",
+    "otp.newCodeSent": "تم إرسال رمز جديد",
+    "otp.errorLength": "أدخل الرمز المكون من 6 أرقام",
+
+    // Validation
+    "val.email": "بريد إلكتروني غير صالح",
+    "val.passwordMin": "كلمة المرور يجب أن تكون 6 أحرف على الأقل",
+    "val.nameMin": "الاسم يجب أن يكون حرفين على الأقل",
+    "val.passwordMatch": "كلمات المرور غير متطابقة",
   },
 }
 
@@ -278,8 +352,16 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
     }
   }, [dir, language, mounted])
 
+  // Memoize the context value to prevent unnecessary re-renders
+  const contextValue = React.useMemo(() => ({
+    language,
+    setLanguage,
+    t,
+    dir: dir as "ltr" | "rtl"
+  }), [language, mounted]); // mounted is needed because dir depends on it effectively via effect
+
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t, dir }}>
+    <LanguageContext.Provider value={contextValue}>
       {children}
     </LanguageContext.Provider>
   )

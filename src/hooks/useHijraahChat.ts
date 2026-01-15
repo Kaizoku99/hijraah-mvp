@@ -24,6 +24,7 @@ export interface HijraahChatMessage {
   content: string;
   sources?: ChatSource[];
   suggestions?: string[];
+  reasoning?: string | string[];
   createdAt?: Date;
 }
 

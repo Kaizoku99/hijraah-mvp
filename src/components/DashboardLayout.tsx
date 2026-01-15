@@ -43,10 +43,16 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [sidebarWidth, setSidebarWidth] = useState(() => {
+  // Fix hydration mismatch by initializing with default and updating in useEffect
+  const [sidebarWidth, setSidebarWidth] = useState(DEFAULT_WIDTH);
+
+  // Load saved width on mount (client-side only)
+  useEffect(() => {
     const saved = localStorage.getItem(SIDEBAR_WIDTH_KEY);
-    return saved ? parseInt(saved, 10) : DEFAULT_WIDTH;
-  });
+    if (saved) {
+      setSidebarWidth(parseInt(saved, 10));
+    }
+  }, []);
   const { loading, user } = useAuth();
 
   useEffect(() => {

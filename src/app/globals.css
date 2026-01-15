@@ -175,6 +175,12 @@
   [dir="rtl"] input[type="tel"],
   [dir="rtl"] input[type="date"] {
     direction: ltr;
+    direction: ltr;
+    text-align: right;
+  }
+
+  [dir="rtl"] input[type="text"],
+  [dir="rtl"] textarea {
     text-align: right;
   }
 }

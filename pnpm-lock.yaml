@@ -13,7 +13,7 @@ importers:
         version: 2.0.0-beta.0(ai@6.0.28(zod@4.3.5))(react@19.2.1)
       '@ai-sdk-tools/memory':
         specifier: 2.0.0-beta.0
-        version: 2.0.0-beta.0(ai@6.0.28(zod@4.3.5))(drizzle-orm@0.44.6(@cloudflare/workers-types@4.20260113.0)(@opentelemetry/api@1.9.0)(@types/pg@8.11.0)(mysql2@3.15.1)(pg@8.11.3)(postgres@3.4.8)(sqlite3@5.1.7))(redis@4.7.1)
+        version: 2.0.0-beta.0(@upstash/redis@1.36.1)(ai@6.0.28(zod@4.3.5))(drizzle-orm@0.44.6(@cloudflare/workers-types@4.20260113.0)(@opentelemetry/api@1.9.0)(@types/pg@8.11.0)(@upstash/redis@1.36.1)(mysql2@3.15.1)(pg@8.11.3)(postgres@3.4.8)(sqlite3@5.1.7))(redis@4.7.1)
       '@ai-sdk-tools/store':
         specifier: 2.0.0-beta.0
         version: 2.0.0-beta.0(@ai-sdk/react@3.0.30(react@19.2.1)(zod@4.3.5))(react@19.2.1)(zod@4.3.5)(zustand@5.0.10(@types/react@19.2.1)(react@19.2.1)(use-sync-external-store@1.6.0(react@19.2.1)))
@@ -152,6 +152,15 @@ importers:
       '@types/react-countup':
         specifier: ^4.3.1
         version: 4.3.1(react@19.2.1)
+      '@upstash/ratelimit':
+        specifier: ^2.0.8
+        version: 2.0.8(@upstash/redis@1.36.1)
+      '@upstash/redis':
+        specifier: ^1.36.1
+        version: 1.36.1
+      '@vercel/speed-insights':
+        specifier: ^1.3.1
+        version: 1.3.1(next@16.1.1(@babel/core@7.28.4)(@opentelemetry/api@1.9.0)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(react@19.2.1)
       '@xyflow/react':
         specifier: ^12.10.0
         version: 12.10.0(@types/react@19.2.1)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
@@ -181,7 +190,7 @@ importers:
         version: 17.2.3
       drizzle-orm:
         specifier: ^0.44.5
-        version: 0.44.6(@cloudflare/workers-types@4.20260113.0)(@opentelemetry/api@1.9.0)(@types/pg@8.11.0)(mysql2@3.15.1)(pg@8.11.3)(postgres@3.4.8)(sqlite3@5.1.7)
+        version: 0.44.6(@cloudflare/workers-types@4.20260113.0)(@opentelemetry/api@1.9.0)(@types/pg@8.11.0)(@upstash/redis@1.36.1)(mysql2@3.15.1)(pg@8.11.3)(postgres@3.4.8)(sqlite3@5.1.7)
       embla-carousel-react:
         specifier: ^8.6.0
         version: 8.6.0(react@19.2.1)
@@ -239,9 +248,15 @@ importers:
       react-resizable-panels:
         specifier: ^3.0.6
         version: 3.0.6(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+      react-simple-pull-to-refresh:
+        specifier: ^1.3.4
+        version: 1.3.4(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
       recharts:
         specifier: ^2.15.2
         version: 2.15.4(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+      server-only:
+        specifier: ^0.0.1
+        version: 0.0.1
       shiki:
         specifier: ^3.21.0
         version: 3.21.0
@@ -3288,9 +3303,44 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@upstash/core-analytics@0.0.10':
+    resolution: {integrity: sha512-7qJHGxpQgQr9/vmeS1PktEwvNAF7TI4iJDi8Pu2CFZ9YUGHZH4fOP5TfYlZ4aVxfopnELiE4BS4FBjyK7V1/xQ==}
+    engines: {node: '>=16.0.0'}
+
+  '@upstash/ratelimit@2.0.8':
+    resolution: {integrity: sha512-YSTMBJ1YIxsoPkUMX/P4DDks/xV5YYCswWMamU8ZIfK9ly6ppjRnVOyBhMDXBmzjODm4UQKcxsJPvaeFAijp5w==}
+    peerDependencies:
+      '@upstash/redis': ^1.34.3
+
+  '@upstash/redis@1.36.1':
+    resolution: {integrity: sha512-N6SjDcgXdOcTAF+7uNoY69o7hCspe9BcA7YjQdxVu5d25avljTwyLaHBW3krWjrP0FfocgMk94qyVtQbeDp39A==}
+
   '@vercel/oidc@3.1.0':
     resolution: {integrity: sha512-Fw28YZpRnA3cAHHDlkt7xQHiJ0fcL+NRcIqsocZQUSmbzeIKRpwttJjik5ZGanXP+vlA4SbTg+AbA3bP363l+w==}
     engines: {node: '>= 20'}
+
+  '@vercel/speed-insights@1.3.1':
+    resolution: {integrity: sha512-PbEr7FrMkUrGYvlcLHGkXdCkxnylCWePx7lPxxq36DNdfo9mcUjLOmqOyPDHAOgnfqgGGdmE3XI9L/4+5fr+vQ==}
+    peerDependencies:
+      '@sveltejs/kit': ^1 || ^2
+      next: '>= 13'
+      react: ^18 || ^19 || ^19.0.0-rc
+      svelte: '>= 4'
+      vue: ^3
+      vue-router: ^4
+    peerDependenciesMeta:
+      '@sveltejs/kit':
+        optional: true
+      next:
+        optional: true
+      react:
+        optional: true
+      svelte:
+        optional: true
+      vue:
+        optional: true
+      vue-router:
+        optional: true
 
   '@vitest/expect@2.1.9':
     resolution: {integrity: sha512-UJCIkTBenHeKT1TTlKMJWy1laZewsRIzYighyYiJKZreqtdxSos/S1t+ktRMQWu2CKqaarrkeszJx1cgC5tGZw==}
@@ -5839,6 +5889,12 @@ packages:
       react: ^16.14.0 || ^17.0.0 || ^18.0.0 || ^19.0.0 || ^19.0.0-rc
       react-dom: ^16.14.0 || ^17.0.0 || ^18.0.0 || ^19.0.0 || ^19.0.0-rc
 
+  react-simple-pull-to-refresh@1.3.4:
+    resolution: {integrity: sha512-PCSkKLK1bvSakc/LNQTk3JGJFEVzxWelGupIOn0jl9akh+dx2G/NR1bRXRI7/w5QE/Rz73HiUZ5Fga6j4RT6Dw==}
+    peerDependencies:
+      react: ^16.10.2 || ^17.0.0 || ^18.0.0 || ^19.0.0
+      react-dom: ^16.10.2 || ^17.0.0 || ^18.0.0 || ^19.0.0
+
   react-smooth@4.0.4:
     resolution: {integrity: sha512-gnGKTpYwqL0Iii09gHobNolvX4Kiq4PKx6eWBCYYix+8cdw+cGo3do906l1NBPKkSWx1DghC1dlWG9L2uGd61Q==}
     peerDependencies:
@@ -6011,6 +6067,9 @@ packages:
 
   seq-queue@0.0.5:
     resolution: {integrity: sha512-hr3Wtp/GZIc/6DAGPDcV4/9WoZhjrkXsi5B/07QgX8tsdc6ilr7BFM6PM6rbdAX1kFSDYeZGLipIZZKyQP0O5Q==}
+
+  server-only@0.0.1:
+    resolution: {integrity: sha512-qepMx2JxAa5jjfzxG79yPPq+8BuFToHd1hm7kI+Z4zAq1ftQiP7HcxMhDDItrbtwVeLg/cY2JnKnrcFkmiswNA==}
 
   set-blocking@2.0.0:
     resolution: {integrity: sha512-KiKBS8AnWGEyLzofFfmvKwpdPzqiy16LvQfK3yv/fVH7Bj13/wl3JSR1J+rfgRE9q7xUJK4qvgS8raSOeLUehw==}
@@ -6386,6 +6445,9 @@ packages:
     resolution: {integrity: sha512-nWJ91DjeOkej/TA8pXQ3myruKpKEYgqvpw9lz4OPHj/NWFNluYrjbz9j01CJ8yKQd2g4jFoOkINCTW2I5LEEyw==}
     engines: {node: '>= 0.4'}
 
+  uncrypto@0.1.3:
+    resolution: {integrity: sha512-Ql87qFHB3s/De2ClA9e0gsnS6zXG27SkTiSJwjCc9MebbfapQfuPzumMIUMi38ezPZVNFcHI9sUIepeQfw8J8Q==}
+
   undici-types@7.14.0:
     resolution: {integrity: sha512-QQiYxHuyZ9gQUIrmPo3IA+hUl4KYk8uSA7cHrcKd/l3p1OTpZcM0Tbp9x7FAtXdAYhlasd60ncPpgu6ihG6TOA==}
 
@@ -6706,12 +6768,13 @@ snapshots:
       react: 19.2.1
       zod: 4.3.5
 
-  '@ai-sdk-tools/memory@2.0.0-beta.0(ai@6.0.28(zod@4.3.5))(drizzle-orm@0.44.6(@cloudflare/workers-types@4.20260113.0)(@opentelemetry/api@1.9.0)(@types/pg@8.11.0)(mysql2@3.15.1)(pg@8.11.3)(postgres@3.4.8)(sqlite3@5.1.7))(redis@4.7.1)':
+  '@ai-sdk-tools/memory@2.0.0-beta.0(@upstash/redis@1.36.1)(ai@6.0.28(zod@4.3.5))(drizzle-orm@0.44.6(@cloudflare/workers-types@4.20260113.0)(@opentelemetry/api@1.9.0)(@types/pg@8.11.0)(@upstash/redis@1.36.1)(mysql2@3.15.1)(pg@8.11.3)(postgres@3.4.8)(sqlite3@5.1.7))(redis@4.7.1)':
     dependencies:
       zod: 4.3.5
     optionalDependencies:
+      '@upstash/redis': 1.36.1
       ai: 6.0.28(zod@4.3.5)
-      drizzle-orm: 0.44.6(@cloudflare/workers-types@4.20260113.0)(@opentelemetry/api@1.9.0)(@types/pg@8.11.0)(mysql2@3.15.1)(pg@8.11.3)(postgres@3.4.8)(sqlite3@5.1.7)
+      drizzle-orm: 0.44.6(@cloudflare/workers-types@4.20260113.0)(@opentelemetry/api@1.9.0)(@types/pg@8.11.0)(@upstash/redis@1.36.1)(mysql2@3.15.1)(pg@8.11.3)(postgres@3.4.8)(sqlite3@5.1.7)
       redis: 4.7.1
 
   '@ai-sdk-tools/store@2.0.0-beta.0(@ai-sdk/react@3.0.30(react@19.2.1)(zod@4.3.5))(react@19.2.1)(zod@4.3.5)(zustand@5.0.10(@types/react@19.2.1)(react@19.2.1)(use-sync-external-store@1.6.0(react@19.2.1)))':
@@ -9854,7 +9917,25 @@ snapshots:
   '@unrs/resolver-binding-win32-x64-msvc@1.11.1':
     optional: true
 
+  '@upstash/core-analytics@0.0.10':
+    dependencies:
+      '@upstash/redis': 1.36.1
+
+  '@upstash/ratelimit@2.0.8(@upstash/redis@1.36.1)':
+    dependencies:
+      '@upstash/core-analytics': 0.0.10
+      '@upstash/redis': 1.36.1
+
+  '@upstash/redis@1.36.1':
+    dependencies:
+      uncrypto: 0.1.3
+
   '@vercel/oidc@3.1.0': {}
+
+  '@vercel/speed-insights@1.3.1(next@16.1.1(@babel/core@7.28.4)(@opentelemetry/api@1.9.0)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(react@19.2.1)':
+    optionalDependencies:
+      next: 16.1.1(@babel/core@7.28.4)(@opentelemetry/api@1.9.0)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+      react: 19.2.1
 
   '@vitest/expect@2.1.9':
     dependencies:
@@ -10639,11 +10720,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.44.6(@cloudflare/workers-types@4.20260113.0)(@opentelemetry/api@1.9.0)(@types/pg@8.11.0)(mysql2@3.15.1)(pg@8.11.3)(postgres@3.4.8)(sqlite3@5.1.7):
+  drizzle-orm@0.44.6(@cloudflare/workers-types@4.20260113.0)(@opentelemetry/api@1.9.0)(@types/pg@8.11.0)(@upstash/redis@1.36.1)(mysql2@3.15.1)(pg@8.11.3)(postgres@3.4.8)(sqlite3@5.1.7):
     optionalDependencies:
       '@cloudflare/workers-types': 4.20260113.0
       '@opentelemetry/api': 1.9.0
       '@types/pg': 8.11.0
+      '@upstash/redis': 1.36.1
       mysql2: 3.15.1
       pg: 8.11.3
       postgres: 3.4.8
@@ -13085,6 +13167,11 @@ snapshots:
       react: 19.2.1
       react-dom: 19.2.1(react@19.2.1)
 
+  react-simple-pull-to-refresh@1.3.4(react-dom@19.2.1(react@19.2.1))(react@19.2.1):
+    dependencies:
+      react: 19.2.1
+      react-dom: 19.2.1(react@19.2.1)
+
   react-smooth@4.0.4(react-dom@19.2.1(react@19.2.1))(react@19.2.1):
     dependencies:
       fast-equals: 5.4.0
@@ -13345,6 +13432,8 @@ snapshots:
   semver@7.7.3: {}
 
   seq-queue@0.0.5: {}
+
+  server-only@0.0.1: {}
 
   set-blocking@2.0.0:
     optional: true
@@ -13844,6 +13933,8 @@ snapshots:
       has-bigints: 1.1.0
       has-symbols: 1.1.0
       which-boxed-primitive: 1.1.1
+
+  uncrypto@0.1.3: {}
 
   undici-types@7.14.0: {}
 

@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { format } from "date-fns"
+import { arSA, enUS } from "date-fns/locale"
 import { CalendarIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -12,6 +13,7 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover"
+import { useLanguage } from "@/contexts/LanguageContext"
 
 interface DatePickerProps {
     value?: Date
@@ -29,6 +31,8 @@ export function DatePicker({
     disabled,
 }: DatePickerProps) {
     const [open, setOpen] = React.useState(false)
+    const { language } = useLanguage()
+    const locale = language === 'ar' ? arSA : enUS
 
     return (
         <Popover open={open} onOpenChange={setOpen}>
@@ -43,7 +47,7 @@ export function DatePicker({
                     disabled={disabled}
                 >
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {value ? format(value, "PPP") : <span>{placeholder}</span>}
+                    {value ? format(value, "PPP", { locale }) : <span>{placeholder}</span>}
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="start">
@@ -57,6 +61,8 @@ export function DatePicker({
                     captionLayout="dropdown"
                     fromYear={1940}
                     toYear={new Date().getFullYear()}
+                    locale={locale}
+                    dir={language === 'ar' ? 'rtl' : 'ltr'}
                 />
             </PopoverContent>
         </Popover>

@@ -104,13 +104,13 @@ export default function Guides() {
                 {language === "ar" ? "الرئيسية" : "Home"}
               </Button>
             </Link>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+            <h1 className="text-2xl font-bold text-primary">
               {language === "ar" ? "هجرة" : "Hijraah"}
             </h1>
           </div>
           <div className="flex items-center gap-4">
             <LanguageToggle />
-            <Link href="/login">
+            <Link href="/login" className="hidden md:block">
               <Button variant="outline" size="sm">
                 {t("nav.login")}
               </Button>

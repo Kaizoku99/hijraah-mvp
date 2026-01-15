@@ -24,6 +24,7 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
+import { format } from "date-fns";
 import { DatePicker } from "@/components/ui/date-picker";
 import {
   Tooltip,
@@ -70,25 +71,30 @@ export default function Profile() {
   const [shakeStep, setShakeStep] = useState(false);
   const [errors, setErrors] = useState<Record<string, boolean>>({});
 
-  // CRS Impact Icon Component
-  const CrsImpactIcon = () => (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <div className="inline-flex items-center justify-center ml-2 h-5 w-5 rounded-full bg-amber-100 text-amber-600 cursor-help">
-            <span className="text-[10px] font-bold">CRS</span>
-          </div>
-        </TooltipTrigger>
-        <TooltipContent>
-          <p className="text-xs">
-            {language === "ar"
-              ? "هذا الحقل يؤثر بشكل مباشر على نقاط CRS الخاصة بك"
-              : "This field directly impacts your CRS score"}
-          </p>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
-  );
+  // Dynamic Impact Icon Component
+  const ImpactIcon = ({ isAustralia, language }: { isAustralia: boolean; language: string }) => {
+    return (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className={cn(
+              "inline-flex items-center justify-center ml-2 h-5 w-5 rounded-full cursor-help",
+              isAustralia ? "bg-emerald-100 text-emerald-600" : "bg-amber-100 text-amber-600"
+            )}>
+              <span className="text-[10px] font-bold px-1">{isAustralia ? "PR" : "CRS"}</span>
+            </div>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p className="text-xs">
+              {language === "ar"
+                ? (isAustralia ? "هذا الحقل يؤثر على نقاط تأشيرة أستراليا" : "هذا الحقل يؤثر بشكل مباشر على نقاط CRS الخاصة بك")
+                : (isAustralia ? "This field impacts your Australia PR points" : "This field directly impacts your CRS score")}
+            </p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    );
+  };
 
   // Load draft from localStorage on mount
   useEffect(() => {
@@ -295,7 +301,7 @@ export default function Profile() {
             />
           </Link>
           <div className="flex items-center gap-4">
-            <Link href="/dashboard">
+            <Link href="/dashboard" className="hidden md:block">
               <Button variant="ghost" size="sm">
                 {t("nav.dashboard")}
               </Button>
@@ -356,11 +362,11 @@ export default function Profile() {
                         <Label htmlFor="dateOfBirth" className={errors.dateOfBirth ? "text-destructive" : ""}>
                           {language === "ar" ? "تاريخ الميلاد" : "Date of Birth"}
                           <span className="text-destructive"> *</span>
-                          <CrsImpactIcon />
+                          <ImpactIcon isAustralia={formData.targetDestination === 'australia'} language={language} />
                         </Label>
                         <DatePicker
                           value={formData.dateOfBirth ? new Date(formData.dateOfBirth) : undefined}
-                          onChange={(date) => handleChange("dateOfBirth", date ? date.toISOString().split('T')[0] : "")}
+                          onChange={(date) => handleChange("dateOfBirth", date ? format(date, "yyyy-MM-dd") : "")}
                           placeholder={language === "ar" ? "اختر التاريخ" : "Select date"}
                         />
                       </div>
@@ -395,7 +401,7 @@ export default function Profile() {
                         <Label htmlFor="maritalStatus" className={errors.maritalStatus ? "text-destructive" : ""}>
                           {language === "ar" ? "الحالة الاجتماعية" : "Marital Status"}
                           <span className="text-destructive"> *</span>
-                          <CrsImpactIcon />
+                          <ImpactIcon isAustralia={formData.targetDestination === 'australia'} language={language} />
                         </Label>
                         <Select
                           value={formData.maritalStatus}
@@ -438,7 +444,7 @@ export default function Profile() {
                                 {language === "ar" ? "المستوى التعليمي" : "Education Level"}
                                 <span className="text-destructive"> *</span>
                                 <Info className="h-3 w-3 text-muted-foreground" />
-                                <CrsImpactIcon />
+                                <ImpactIcon isAustralia={formData.targetDestination === 'australia'} language={language} />
                               </Label>
                             </TooltipTrigger>
                             <TooltipContent side="top" className="max-w-[250px]">
@@ -506,7 +512,7 @@ export default function Profile() {
                         <Label htmlFor="yearsOfExperience" className={errors.yearsOfExperience ? "text-destructive" : ""}>
                           {language === "ar" ? "سنوات الخبرة" : "Years of Experience"}
                           <span className="text-destructive"> *</span>
-                          <CrsImpactIcon />
+                          <ImpactIcon isAustralia={formData.targetDestination === 'australia'} language={language} />
                         </Label>
                         <Input
                           id="yearsOfExperience"
@@ -583,7 +589,7 @@ export default function Profile() {
                         <Label htmlFor="englishLevel" className={errors.englishLevel ? "text-destructive" : ""}>
                           {language === "ar" ? "مستوى الإنجليزية" : "English Level"}
                           <span className="text-destructive"> *</span>
-                          <CrsImpactIcon />
+                          <ImpactIcon isAustralia={formData.targetDestination === 'australia'} language={language} />
                         </Label>
                         <Select
                           value={formData.englishLevel}
@@ -609,7 +615,7 @@ export default function Profile() {
                       <div className="space-y-2">
                         <Label htmlFor="ieltsScore">
                           {language === "ar" ? "درجة IELTS" : "IELTS Score"}
-                          <CrsImpactIcon />
+                          <ImpactIcon isAustralia={formData.targetDestination === 'australia'} language={language} />
                         </Label>
                         <Input
                           id="ieltsScore"

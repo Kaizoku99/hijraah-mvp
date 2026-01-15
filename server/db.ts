@@ -16,6 +16,9 @@ import {
   crsAssessments,
   CrsAssessment,
   InsertCrsAssessment,
+  australiaAssessments,
+  AustraliaAssessment,
+  InsertAustraliaAssessment,
 } from "../drizzle/schema";
 import { env } from './_core/env';
 
@@ -314,6 +317,46 @@ export async function getLatestCrsAssessment(userId: number): Promise<CrsAssessm
     .from(crsAssessments)
     .where(eq(crsAssessments.userId, userId))
     .orderBy(desc(crsAssessments.createdAt))
+    .limit(1);
+
+  return result.length > 0 ? result[0] : null;
+}
+
+// Australia Assessment functions
+export async function createAustraliaAssessment(assessment: InsertAustraliaAssessment): Promise<number> {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  const result = await db.insert(australiaAssessments).values(assessment).returning({ id: australiaAssessments.id });
+  return result[0].id;
+}
+
+export async function getUserAustraliaAssessments(userId: number): Promise<AustraliaAssessment[]> {
+  const db = await getDb();
+  if (!db) {
+    return [];
+  }
+
+  return await db
+    .select()
+    .from(australiaAssessments)
+    .where(eq(australiaAssessments.userId, userId))
+    .orderBy(desc(australiaAssessments.createdAt));
+}
+
+export async function getLatestAustraliaAssessment(userId: number): Promise<AustraliaAssessment | null> {
+  const db = await getDb();
+  if (!db) {
+    return null;
+  }
+
+  const result = await db
+    .select()
+    .from(australiaAssessments)
+    .where(eq(australiaAssessments.userId, userId))
+    .orderBy(desc(australiaAssessments.createdAt))
     .limit(1);
 
   return result.length > 0 ? result[0] : null;

@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { useDropzone } from "react-dropzone";
 import { useMutation } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
@@ -31,6 +31,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { DocumentTextEditor } from "./DocumentTextEditor";
 
 interface OcrPage {
   index: number;
@@ -73,6 +74,7 @@ export function DocumentScanner() {
   const [selectedDocId, setSelectedDocId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("original");
   const [autoTranslate, setAutoTranslate] = useState(false);
+  const previewRef = useRef<HTMLDivElement>(null);
 
   const processOcrMutation = useMutation({
     mutationFn: processOcrBase64,
@@ -419,7 +421,15 @@ export function DocumentScanner() {
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, x: -10 }}
-                          onClick={() => setSelectedDocId(doc.id)}
+                          onClick={() => {
+                            setSelectedDocId(doc.id);
+                            // Auto-scroll to preview on mobile
+                            if (window.innerWidth < 768 && previewRef.current) {
+                              setTimeout(() => {
+                                previewRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                              }, 100);
+                            }
+                          }}
                           className={cn(
                             "relative group p-3 rounded-lg border cursor-pointer transition-all duration-300",
                             selectedDocId === doc.id
@@ -474,9 +484,10 @@ export function DocumentScanner() {
                             </div>
                             <Button
                               variant="ghost"
-                              size="icon"
-                              className="h-6 w-6 -mr-1 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity hover:text-destructive hover:bg-destructive/10"
+                              size="icon-sm"
+                              className="h-8 w-8 -mr-1 text-muted-foreground md:opacity-0 md:group-hover:opacity-100 transition-opacity hover:text-destructive hover:bg-destructive/10"
                               onClick={(e) => removeDocument(doc.id, e)}
+                              aria-label="Remove document"
                             >
                               <X className="h-4 w-4" />
                             </Button>
@@ -503,7 +514,7 @@ export function DocumentScanner() {
         </div>
 
         {/* Main Content Area */}
-        <div className="md:col-span-2">
+        <div ref={previewRef} className="md:col-span-2">
           {selectedDoc ? (
             <div className="space-y-6">
               <Card>
@@ -581,43 +592,14 @@ export function DocumentScanner() {
                         </TabsTrigger>
                       </TabsList>
 
-                      <TabsContent value="original" className="space-y-4 mt-4">
-                        <div className="relative">
-                          <Textarea
-                            value={selectedDoc.editedText}
-                            onChange={(e) =>
-                              handleTextEdit(selectedDoc.id, e.target.value)
-                            }
-                            className={cn(
-                              "min-h-[400px] font-mono text-sm resize-y p-4 leading-relaxed",
-                              selectedDoc.ocrResult.language === "ar" && "rtl text-right"
-                            )}
-                          />
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <div className="flex gap-2">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => copyToClipboard(selectedDoc.editedText)}
-                            >
-                              <Copy className="h-4 w-4 mr-2" />
-                              {isRtl ? "نسخ" : "Copy"}
-                            </Button>
-                          </div>
-                          <Button
-                            onClick={() => translateDocument(selectedDoc.id)}
-                            disabled={selectedDoc.isTranslating}
-                            className="gap-2"
-                          >
-                            {selectedDoc.isTranslating ? (
-                              <Loader2 className="h-4 w-4 animate-spin" />
-                            ) : (
-                              <Languages className="h-4 w-4" />
-                            )}
-                            {isRtl ? "ترجمة" : "Translate"}
-                          </Button>
-                        </div>
+                      <TabsContent value="original" className="mt-4">
+                        <DocumentTextEditor
+                          initialText={selectedDoc.editedText}
+                          isRtl={selectedDoc.ocrResult.language === "ar"}
+                          isTranslating={selectedDoc.isTranslating}
+                          onTextChange={(text) => handleTextEdit(selectedDoc.id, text)}
+                          onTranslate={() => translateDocument(selectedDoc.id)}
+                        />
                       </TabsContent>
 
                       <TabsContent value="translated" className="space-y-4 mt-4">

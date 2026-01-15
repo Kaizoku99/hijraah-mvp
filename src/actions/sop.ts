@@ -1,9 +1,10 @@
 'use server'
 
 import { z } from 'zod'
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, unstable_cache } from 'next/cache'
 import { getAuthenticatedUser } from './auth'
 import { ActionError } from '@/lib/action-client'
+import { CACHE_TAGS, CACHE_DURATIONS, invalidateUserSop } from '@/lib/cache'
 import {
     createSopGeneration,
     getUserSopGenerations,
@@ -115,6 +116,7 @@ ${language === 'ar' ? 'Generate in Arabic.' : 'Generate in English.'}`
     // Track usage
     await incrementUsage(user.id, 'sop')
 
+    invalidateUserSop(user.id)
     revalidatePath('/sop')
 
     return { sopId, content: response }
@@ -123,11 +125,19 @@ ${language === 'ar' ? 'Generate in Arabic.' : 'Generate in English.'}`
 /**
  * Get SOP by ID
  */
+const getCachedSop = unstable_cache(
+    async (sopId: number) => {
+        return getSopGeneration(sopId)
+    },
+    ['get-sop'],
+    { tags: [CACHE_TAGS.SOP], revalidate: CACHE_DURATIONS.SHORT }
+)
+
 export async function getSop(input: z.infer<typeof SopIdSchema>) {
     const user = await getAuthenticatedUser()
     const validated = SopIdSchema.parse(input)
 
-    const sop = await getSopGeneration(validated.sopId)
+    const sop = await getCachedSop(validated.sopId)
 
     if (!sop || sop.userId !== user.id) {
         throw new ActionError('SOP not found', 'NOT_FOUND')
@@ -142,9 +152,17 @@ export async function getSop(input: z.infer<typeof SopIdSchema>) {
 /**
  * List user's SOPs
  */
+const getCachedUserSops = unstable_cache(
+    async (userId: number) => {
+        return getUserSopGenerations(userId)
+    },
+    ['user-sops'],
+    { tags: [CACHE_TAGS.SOP], revalidate: CACHE_DURATIONS.SHORT }
+)
+
 export async function listSops() {
     const user = await getAuthenticatedUser()
-    const sops = await getUserSopGenerations(user.id)
+    const sops = await getCachedUserSops(user.id)
 
     return sops.map((sop) => ({
         ...sop,
@@ -188,6 +206,7 @@ Refine and improve based on the feedback. Maintain structure and key information
         status: 'revised',
     })
 
+    invalidateUserSop(user.id)
     revalidatePath('/sop')
 
     return { content: response, version: newVersion }
@@ -225,6 +244,7 @@ export async function deleteSop(input: z.infer<typeof SopIdSchema>) {
 
     await dbDeleteSop(validated.sopId)
 
+    invalidateUserSop(user.id)
     revalidatePath('/sop')
 
     return { success: true as const }
@@ -286,6 +306,7 @@ export async function regenerateSopSection(input: z.infer<typeof RegenerateSecti
         status: 'revised',
     })
 
+    invalidateUserSop(user.id)
     revalidatePath('/sop')
 
     return { content: newContent, section: validated.section }
