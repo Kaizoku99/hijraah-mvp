@@ -8,6 +8,15 @@ import { checkUsageLimit, incrementUsage } from '@/../server/usage'
 import { getSubscriptionStatus } from '@/../server/stripe'
 import { classifyDocument, findMatchingChecklistItem, DocumentClassification } from '@/../server/documentClassifier'
 import { markChecklistItemVerified, getUserDocumentChecklists } from '@/../server/documents'
+import {
+    validateDocument,
+    checkCrossDocumentConsistency,
+    detectDocumentType,
+    extractFormData,
+    getTranslationCertificationGuidance,
+    DocumentValidation,
+    CrossDocumentCheck,
+} from '@/../server/document-validator'
 
 // Schemas
 const ProcessBase64Schema = z.object({
@@ -124,5 +133,120 @@ export async function translateAction(input: z.infer<typeof TranslateSchema>) {
     } catch (error) {
         console.error('Translation Action Error:', error)
         throw new ActionError('Failed to translate text', 'INTERNAL_SERVER_ERROR')
+    }
+}
+
+// ============================================
+// DOCUMENT VALIDATION ACTIONS (Phase 2.2)
+// ============================================
+
+const ValidateDocumentSchema = z.object({
+    ocrText: z.string(),
+    documentType: z.string(),
+})
+
+const CrossDocumentCheckSchema = z.object({
+    documents: z.array(z.object({
+        type: z.string(),
+        ocrText: z.string(),
+    })),
+})
+
+const DetectDocumentTypeSchema = z.object({
+    ocrText: z.string(),
+})
+
+const ExtractFormDataSchema = z.object({
+    ocrText: z.string(),
+    targetFields: z.array(z.string()),
+})
+
+const TranslationGuidanceSchema = z.object({
+    documentType: z.string(),
+    sourceCountry: z.string(),
+    targetDestination: z.string().default('Canada'),
+})
+
+/**
+ * Validate a single document for completeness and accuracy
+ */
+export async function validateDocumentAction(input: z.infer<typeof ValidateDocumentSchema>) {
+    await getAuthenticatedUser()
+    const validated = ValidateDocumentSchema.parse(input)
+
+    try {
+        const result = await validateDocument(validated.ocrText, validated.documentType)
+        return result
+    } catch (error) {
+        console.error('Document Validation Error:', error)
+        throw new ActionError('Failed to validate document', 'INTERNAL_SERVER_ERROR')
+    }
+}
+
+/**
+ * Check consistency across multiple documents
+ */
+export async function checkCrossDocumentConsistencyAction(input: z.infer<typeof CrossDocumentCheckSchema>) {
+    await getAuthenticatedUser()
+    const validated = CrossDocumentCheckSchema.parse(input)
+
+    try {
+        const result = await checkCrossDocumentConsistency(validated.documents)
+        return result
+    } catch (error) {
+        console.error('Cross-Document Check Error:', error)
+        throw new ActionError('Failed to check document consistency', 'INTERNAL_SERVER_ERROR')
+    }
+}
+
+/**
+ * Detect document type from OCR text
+ */
+export async function detectDocumentTypeAction(input: z.infer<typeof DetectDocumentTypeSchema>) {
+    await getAuthenticatedUser()
+    const validated = DetectDocumentTypeSchema.parse(input)
+
+    try {
+        const result = await detectDocumentType(validated.ocrText)
+        return result
+    } catch (error) {
+        console.error('Document Type Detection Error:', error)
+        throw new ActionError('Failed to detect document type', 'INTERNAL_SERVER_ERROR')
+    }
+}
+
+/**
+ * Extract specific fields from document for form auto-fill
+ */
+export async function extractFormDataAction(input: z.infer<typeof ExtractFormDataSchema>) {
+    await getAuthenticatedUser()
+    const validated = ExtractFormDataSchema.parse(input)
+
+    try {
+        const result = await extractFormData(validated.ocrText, validated.targetFields)
+        return result
+    } catch (error) {
+        console.error('Form Data Extraction Error:', error)
+        throw new ActionError('Failed to extract form data', 'INTERNAL_SERVER_ERROR')
+    }
+}
+
+/**
+ * Get translation certification guidance
+ */
+export async function getTranslationGuidanceAction(input: z.infer<typeof TranslationGuidanceSchema>) {
+    await getAuthenticatedUser()
+    const validated = TranslationGuidanceSchema.parse(input)
+
+    try {
+        const result = await getTranslationCertificationGuidance(
+            validated.documentType,
+            validated.sourceCountry,
+            validated.targetDestination
+        )
+        return result
+    } catch (error) {
+        console.error('Translation Guidance Error:', error)
+        throw new ActionError('Failed to get translation guidance', 'INTERNAL_SERVER_ERROR')
     }
 }

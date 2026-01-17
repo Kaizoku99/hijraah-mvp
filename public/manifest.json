@@ -1,0 +1,79 @@
+{
+  "name": "Hijraah - AI Immigration Assistant",
+  "short_name": "Hijraah",
+  "description": "Your AI-powered immigration assistant for MENA to Canada, Australia, Portugal, and more. Arabic & English support.",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#6366f1",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en",
+  "dir": "auto",
+  "categories": ["productivity", "utilities", "education"],
+  "icons": [
+    {
+      "src": "/favicomatic/favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicomatic/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicomatic/favicon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicomatic/favicon-128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicomatic/favicon-196x196.png",
+      "sizes": "196x196",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicomatic/apple-touch-icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/Hijraah_logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "CRS Calculator",
+      "short_name": "CRS",
+      "description": "Calculate your CRS score for Express Entry",
+      "url": "/calculator",
+      "icons": [{ "src": "/favicomatic/favicon-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "My Documents",
+      "short_name": "Documents",
+      "description": "View and manage your immigration documents",
+      "url": "/documents",
+      "icons": [{ "src": "/favicomatic/favicon-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "AI Chat",
+      "short_name": "Chat",
+      "description": "Chat with Hijraah AI assistant",
+      "url": "/chat",
+      "icons": [{ "src": "/favicomatic/favicon-96x96.png", "sizes": "96x96" }]
+    }
+  ],
+  "screenshots": [],
+  "related_applications": [],
+  "prefer_related_applications": false
+}

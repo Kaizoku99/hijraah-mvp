@@ -2,6 +2,7 @@
 
 import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { Logo } from "@/components/Logo";
 import { useQuery } from "@tanstack/react-query";
 import { getGuide } from "@/actions/guides";
 import { Button } from "@/components/ui/button";
@@ -76,7 +77,7 @@ export default function GuideDetail() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex flex-col bg-background">
-        <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
+        <header className="border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 sticky top-0 z-50">
           <div className="container flex h-16 items-center justify-between">
             <Skeleton className="h-8 w-32" />
             <Skeleton className="h-8 w-24" />
@@ -96,7 +97,7 @@ export default function GuideDetail() {
   if (error || !guide) {
     return (
       <div className="min-h-screen flex flex-col bg-background">
-        <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
+        <header className="border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 sticky top-0 z-50">
           <div className="container flex h-16 items-center justify-between">
             <Link href="/guides">
               <Button variant="ghost" size="sm" className="gap-2">
@@ -136,7 +137,7 @@ export default function GuideDetail() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       {/* Header */}
-      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 print:hidden">
+      <header className="border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 sticky top-0 z-50 print:hidden">
         <div className="container flex h-16 items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/guides" className="hidden md:block">
@@ -145,9 +146,9 @@ export default function GuideDetail() {
                 {language === "ar" ? "الأدلة" : "Guides"}
               </Button>
             </Link>
-            <h1 className="text-xl font-bold text-primary hidden sm:block">
-              {language === "ar" ? "هجرة" : "Hijraah"}
-            </h1>
+            <div className="hidden sm:block">
+              <Logo />
+            </div>
           </div>
           <div className="flex items-center gap-2">
             <Button variant="ghost" size="sm" onClick={handleShare}>

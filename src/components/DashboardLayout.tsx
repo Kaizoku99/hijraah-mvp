@@ -20,7 +20,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { getLoginUrl } from "@/const";
-import { useIsMobile } from "@/hooks/useMobile";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { LayoutDashboard, LogOut, PanelLeft, Users } from "lucide-react";
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
@@ -56,7 +56,10 @@ export default function DashboardLayout({
   const { loading, user } = useAuth();
 
   useEffect(() => {
-    localStorage.setItem(SIDEBAR_WIDTH_KEY, sidebarWidth.toString());
+    const timeoutId = setTimeout(() => {
+      localStorage.setItem(SIDEBAR_WIDTH_KEY, sidebarWidth.toString());
+    }, 300);
+    return () => clearTimeout(timeoutId);
   }, [sidebarWidth]);
 
   if (loading) {

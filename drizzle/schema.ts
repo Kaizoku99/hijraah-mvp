@@ -33,12 +33,21 @@ export const mvpEducationLevelEnum = pgEnum("mvp_education_level", [
 ]);
 
 export const mvpImmigrationPathwayEnum = pgEnum("mvp_immigration_pathway", [
+  // Canada pathways
   "express_entry",
   "study_permit",
   "family_sponsorship",
+  // Australia pathways
   "skilled_independent",
   "state_nominated",
   "study_visa",
+  // Portugal pathways
+  "d1_subordinate_work",
+  "d2_independent_entrepreneur",
+  "d7_passive_income",
+  "d8_digital_nomad",
+  "job_seeker_pt",
+  // Generic
   "other",
 ]);
 
@@ -117,6 +126,51 @@ export const mvpTicketStatusEnum = pgEnum("mvp_ticket_status", [
 ]);
 
 // ============================================
+// PHASE 1: APPLICATION TRACKING ENUMS
+// ============================================
+
+export const mvpApplicationStatusEnum = pgEnum("mvp_application_status", [
+  "not_started",
+  "researching",
+  "preparing_documents",
+  "language_testing",
+  "submitting",
+  "waiting_decision",
+  "approved",
+  "rejected",
+  "on_hold",
+]);
+
+export const mvpMilestoneStatusEnum = pgEnum("mvp_milestone_status", [
+  "pending",
+  "in_progress",
+  "completed",
+  "skipped",
+  "blocked",
+]);
+
+export const mvpDeadlineTypeEnum = pgEnum("mvp_deadline_type", [
+  "document_expiry",
+  "application_window",
+  "test_validity",
+  "medical_exam",
+  "biometrics",
+  "interview",
+  "submission",
+  "custom",
+]);
+
+export const mvpNotificationTypeEnum = pgEnum("mvp_notification_type", [
+  "deadline_reminder",
+  "draw_result",
+  "policy_change",
+  "document_expiry",
+  "milestone_completed",
+  "application_update",
+  "tip",
+]);
+
+// ============================================
 // MVP TABLES (prefixed to coexist with parent project)
 // ============================================
 
@@ -175,6 +229,7 @@ export const userProfiles = pgTable("mvp_user_profiles", {
     .notNull(),
   immigrationPathway: mvpImmigrationPathwayEnum("immigration_pathway"),
   profileCompleteness: integer("profile_completeness").default(0).notNull(),
+  isOnboarded: boolean("is_onboarded").default(false),
   createdAt: timestamp("created_at", { withTimezone: true })
     .defaultNow()
     .notNull(),
@@ -289,6 +344,47 @@ export const australiaAssessments = pgTable("mvp_australia_assessments", {
 }, (table) => {
   return {
     userIdIdx: index("mvp_australia_assessments_user_id_idx").on(table.userId),
+  }
+});
+
+// Portugal Visa Eligibility Assessments
+export const portugalAssessments = pgTable("mvp_portugal_assessments", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  visaType: varchar("visa_type", { length: 50 }).notNull(), // d1, d2, d7, d8, job_seeker
+  eligibilityStatus: varchar("eligibility_status", { length: 50 }), // eligible, likely_eligible, needs_more_info, not_eligible
+  // Income fields
+  monthlyIncome: numeric("monthly_income", { precision: 10, scale: 2 }),
+  incomeSource: varchar("income_source", { length: 100 }), // pension, rental, investments, remote_work, etc.
+  dependentsCount: integer("dependents_count").default(0),
+  // D2 specific
+  employmentType: varchar("employment_type", { length: 50 }), // freelancer, business_owner, investor, liberal_profession
+  hasBusinessPlan: boolean("has_business_plan").default(false),
+  hasInvestmentProof: boolean("has_investment_proof").default(false),
+  investmentAmount: numeric("investment_amount", { precision: 12, scale: 2 }),
+  // D8 specific
+  hasRemoteContract: boolean("has_remote_contract").default(false),
+  employerCountry: varchar("employer_country", { length: 100 }),
+  // General
+  hasAccommodation: boolean("has_accommodation").default(false),
+  hasCriminalRecord: boolean("has_criminal_record").default(false),
+  hasHealthInsurance: boolean("has_health_insurance").default(false),
+  // Results
+  breakdown: json("breakdown"), // Detailed eligibility breakdown
+  recommendations: json("recommendations"), // List of recommended next steps
+  missingRequirements: json("missing_requirements"), // List of missing documents/criteria
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+}, (table) => {
+  return {
+    userIdIdx: index("mvp_portugal_assessments_user_id_idx").on(table.userId),
+    visaTypeIdx: index("mvp_portugal_assessments_visa_type_idx").on(table.visaType),
   }
 });
 
@@ -515,6 +611,149 @@ export const memoryMessages = pgTable("mvp_memory_messages", {
 });
 
 // ============================================
+// PHASE 1: APPLICATION TRACKING TABLES
+// ============================================
+
+// Immigration Applications - tracks user's application journey
+export const immigrationApplications = pgTable("mvp_immigration_applications", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  targetDestination: varchar("target_destination", { length: 100 }).notNull(),
+  immigrationPathway: mvpImmigrationPathwayEnum("immigration_pathway").notNull(),
+  status: mvpApplicationStatusEnum("status").default("not_started").notNull(),
+  applicationNumber: varchar("application_number", { length: 100 }),
+  submissionDate: timestamp("submission_date", { withTimezone: true }),
+  expectedDecisionDate: timestamp("expected_decision_date", { withTimezone: true }),
+  decisionDate: timestamp("decision_date", { withTimezone: true }),
+  notes: text("notes"),
+  metadata: json("metadata"), // For storing pathway-specific data
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+}, (table) => {
+  return {
+    userIdIdx: index("mvp_immigration_applications_user_id_idx").on(table.userId),
+    statusIdx: index("mvp_immigration_applications_status_idx").on(table.status),
+  }
+});
+
+// Application Milestones - tracks progress through immigration journey
+export const applicationMilestones = pgTable("mvp_application_milestones", {
+  id: serial("id").primaryKey(),
+  applicationId: integer("application_id")
+    .notNull()
+    .references(() => immigrationApplications.id, { onDelete: "cascade" }),
+  title: varchar("title", { length: 255 }).notNull(),
+  titleAr: varchar("title_ar", { length: 255 }),
+  description: text("description"),
+  descriptionAr: text("description_ar"),
+  status: mvpMilestoneStatusEnum("status").default("pending").notNull(),
+  order: integer("order").default(0).notNull(),
+  dueDate: timestamp("due_date", { withTimezone: true }),
+  completedAt: timestamp("completed_at", { withTimezone: true }),
+  metadata: json("metadata"),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+}, (table) => {
+  return {
+    applicationIdIdx: index("mvp_application_milestones_application_id_idx").on(table.applicationId),
+    statusIdx: index("mvp_application_milestones_status_idx").on(table.status),
+  }
+});
+
+// Deadlines - tracks important dates for documents and applications
+export const deadlines = pgTable("mvp_deadlines", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  applicationId: integer("application_id")
+    .references(() => immigrationApplications.id, { onDelete: "cascade" }),
+  documentId: integer("document_id")
+    .references(() => documents.id, { onDelete: "cascade" }),
+  type: mvpDeadlineTypeEnum("type").notNull(),
+  title: varchar("title", { length: 255 }).notNull(),
+  titleAr: varchar("title_ar", { length: 255 }),
+  description: text("description"),
+  descriptionAr: text("description_ar"),
+  dueDate: timestamp("due_date", { withTimezone: true }).notNull(),
+  reminderDays: json("reminder_days").default([30, 14, 7, 1]), // Days before due date to send reminders
+  isCompleted: boolean("is_completed").default(false).notNull(),
+  completedAt: timestamp("completed_at", { withTimezone: true }),
+  isRecurring: boolean("is_recurring").default(false).notNull(),
+  recurringIntervalMonths: integer("recurring_interval_months"),
+  metadata: json("metadata"),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+}, (table) => {
+  return {
+    userIdIdx: index("mvp_deadlines_user_id_idx").on(table.userId),
+    dueDateIdx: index("mvp_deadlines_due_date_idx").on(table.dueDate),
+    typeIdx: index("mvp_deadlines_type_idx").on(table.type),
+  }
+});
+
+// Notifications - stores user notifications for various events
+export const notifications = pgTable("mvp_notifications", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  type: mvpNotificationTypeEnum("type").notNull(),
+  title: varchar("title", { length: 255 }).notNull(),
+  titleAr: varchar("title_ar", { length: 255 }),
+  message: text("message").notNull(),
+  messageAr: text("message_ar"),
+  link: varchar("link", { length: 500 }),
+  isRead: boolean("is_read").default(false).notNull(),
+  readAt: timestamp("read_at", { withTimezone: true }),
+  metadata: json("metadata"),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+}, (table) => {
+  return {
+    userIdIdx: index("mvp_notifications_user_id_idx").on(table.userId),
+    isReadIdx: index("mvp_notifications_is_read_idx").on(table.isRead),
+    typeIdx: index("mvp_notifications_type_idx").on(table.type),
+  }
+});
+
+// Express Entry Draws - stores historical draw data for analysis
+export const expressEntryDraws = pgTable("mvp_express_entry_draws", {
+  id: serial("id").primaryKey(),
+  drawNumber: integer("draw_number").notNull().unique(),
+  drawDate: timestamp("draw_date", { withTimezone: true }).notNull(),
+  drawType: varchar("draw_type", { length: 100 }).notNull(), // e.g., "No program specified", "Canadian Experience Class", "Federal Skilled Worker"
+  invitationsIssued: integer("invitations_issued").notNull(),
+  crsMinimum: integer("crs_minimum").notNull(),
+  tieBreakingRule: timestamp("tie_breaking_rule", { withTimezone: true }),
+  notes: text("notes"),
+  metadata: json("metadata"),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+}, (table) => {
+  return {
+    drawDateIdx: index("mvp_express_entry_draws_draw_date_idx").on(table.drawDate),
+    drawTypeIdx: index("mvp_express_entry_draws_draw_type_idx").on(table.drawType),
+  }
+});
+
+// ============================================
 // TYPE EXPORTS
 // ============================================
 
@@ -535,6 +774,9 @@ export type InsertCrsAssessment = typeof crsAssessments.$inferInsert;
 
 export type AustraliaAssessment = typeof australiaAssessments.$inferSelect;
 export type InsertAustraliaAssessment = typeof australiaAssessments.$inferInsert;
+
+export type PortugalAssessment = typeof portugalAssessments.$inferSelect;
+export type InsertPortugalAssessment = typeof portugalAssessments.$inferInsert;
 
 export type DocumentChecklist = typeof documentChecklists.$inferSelect;
 export type InsertDocumentChecklist = typeof documentChecklists.$inferInsert;
@@ -566,6 +808,22 @@ export type InsertWorkingMemory = typeof workingMemory.$inferInsert;
 export type MemoryMessage = typeof memoryMessages.$inferSelect;
 export type InsertMemoryMessage = typeof memoryMessages.$inferInsert;
 
+// Phase 1: Application Tracking Types
+export type ImmigrationApplication = typeof immigrationApplications.$inferSelect;
+export type InsertImmigrationApplication = typeof immigrationApplications.$inferInsert;
+
+export type ApplicationMilestone = typeof applicationMilestones.$inferSelect;
+export type InsertApplicationMilestone = typeof applicationMilestones.$inferInsert;
+
+export type Deadline = typeof deadlines.$inferSelect;
+export type InsertDeadline = typeof deadlines.$inferInsert;
+
+export type Notification = typeof notifications.$inferSelect;
+export type InsertNotification = typeof notifications.$inferInsert;
+
+export type ExpressEntryDraw = typeof expressEntryDraws.$inferSelect;
+export type InsertExpressEntryDraw = typeof expressEntryDraws.$inferInsert;
+
 // Export enum types for use in code
 export type MvpDocumentStatus = typeof mvpDocumentStatusEnum.enumValues[number];
 export type MvpEducationLevel = typeof mvpEducationLevelEnum.enumValues[number];
@@ -582,3 +840,9 @@ export type MvpSubscriptionStatus = typeof mvpSubscriptionStatusEnum.enumValues[
 export type MvpSubscriptionTier = typeof mvpSubscriptionTierEnum.enumValues[number];
 export type MvpTicketPriority = typeof mvpTicketPriorityEnum.enumValues[number];
 export type MvpTicketStatus = typeof mvpTicketStatusEnum.enumValues[number];
+
+// Phase 1: Application Tracking Enum Types
+export type MvpApplicationStatus = typeof mvpApplicationStatusEnum.enumValues[number];
+export type MvpMilestoneStatus = typeof mvpMilestoneStatusEnum.enumValues[number];
+export type MvpDeadlineType = typeof mvpDeadlineTypeEnum.enumValues[number];
+export type MvpNotificationType = typeof mvpNotificationTypeEnum.enumValues[number];

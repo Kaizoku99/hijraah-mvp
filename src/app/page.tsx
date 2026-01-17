@@ -1,11 +1,12 @@
 'use client'
 
+import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageToggle } from "@/components/LanguageToggle";
-import { MessageSquare, Calculator, FileText, BookOpen, ArrowRight, CheckCircle } from "lucide-react";
+import { MessageSquare, Calculator, FileText, BookOpen, ArrowRight, CheckCircle, Globe } from "lucide-react";
 import { getLoginUrl } from "@/const";
 import Link from "next/link";
 import Image from "next/image";
@@ -14,6 +15,7 @@ import CountUp from "react-countup";
 export default function Home() {
   const { user, isAuthenticated } = useAuth();
   const { t, language } = useLanguage();
+  const [selectedDestination, setSelectedDestination] = useState<'canada' | 'australia' | 'portugal'>('canada');
 
   const features = [
     {
@@ -23,8 +25,16 @@ export default function Home() {
     },
     {
       icon: Calculator,
-      titleKey: "features.calculator.title",
-      descriptionKey: "features.calculator.description",
+      titleKey: selectedDestination === 'australia'
+        ? "features.calculator.title_au"
+        : selectedDestination === 'portugal'
+          ? "features.calculator.title_pt"
+          : "features.calculator.title",
+      descriptionKey: selectedDestination === 'australia'
+        ? "features.calculator.description_au"
+        : selectedDestination === 'portugal'
+          ? "features.calculator.description_pt"
+          : "features.calculator.description",
     },
     {
       icon: FileText,
@@ -40,10 +50,10 @@ export default function Home() {
 
   const benefits = [
     language === "ar" ? "إرشادات مخصصة باللغة العربية" : "Personalized guidance in Arabic",
-    language === "ar" ? "حاسبة نقاط CRS دقيقة" : "Accurate CRS score calculator",
-    language === "ar" ? "قوائم مستندات خاصة ببلدك" : "Country-specific document checklists",
+    language === "ar" ? "حاسبات النقاط والأهلية لكل وجهة" : "Points & eligibility calculators for each destination",
+    language === "ar" ? "قوائم مستندات خاصة ببلدك ومسارك" : "Country & pathway-specific document checklists",
     language === "ar" ? "كتابة خطاب النوايا بالذكاء الاصطناعي" : "AI-powered SOP writing",
-    language === "ar" ? "دعم على مدار الساعة" : "24/7 support",
+    language === "ar" ? "دعم 3 وجهات: كندا، أستراليا، البرتغال" : "Support for 3 destinations: Canada, Australia, Portugal",
     language === "ar" ? "أسعار معقولة" : "Affordable pricing",
   ];
 
@@ -151,17 +161,15 @@ export default function Home() {
               </p>
             </div>
 
-            {/* Flags Display */}
+            {/* Destination Flags Display */}
             <div className="col-span-2 md:col-span-1 flex flex-col items-center justify-center space-y-2">
-              <div className="flex gap-2 text-2xl animate-pulse">
-                <span>🇨🇦</span>
-                <span>🇦🇪</span>
-                <span>🇸🇦</span>
-                <span>🇮🇳</span>
-                <span>🇳🇬</span>
+              <div className="flex gap-3 text-3xl">
+                <span title="Canada">🇨🇦</span>
+                <span title="Australia">🇦🇺</span>
+                <span title="Portugal">🇵🇹</span>
               </div>
               <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
-                {language === "ar" ? "نخدم المتقدمين من" : "Serving Applicants From"}
+                {language === "ar" ? "الوجهات المدعومة" : "Supported Destinations"}
               </p>
             </div>
           </div>
@@ -177,9 +185,49 @@ export default function Home() {
             </h3>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               {language === "ar"
-                ? "كل ما تحتاجه للهجرة إلى كندا في مكان واحد"
-                : "Everything you need to immigrate to Canada in one place"}
+                ? "كل ما تحتاجه للهجرة إلى كندا أو أستراليا أو البرتغال في مكان واحد"
+                : "Everything you need to immigrate to Canada, Australia, or Portugal in one place"}
             </p>
+          </div>
+
+          {/* Destination Cards */}
+          <div className="grid md:grid-cols-3 gap-6 mb-12">
+            <Card
+              className={`border-2 transition-all cursor-pointer ${selectedDestination === 'canada' ? 'border-blue-600 ring-2 ring-blue-600/20 shadow-lg scale-105' : 'hover:border-blue-500 hover:scale-105'} bg-gradient-to-br from-blue-50/50 to-white dark:from-blue-950/20 dark:to-background`}
+              onClick={() => setSelectedDestination('canada')}
+            >
+              <CardHeader className="text-center">
+                <div className="text-4xl mb-2">🇨🇦</div>
+                <CardTitle>{language === "ar" ? "كندا" : "Canada"}</CardTitle>
+                <CardDescription>
+                  {language === "ar" ? "نظام Express Entry & نقاط CRS" : "Express Entry & CRS Points System"}
+                </CardDescription>
+              </CardHeader>
+            </Card>
+            <Card
+              className={`border-2 transition-all cursor-pointer ${selectedDestination === 'australia' ? 'border-amber-600 ring-2 ring-amber-600/20 shadow-lg scale-105' : 'hover:border-amber-500 hover:scale-105'} bg-gradient-to-br from-amber-50/50 to-white dark:from-amber-950/20 dark:to-background`}
+              onClick={() => setSelectedDestination('australia')}
+            >
+              <CardHeader className="text-center">
+                <div className="text-4xl mb-2">🇦🇺</div>
+                <CardTitle>{language === "ar" ? "أستراليا" : "Australia"}</CardTitle>
+                <CardDescription>
+                  {language === "ar" ? "نظام SkillSelect والهجرة القائمة على النقاط" : "SkillSelect & Points-Based Immigration"}
+                </CardDescription>
+              </CardHeader>
+            </Card>
+            <Card
+              className={`border-2 transition-all cursor-pointer ${selectedDestination === 'portugal' ? 'border-green-600 ring-2 ring-green-600/20 shadow-lg scale-105' : 'hover:border-green-500 hover:scale-105'} bg-gradient-to-br from-green-50/50 to-white dark:from-green-950/20 dark:to-background`}
+              onClick={() => setSelectedDestination('portugal')}
+            >
+              <CardHeader className="text-center">
+                <div className="text-4xl mb-2">🇵🇹</div>
+                <CardTitle>{language === "ar" ? "البرتغال" : "Portugal"}</CardTitle>
+                <CardDescription>
+                  {language === "ar" ? "تأشيرات D2، D7، D8 - رحالة رقميون ودخل سلبي" : "D2, D7, D8 Visas - Digital Nomads & Passive Income"}
+                </CardDescription>
+              </CardHeader>
+            </Card>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {features.map((feature, index) => {

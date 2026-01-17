@@ -1,5 +1,6 @@
 'use server'
 
+import { cache } from 'react'
 import { getAuthUser, createSupabaseServerClient } from '@/../server/_core/supabase'
 import * as db from '@/../server/db'
 import type { User } from '@/../drizzle/schema'
@@ -8,8 +9,9 @@ import { ActionError } from '@/lib/action-client'
 /**
  * Get the current authenticated user from the database
  * This is the primary auth action that replaces trpc.auth.me
+ * Wrapped with React.cache() for per-request deduplication
  */
-export async function getMe(): Promise<User | null> {
+export const getMe = cache(async (): Promise<User | null> => {
     const supabaseUser = await getAuthUser()
 
     if (!supabaseUser) {
@@ -23,13 +25,14 @@ export async function getMe(): Promise<User | null> {
     })
 
     return dbUser
-}
+})
 
 /**
  * Get authenticated user or throw an error
  * Use this in protected actions
+ * Wrapped with React.cache() for per-request deduplication
  */
-export async function getAuthenticatedUser(): Promise<User> {
+export const getAuthenticatedUser = cache(async (): Promise<User> => {
     const user = await getMe()
 
     if (!user) {
@@ -37,7 +40,7 @@ export async function getAuthenticatedUser(): Promise<User> {
     }
 
     return user
-}
+})
 
 /**
  * Get admin user or throw an error

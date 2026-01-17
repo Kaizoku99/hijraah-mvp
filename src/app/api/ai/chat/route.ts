@@ -107,63 +107,72 @@ export async function POST(req: Request) {
         const lastTextPart = lastUserMessage?.parts.find(p => p.type === 'text');
         const userQuery = lastTextPart && 'text' in lastTextPart ? lastTextPart.text : '';
 
-        // Save user message to database
-        if (userQuery) {
-            await createMessage({
+        // Save user message to database (don't await - can proceed in parallel)
+        const saveMessagePromise = userQuery
+            ? createMessage({
                 conversationId: activeConversationId,
                 role: 'user',
                 content: userQuery,
-            });
-        }
+            })
+            : Promise.resolve();
 
-        // Fetch RAG context
-        let ragContext = '';
-        try {
-            const ragResults = await ragQuery(userQuery, {
+        // Fetch RAG context, Working Memory, and User Profile in parallel
+        // This eliminates sequential waterfall for independent operations
+        const [ragResults, workingMem, userProfile] = await Promise.all([
+            // RAG query
+            ragQuery(userQuery, {
                 chunkLimit: 3,
                 entityLimit: 3,
                 language: language,
                 includeRelatedEntities: false,
-            });
+            }).catch((error) => {
+                console.error('RAG query failed, continuing without context:', error);
+                return null;
+            }),
+            // Working Memory
+            getWorkingMemory(user.id.toString()).catch((error) => {
+                console.error('Working memory fetch failed:', error);
+                return null;
+            }),
+            // User Profile
+            getUserProfile(user.id).catch((error) => {
+                console.error('Profile fetch failed:', error);
+                return null;
+            }),
+        ]);
+
+        // Ensure message is saved before continuing
+        await saveMessagePromise;
+
+        // Build RAG context
+        let ragContext = '';
+        if (ragResults) {
             ragContext = buildRagContext(
                 { chunks: ragResults.chunks, entities: ragResults.entities },
                 language
             );
-        } catch (error) {
-            console.error('RAG query failed, continuing without context:', error);
         }
 
-        // Fetch Working Memory (persistent AI scratchpad)
+        // Build memory context
         let memoryContext = '';
-        try {
-            const workingMem = await getWorkingMemory(user.id.toString());
-            if (workingMem) {
-                memoryContext = `\n\nUser Context & Working Memory:\n${workingMem}`;
-            }
-        } catch (error) {
-            console.error('Working memory fetch failed:', error);
+        if (workingMem) {
+            memoryContext = `\n\nUser Context & Working Memory:\n${workingMem}`;
         }
 
-        // Fetch User Profile for explicit context
+        // Build profile context
         let profileContext = '';
-        let userProfile = null;
-        try {
-            userProfile = await getUserProfile(user.id);
-            if (userProfile) {
-                profileContext = `\n\nUser Profile Information (Verified):\n` +
-                    `- Name: ${user.name || 'Unknown'}\n` +
-                    `- Nationality: ${userProfile.nationality || 'Unknown'}\n` +
-                    `- Current Country: ${userProfile.currentCountry || 'Unknown'}\n` +
-                    `- Source Country: ${userProfile.sourceCountry || 'Unknown'}\n` +
-                    `- Education Level: ${userProfile.educationLevel || 'Unknown'}\n` +
-                    `- Field of Study: ${userProfile.fieldOfStudy || 'Unknown'}\n` +
-                    `- Work Experience: ${userProfile.yearsOfExperience || '0'} years\n` +
-                    `- Current Occupation: ${userProfile.currentOccupation || 'Unknown'}\n` +
-                    `- Target Destination: ${userProfile.targetDestination || 'Canada'}\n` +
-                    `- Immigration Pathway: ${userProfile.immigrationPathway || 'Unknown'}\n`;
-            }
-        } catch (error) {
-            console.error('Profile fetch failed:', error);
+        if (userProfile) {
+            profileContext = `\n\nUser Profile Information (Verified):\n` +
+                `- Name: ${user.name || 'Unknown'}\n` +
+                `- Nationality: ${userProfile.nationality || 'Unknown'}\n` +
+                `- Current Country: ${userProfile.currentCountry || 'Unknown'}\n` +
+                `- Source Country: ${userProfile.sourceCountry || 'Unknown'}\n` +
+                `- Education Level: ${userProfile.educationLevel || 'Unknown'}\n` +
+                `- Field of Study: ${userProfile.fieldOfStudy || 'Unknown'}\n` +
+                `- Work Experience: ${userProfile.yearsOfExperience || '0'} years\n` +
+                `- Current Occupation: ${userProfile.currentOccupation || 'Unknown'}\n` +
+                `- Target Destination: ${userProfile.targetDestination || 'Canada'}\n` +
+                `- Immigration Pathway: ${userProfile.immigrationPathway || 'Unknown'}\n`;
         }
 
         // Determine target destination (default to Canada)

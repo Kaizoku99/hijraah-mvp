@@ -1,16 +1,19 @@
-'use client'
+import { HydrationBoundary, dehydrate } from '@tanstack/react-query'
+import { getProfile } from '@/actions/profile'
+import CalculatorPage from '@/components/pages/CalculatorPage'
+import getQueryClient from '../get-query-client'
 
-import dynamic from 'next/dynamic'
+export default async function Calculator() {
+  const queryClient = getQueryClient()
 
-const CalculatorPage = dynamic(() => import('@/components/pages/CalculatorPage'), { 
-  ssr: false,
-  loading: () => (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-    </div>
+  await queryClient.prefetchQuery({
+    queryKey: ['profile', 'get'],
+    queryFn: getProfile,
+  })
+
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <CalculatorPage />
+    </HydrationBoundary>
   )
-})
-
-export default function Calculator() {
-  return <CalculatorPage />
 }

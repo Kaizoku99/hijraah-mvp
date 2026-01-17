@@ -1,16 +1,30 @@
-'use client'
+import { HydrationBoundary, dehydrate } from '@tanstack/react-query'
+import { getChecklists, getDocuments } from '@/actions/documents'
+import { getProfile } from '@/actions/profile'
+import DocumentsPage from '@/components/pages/DocumentsPage'
+import getQueryClient from '../get-query-client'
 
-import dynamic from 'next/dynamic'
+export default async function Documents() {
+  const queryClient = getQueryClient()
 
-const DocumentsPage = dynamic(() => import('@/components/pages/DocumentsPage'), { 
-  ssr: false,
-  loading: () => (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-    </div>
+  await Promise.all([
+    queryClient.prefetchQuery({
+      queryKey: ['documents', 'checklists'],
+      queryFn: getChecklists,
+    }),
+    queryClient.prefetchQuery({
+      queryKey: ['documents', 'list'],
+      queryFn: getDocuments,
+    }),
+    queryClient.prefetchQuery({
+      queryKey: ['profile'],
+      queryFn: getProfile,
+    })
+  ])
+
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <DocumentsPage />
+    </HydrationBoundary>
   )
-})
-
-export default function Documents() {
-  return <DocumentsPage />
 }

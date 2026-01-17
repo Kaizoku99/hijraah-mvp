@@ -25,15 +25,44 @@ import { checkUsageLimit, incrementUsage } from '@/../server/usage'
 
 // Schemas
 const GenerateChecklistSchema = z.object({
-    sourceCountry: z.enum(['tunisia', 'jordan', 'lebanon', 'morocco', 'egypt', 'sudan', 'syria']),
+    sourceCountry: z.enum([
+        // North Africa
+        'tunisia', 'morocco', 'algeria', 'egypt', 'libya', 'sudan', 'mauritania',
+        // Levant
+        'jordan', 'lebanon', 'syria', 'palestine', 'iraq',
+        // Gulf
+        'uae', 'saudi_arabia', 'qatar', 'kuwait', 'bahrain', 'oman',
+        // Other
+        'yemen', 'iran', 'other'
+    ]),
+    currentCountry: z.enum([
+        // GCC (most common residence for MENA applicants)
+        'uae', 'saudi_arabia', 'qatar', 'kuwait', 'bahrain', 'oman',
+        // Levant (common residence for refugees/expats)
+        'jordan', 'lebanon', 'syria', 'iraq', 'palestine',
+        // North Africa
+        'tunisia', 'morocco', 'algeria', 'egypt', 'libya', 'sudan',
+        // Common destinations
+        'turkey', 'malaysia', 'uk', 'usa', 'canada', 'australia', 'germany', 'france',
+        // Other
+        'yemen', 'iran', 'other'
+    ]).optional(),
     immigrationPathway: z.enum([
+        // Canada pathways
         'express_entry',
         'study_permit',
         'work_permit',
         'family_sponsorship',
+        // Australia pathways
         'skilled_independent',
         'state_nominated',
-        'study_visa'
+        'study_visa',
+        // Portugal pathways
+        'd1_subordinate_work',
+        'd2_independent_entrepreneur',
+        'd7_passive_income',
+        'd8_digital_nomad',
+        'job_seeker_pt'
     ]),
 })
 
@@ -83,7 +112,11 @@ export async function generateDocumentChecklist(input: GenerateChecklistInput) {
         )
     }
 
-    const items = generateChecklist(validated.sourceCountry, validated.immigrationPathway)
+    const items = generateChecklist(
+        validated.sourceCountry, 
+        validated.immigrationPathway,
+        validated.currentCountry
+    )
 
     const checklistId = await createDocumentChecklist({
         userId: user.id,

@@ -44,72 +44,14 @@ interface OnboardingWizardProps {
     existingProfile?: any;
 }
 
-// MENA Countries (Middle East and North Africa) - comprehensive list
-const COUNTRIES = [
-    // North Africa
-    { value: "algeria", labelAr: "الجزائر", labelEn: "Algeria" },
-    { value: "egypt", labelAr: "مصر", labelEn: "Egypt" },
-    { value: "libya", labelAr: "ليبيا", labelEn: "Libya" },
-    { value: "mauritania", labelAr: "موريتانيا", labelEn: "Mauritania" },
-    { value: "morocco", labelAr: "المغرب", labelEn: "Morocco" },
-    { value: "sudan", labelAr: "السودان", labelEn: "Sudan" },
-    { value: "tunisia", labelAr: "تونس", labelEn: "Tunisia" },
-    // Levant
-    { value: "jordan", labelAr: "الأردن", labelEn: "Jordan" },
-    { value: "lebanon", labelAr: "لبنان", labelEn: "Lebanon" },
-    { value: "palestine", labelAr: "فلسطين", labelEn: "Palestine" },
-    { value: "syria", labelAr: "سوريا", labelEn: "Syria" },
-    // Gulf States
-    { value: "bahrain", labelAr: "البحرين", labelEn: "Bahrain" },
-    { value: "iraq", labelAr: "العراق", labelEn: "Iraq" },
-    { value: "kuwait", labelAr: "الكويت", labelEn: "Kuwait" },
-    { value: "oman", labelAr: "عُمان", labelEn: "Oman" },
-    { value: "qatar", labelAr: "قطر", labelEn: "Qatar" },
-    { value: "saudi_arabia", labelAr: "السعودية", labelEn: "Saudi Arabia" },
-    { value: "uae", labelAr: "الإمارات", labelEn: "United Arab Emirates" },
-    { value: "yemen", labelAr: "اليمن", labelEn: "Yemen" },
-    // Other Arab Countries
-    { value: "comoros", labelAr: "جزر القمر", labelEn: "Comoros" },
-    { value: "djibouti", labelAr: "جيبوتي", labelEn: "Djibouti" },
-    { value: "somalia", labelAr: "الصومال", labelEn: "Somalia" },
-    { value: "iran", labelAr: "إيران", labelEn: "Iran" },
-    // Common Destination Countries (for current residence)
-    { value: "australia", labelAr: "أستراليا", labelEn: "Australia" },
-    { value: "canada", labelAr: "كندا", labelEn: "Canada" },
-    { value: "usa", labelAr: "الولايات المتحدة", labelEn: "United States" },
-    { value: "uk", labelAr: "المملكة المتحدة", labelEn: "United Kingdom" },
-    { value: "france", labelAr: "فرنسا", labelEn: "France" },
-    { value: "germany", labelAr: "ألمانيا", labelEn: "Germany" },
-    { value: "turkey", labelAr: "تركيا", labelEn: "Turkey" },
-    { value: "malaysia", labelAr: "ماليزيا", labelEn: "Malaysia" },
-    { value: "other", labelAr: "أخرى", labelEn: "Other" },
-];
-
-const DESTINATIONS = [
-    { value: "canada", labelAr: "كندا", labelEn: "Canada", icon: Globe, description: { ar: "نظام Express Entry", en: "Express Entry System" } },
-    { value: "australia", labelAr: "أستراليا", labelEn: "Australia", icon: Globe, description: { ar: "نظام SkillSelect", en: "SkillSelect System" } },
-];
-
-const PATHWAYS = [
-    { value: "express_entry", labelAr: "Express Entry", labelEn: "Express Entry", icon: Rocket, description: { ar: "للعمال المهرة", en: "For skilled workers" } },
-    { value: "study_permit", labelAr: "تصريح دراسة", labelEn: "Study Permit", icon: Target, description: { ar: "للطلاب", en: "For students" } },
-    { value: "family_sponsorship", labelAr: "كفالة عائلية", labelEn: "Family Sponsorship", icon: Globe, description: { ar: "لم الشمل العائلي", en: "Family reunification" } },
-    { value: "other", labelAr: "أخرى", labelEn: "Other", icon: MapPin, description: { ar: "مسارات أخرى", en: "Other pathways" } },
-];
-
-const AUSTRALIA_PATHWAYS = [
-    { value: "skilled_independent", labelAr: "هجرة الكفاءات (189)", labelEn: "Skilled Independent (189)", icon: Rocket, description: { ar: "نقاط مستقلة", en: "Points-based independent" } },
-    { value: "state_nominated", labelAr: "ترشيح الولاية (190)", labelEn: "State Nominated (190)", icon: MapPin, description: { ar: "برعاية ولاية", en: "State sponsored" } },
-    { value: "study_visa", labelAr: "تأشيرة طالب (500)", labelEn: "Student Visa (500)", icon: Target, description: { ar: "للدراسة", en: "For studying" } },
-    { value: "other", labelAr: "أخرى", labelEn: "Other", icon: Globe, description: { ar: "مسارات أخرى", en: "Other pathways" } },
-];
-
-const ENGLISH_LEVELS = [
-    { value: "basic", labelAr: "مبتدئ", labelEn: "Beginner" },
-    { value: "intermediate", labelAr: "متوسط", labelEn: "Intermediate" },
-    { value: "advanced", labelAr: "متقدم", labelEn: "Advanced" },
-    { value: "native", labelAr: "طلاقة", labelEn: "Fluent/Native" },
-];
+import {
+    COUNTRIES,
+    DESTINATIONS,
+    PATHWAYS,
+    AUSTRALIA_PATHWAYS,
+    PORTUGAL_PATHWAYS,
+    ENGLISH_LEVELS
+} from "@/data/constants";
 
 export default function OnboardingWizard({ onComplete, onSkip, existingProfile }: OnboardingWizardProps) {
     const { language, setLanguage } = useLanguage();
@@ -168,6 +110,7 @@ export default function OnboardingWizard({ onComplete, onSkip, existingProfile }
                 immigrationPathway: data.immigrationPathway as "express_entry" | "study_permit" | "family_sponsorship" | "other",
                 englishLevel: data.englishLevel as "none" | "basic" | "intermediate" | "advanced" | "native",
                 targetDestination: data.targetDestination,
+                is_onboarded: true,
             };
 
             if (existingProfile) {
@@ -204,8 +147,8 @@ export default function OnboardingWizard({ onComplete, onSkip, existingProfile }
     const t = {
         welcome: language === "ar" ? "مرحباً بك في هجرة" : "Welcome to Hijraah",
         welcomeDesc: language === "ar"
-            ? "دعنا نساعدك في رحلة الهجرة إلى كندا"
-            : "Let us help you on your journey to Canada",
+            ? "دعنا نساعدك في رحلة الهجرة إلى وجهتك المستهدفة"
+            : "Let us help you on your immigration journey",
         step1Title: language === "ar" ? "اختر لغتك المفضلة" : "Choose Your Preferred Language",
         step2Title: language === "ar" ? "من أين أنت؟" : "Where Are You From?",
         step3Title: language === "ar" ? "إلى أين تريد الهجرة؟" : "Where Do You Want to Immigrate?",
@@ -310,7 +253,7 @@ export default function OnboardingWizard({ onComplete, onSkip, existingProfile }
                                     ...data,
                                     targetDestination: v,
                                     // Reset pathway when destination changes
-                                    immigrationPathway: v === 'canada' ? 'express_entry' : 'skilled_independent'
+                                    immigrationPathway: v === 'canada' ? 'express_entry' : v === 'australia' ? 'skilled_independent' : 'd8_digital_nomad'
                                 });
                             }}
                             className="grid grid-cols-1 gap-3"
@@ -330,11 +273,11 @@ export default function OnboardingWizard({ onComplete, onSkip, existingProfile }
                                     <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
                                         <dest.icon className="h-5 w-5 text-primary" />
                                     </div>
-                                    <div className="flex-1">
-                                        <div className="font-medium">
+                                    <div className="flex-1 min-w-0">
+                                        <div className="font-medium text-sm leading-tight break-words">
                                             {language === "ar" ? dest.labelAr : dest.labelEn}
                                         </div>
-                                        <div className="text-xs text-muted-foreground">
+                                        <div className="text-xs text-muted-foreground leading-tight mt-0.5">
                                             {language === "ar" ? dest.description.ar : dest.description.en}
                                         </div>
                                     </div>
@@ -348,7 +291,11 @@ export default function OnboardingWizard({ onComplete, onSkip, existingProfile }
                 );
 
             case 4:
-                const activePathways = data.targetDestination === 'australia' ? AUSTRALIA_PATHWAYS : PATHWAYS;
+                const activePathways = data.targetDestination === 'australia'
+                    ? AUSTRALIA_PATHWAYS
+                    : data.targetDestination === 'portugal'
+                        ? PORTUGAL_PATHWAYS
+                        : PATHWAYS;
                 return (
                     <div className="space-y-6">
                         <div className="text-center">
@@ -377,11 +324,11 @@ export default function OnboardingWizard({ onComplete, onSkip, existingProfile }
                                     <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
                                         <pathway.icon className="h-5 w-5 text-primary" />
                                     </div>
-                                    <div className="flex-1">
-                                        <div className="font-medium">
+                                    <div className="flex-1 min-w-0">
+                                        <div className="font-medium text-sm leading-tight break-words">
                                             {language === "ar" ? pathway.labelAr : pathway.labelEn}
                                         </div>
-                                        <div className="text-xs text-muted-foreground">
+                                        <div className="text-xs text-muted-foreground leading-tight mt-0.5">
                                             {language === "ar" ? pathway.description.ar : pathway.description.en}
                                         </div>
                                     </div>
@@ -454,7 +401,11 @@ export default function OnboardingWizard({ onComplete, onSkip, existingProfile }
                                 disabled={createProfileMutation.isPending || updateProfileMutation.isPending}
                             >
                                 <Rocket className="h-5 w-5" />
-                                {data.targetDestination === 'australia' ? t.calculatePoints : t.calculateCrs}
+                                {data.targetDestination === 'australia'
+                                    ? t.calculatePoints
+                                    : data.targetDestination === 'portugal'
+                                        ? (language === 'ar' ? 'تحقق من الأهلية' : 'Check Eligibility')
+                                        : t.calculateCrs}
                             </Button>
                             <Button
                                 variant="outline"

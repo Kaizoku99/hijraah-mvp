@@ -3,38 +3,44 @@
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { LanguageToggle } from "@/components/LanguageToggle";
+import { AppHeader } from "@/components/AppHeader";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getProfile, createProfile, updateProfile } from "@/actions/profile";
-import { User, LogOut, Loader2, Save, CheckCircle, ArrowLeft, ArrowRight, Info } from "lucide-react";
+import { User, LogOut, Loader2, Save, CheckCircle, ArrowLeft, ArrowRight } from "lucide-react";
 import Link from "next/link";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
-import { format } from "date-fns";
-import { DatePicker } from "@/components/ui/date-picker";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { CountrySelect } from "@/components/CountrySelect";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 const PROFILE_DRAFT_KEY = "hijraah_profile_draft";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { nocList } from "@/data/nocList";
+import { queryKeys } from "@/lib/query-keys";
+import { useDebounce } from "@/hooks/useDebounce";
+import { PersonalDetailsStep } from "@/components/profile/PersonalDetailsStep";
+import { EducationStep } from "@/components/profile/EducationStep";
+import { WorkExperienceStep } from "@/components/profile/WorkExperienceStep";
+import { LanguageStep } from "@/components/profile/LanguageStep";
+import { GoalsStep } from "@/components/profile/GoalsStep";
+
+
 
 export default function Profile() {
   const { user, logout } = useAuth();
@@ -43,7 +49,7 @@ export default function Profile() {
   const queryClient = useQueryClient();
 
   const { data: profile, isLoading: profileLoading } = useQuery({
-    queryKey: ['profile', 'get'],
+    queryKey: queryKeys.user.profile(),
     queryFn: getProfile,
   });
 
@@ -66,53 +72,33 @@ export default function Profile() {
     immigrationPathway: "",
   });
 
+  const debouncedFormData = useDebounce(formData, 1000);
+
   const [step, setStep] = useState(1);
   const totalSteps = 5;
   const [shakeStep, setShakeStep] = useState(false);
   const [errors, setErrors] = useState<Record<string, boolean>>({});
+  const [openCombobox, setOpenCombobox] = useState(false);
 
-  // Dynamic Impact Icon Component
-  const ImpactIcon = ({ isAustralia, language }: { isAustralia: boolean; language: string }) => {
-    return (
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <div className={cn(
-              "inline-flex items-center justify-center ml-2 h-5 w-5 rounded-full cursor-help",
-              isAustralia ? "bg-emerald-100 text-emerald-600" : "bg-amber-100 text-amber-600"
-            )}>
-              <span className="text-[10px] font-bold px-1">{isAustralia ? "PR" : "CRS"}</span>
-            </div>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p className="text-xs">
-              {language === "ar"
-                ? (isAustralia ? "هذا الحقل يؤثر على نقاط تأشيرة أستراليا" : "هذا الحقل يؤثر بشكل مباشر على نقاط CRS الخاصة بك")
-                : (isAustralia ? "This field impacts your Australia PR points" : "This field directly impacts your CRS score")}
-            </p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-    );
-  };
+
+
+  const [draft, setDraft] = useLocalStorage<any>(PROFILE_DRAFT_KEY, null);
 
   // Load draft from localStorage on mount
   useEffect(() => {
-    if (typeof window !== 'undefined' && !profile) {
-      const saved = localStorage.getItem(PROFILE_DRAFT_KEY);
-      if (saved) {
-        try {
-          const draft = JSON.parse(saved);
-          setFormData(prev => ({ ...prev, ...draft }));
-          toast.info(
-            language === "ar"
-              ? "تم استعادة المسودة المحفوظة"
-              : "Draft restored from previous session"
-          );
-        } catch { }
+    if (!profile && draft) {
+      // Check if draft has meaningful data
+      const hasContent = Object.keys(draft).length > 0;
+      if (hasContent) {
+        setFormData(prev => ({ ...prev, ...draft }));
+        toast.info(
+          language === "ar"
+            ? "تم استعادة المسودة المحفوظة"
+            : "Draft restored from previous session"
+        );
       }
     }
-  }, [profile, language]);
+  }, [profile, language, draft]); // Added draft to deps, but be careful of loops if we were setting draft here (we aren't)
 
   useEffect(() => {
     if (profile) {
@@ -137,20 +123,18 @@ export default function Profile() {
     }
   }, [profile]);
 
-  // Auto-save draft to localStorage on form change
+  // Auto-save draft to local storage on form change
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const hasData = Object.values(formData).some(v => v !== "" && v !== "canada");
-      if (hasData) {
-        localStorage.setItem(PROFILE_DRAFT_KEY, JSON.stringify(formData));
-      }
+    const hasData = Object.values(debouncedFormData).some(v => v !== "" && v !== "canada");
+    if (hasData) {
+      setDraft(debouncedFormData);
     }
-  }, [formData]);
+  }, [debouncedFormData, setDraft]);
 
   const createProfileMutation = useMutation({
     mutationFn: createProfile,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['profile'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.user.profile() });
       toast.success(language === "ar" ? "تم حفظ الملف الشخصي بنجاح" : "Profile saved successfully");
     },
     onError: (error: any) => {
@@ -162,10 +146,10 @@ export default function Profile() {
   const updateProfileMutation = useMutation({
     mutationFn: updateProfile,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['profile'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.user.profile() });
       toast.success(language === "ar" ? "تم تحديث الملف الشخصي بنجاح" : "Profile updated successfully");
       // Clear draft on successful save
-      localStorage.removeItem(PROFILE_DRAFT_KEY);
+      setDraft(null);
     },
     onError: (error: any) => {
       toast.error(language === "ar" ? "فشل تحديث الملف الشخصي" : "Failed to update profile");
@@ -192,7 +176,7 @@ export default function Profile() {
       // fieldOfStudy is often optional but good practice to require if education > high school
     } else if (currentStep === 3) {
       if (!formData.yearsOfExperience) newErrors.yearsOfExperience = true;
-      if (!formData.nocCode) newErrors.nocCode = true;
+      if (formData.targetDestination === 'canada' && !formData.nocCode) newErrors.nocCode = true;
     } else if (currentStep === 4) {
       if (!formData.englishLevel) newErrors.englishLevel = true;
     } else if (currentStep === 5) {
@@ -252,17 +236,18 @@ export default function Profile() {
     }
   };
 
-  const handleChange = (field: string, value: string) => {
+  const handleChange = useCallback((field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     // Clear error for this field if it exists
-    if (errors[field]) {
-      setErrors((prev) => {
+    setErrors((prev) => {
+      if (prev[field]) {
         const newErrors = { ...prev };
         delete newErrors[field];
         return newErrors;
-      });
-    }
-  };
+      }
+      return prev;
+    });
+  }, []);
 
 
 
@@ -289,31 +274,17 @@ export default function Profile() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       {/* Header */}
-      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
-        <div className="container flex h-16 items-center justify-between">
-          <Link href="/" className="relative h-8 w-32">
-            <Image
-              src="/Hijraah_logo.png"
-              alt="Hijraah"
-              fill
-              className="object-contain object-left"
-              priority
-            />
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link href="/dashboard" className="hidden md:block">
-              <Button variant="ghost" size="sm">
-                {t("nav.dashboard")}
-              </Button>
-            </Link>
-            <LanguageToggle />
-            <Button variant="ghost" size="sm" onClick={handleLogout} className="gap-2">
-              <LogOut className="h-4 w-4" />
-              <span className="hidden sm:inline">{t("nav.logout")}</span>
+      <AppHeader
+        additionalActions={
+          <Link href="/dashboard" className="hidden md:block">
+            <Button variant="ghost" size="sm">
+              {t("nav.dashboard")}
             </Button>
-          </div>
-        </div>
-      </header>
+          </Link>
+        }
+        showUsage={false}
+        showProfile={false}
+      />
 
       <main className="flex-1 py-8">
         <div className="container max-w-4xl space-y-6">
@@ -347,384 +318,52 @@ export default function Profile() {
 
               {/* Step 1: Personal Information */}
               {step === 1 && (
-                <Card className={cn(errors.dateOfBirth || errors.nationality || errors.currentCountry || errors.maritalStatus ? "border-destructive" : "")}>
-                  <CardHeader>
-                    <CardTitle>{language === "ar" ? "المعلومات الشخصية" : "Personal Information"}</CardTitle>
-                    <CardDescription>
-                      {language === "ar"
-                        ? "معلومات أساسية عنك"
-                        : "Basic information about you"}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="dateOfBirth" className={errors.dateOfBirth ? "text-destructive" : ""}>
-                          {language === "ar" ? "تاريخ الميلاد" : "Date of Birth"}
-                          <span className="text-destructive"> *</span>
-                          <ImpactIcon isAustralia={formData.targetDestination === 'australia'} language={language} />
-                        </Label>
-                        <DatePicker
-                          value={formData.dateOfBirth ? new Date(formData.dateOfBirth) : undefined}
-                          onChange={(date) => handleChange("dateOfBirth", date ? format(date, "yyyy-MM-dd") : "")}
-                          placeholder={language === "ar" ? "اختر التاريخ" : "Select date"}
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="nationality" className={errors.nationality ? "text-destructive" : ""}>
-                          {language === "ar" ? "الجنسية" : "Nationality"}
-                          <span className="text-destructive"> *</span>
-                        </Label>
-                        <CountrySelect
-                          value={formData.nationality}
-                          onValueChange={(val) => handleChange("nationality", val)}
-                          placeholder={language === "ar" ? "مثال: تونسي" : "e.g., Tunisian"}
-                          language={language}
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="currentCountry" className={errors.currentCountry ? "text-destructive" : ""}>
-                          {language === "ar" ? "البلد الحالي" : "Current Country"}
-                          <span className="text-destructive"> *</span>
-                        </Label>
-                        <CountrySelect
-                          value={formData.currentCountry}
-                          onValueChange={(val) => handleChange("currentCountry", val)}
-                          placeholder={language === "ar" ? "مثال: الإمارات" : "e.g., UAE"}
-                          language={language}
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="maritalStatus" className={errors.maritalStatus ? "text-destructive" : ""}>
-                          {language === "ar" ? "الحالة الاجتماعية" : "Marital Status"}
-                          <span className="text-destructive"> *</span>
-                          <ImpactIcon isAustralia={formData.targetDestination === 'australia'} language={language} />
-                        </Label>
-                        <Select
-                          value={formData.maritalStatus}
-                          onValueChange={(value) => handleChange("maritalStatus", value)}
-                        >
-                          <SelectTrigger id="maritalStatus" className={errors.maritalStatus ? "border-destructive" : ""}>
-                            <SelectValue
-                              placeholder={language === "ar" ? "اختر الحالة الاجتماعية" : "Select marital status"}
-                            />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="single">{language === "ar" ? "أعزب" : "Single"}</SelectItem>
-                            <SelectItem value="married">{language === "ar" ? "متزوج" : "Married"}</SelectItem>
-                            <SelectItem value="divorced">{language === "ar" ? "مطلق" : "Divorced"}</SelectItem>
-                            <SelectItem value="widowed">{language === "ar" ? "أرمل" : "Widowed"}</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                <PersonalDetailsStep
+                  formData={formData}
+                  handleChange={handleChange}
+                  errors={errors}
+                  language={language}
+                />
               )}
 
               {/* Step 2: Education */}
               {step === 2 && (
-                <Card className={cn(errors.educationLevel ? "border-destructive" : "")}>
-                  <CardHeader>
-                    <CardTitle>{language === "ar" ? "التعليم" : "Education"}</CardTitle>
-                    <CardDescription>
-                      {language === "ar" ? "خلفيتك التعليمية" : "Your educational background"}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Label htmlFor="educationLevel" className={cn("cursor-help flex items-center gap-1", errors.educationLevel ? "text-destructive" : "")}>
-                                {language === "ar" ? "المستوى التعليمي" : "Education Level"}
-                                <span className="text-destructive"> *</span>
-                                <Info className="h-3 w-3 text-muted-foreground" />
-                                <ImpactIcon isAustralia={formData.targetDestination === 'australia'} language={language} />
-                              </Label>
-                            </TooltipTrigger>
-                            <TooltipContent side="top" className="max-w-[250px]">
-                              <p className="text-xs">
-                                {language === "ar"
-                                  ? "يؤثر على نقاط CRS. تأكد من إجراء تقييم الشهادات (ECA) لشهاداتك."
-                                  : "Impacts CRS score. Ensure you get an Educational Credential Assessment (ECA) for your credentials."}
-                              </p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                        <Select
-                          value={formData.educationLevel}
-                          onValueChange={(value) => handleChange("educationLevel", value)}
-                        >
-                          <SelectTrigger id="educationLevel" className={errors.educationLevel ? "border-destructive" : ""}>
-                            <SelectValue
-                              placeholder={language === "ar" ? "اختر المستوى التعليمي" : "Select education level"}
-                            />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="high_school">
-                              {language === "ar" ? "ثانوية عامة" : "High School"}
-                            </SelectItem>
-                            <SelectItem value="bachelor">
-                              {language === "ar" ? "بكالوريوس" : "Bachelor's Degree"}
-                            </SelectItem>
-                            <SelectItem value="master">
-                              {language === "ar" ? "ماجستير" : "Master's Degree"}
-                            </SelectItem>
-                            <SelectItem value="phd">{language === "ar" ? "دكتوراه" : "PhD"}</SelectItem>
-                            <SelectItem value="other">{language === "ar" ? "أخرى" : "Other"}</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="fieldOfStudy">
-                          {language === "ar" ? "مجال الدراسة" : "Field of Study"}
-                        </Label>
-                        <Input
-                          id="fieldOfStudy"
-                          value={formData.fieldOfStudy}
-                          onChange={(e) => handleChange("fieldOfStudy", e.target.value)}
-                          placeholder={language === "ar" ? "مثال: هندسة الحاسوب" : "e.g., Computer Engineering"}
-                        />
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                <EducationStep
+                  formData={formData}
+                  handleChange={handleChange}
+                  errors={errors}
+                  language={language}
+                />
               )}
 
               {/* Step 3: Work Experience */}
               {step === 3 && (
-                <Card className={cn(errors.yearsOfExperience || errors.nocCode ? "border-destructive" : "")}>
-                  <CardHeader>
-                    <CardTitle>{language === "ar" ? "الخبرة العملية" : "Work Experience"}</CardTitle>
-                    <CardDescription>
-                      {language === "ar" ? "خبرتك المهنية" : "Your professional experience"}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="yearsOfExperience" className={errors.yearsOfExperience ? "text-destructive" : ""}>
-                          {language === "ar" ? "سنوات الخبرة" : "Years of Experience"}
-                          <span className="text-destructive"> *</span>
-                          <ImpactIcon isAustralia={formData.targetDestination === 'australia'} language={language} />
-                        </Label>
-                        <Input
-                          id="yearsOfExperience"
-                          type="number"
-                          min="0"
-                          value={formData.yearsOfExperience}
-                          onChange={(e) => handleChange("yearsOfExperience", e.target.value)}
-                          placeholder="0"
-                          className={errors.yearsOfExperience ? "border-destructive" : ""}
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="currentOccupation">
-                          {language === "ar" ? "المهنة الحالية" : "Current Occupation"}
-                        </Label>
-                        <Input
-                          id="currentOccupation"
-                          value={formData.currentOccupation}
-                          onChange={(e) => handleChange("currentOccupation", e.target.value)}
-                          placeholder={language === "ar" ? "مثال: مهندس برمجيات" : "e.g., Software Engineer"}
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Label htmlFor="nocCode" className={cn("cursor-help flex items-center gap-1", errors.nocCode ? "text-destructive" : "")}>
-                                {language === "ar" ? "رمز NOC" : "NOC Code"}
-                                <span className="text-destructive"> *</span>
-                                <Info className="h-3 w-3 text-muted-foreground" />
-                              </Label>
-                            </TooltipTrigger>
-                            <TooltipContent side="top" className="max-w-[250px]">
-                              <p className="text-xs">
-                                {language === "ar"
-                                  ? "التصنيف المهني الوطني الكندي. ابحث عن رمز مهنتك على موقع Canada.ca."
-                                  : "National Occupational Classification - find your job code at Canada.ca."}
-                              </p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                        <Input
-                          id="nocCode"
-                          value={formData.nocCode}
-                          onChange={(e) => handleChange("nocCode", e.target.value)}
-                          placeholder="e.g., 21232"
-                          className={errors.nocCode ? "border-destructive" : ""}
-                        />
-                        <p className="text-xs text-muted-foreground">
-                          {language === "ar"
-                            ? "رمز التصنيف المهني الوطني الكندي"
-                            : "National Occupational Classification code"}
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                <WorkExperienceStep
+                  formData={formData}
+                  handleChange={handleChange}
+                  errors={errors}
+                  language={language}
+                />
               )}
 
               {/* Step 4: Language Proficiency */}
               {step === 4 && (
-                <Card className={cn(errors.englishLevel ? "border-destructive" : "")}>
-                  <CardHeader>
-                    <CardTitle>{language === "ar" ? "إتقان اللغة" : "Language Proficiency"}</CardTitle>
-                    <CardDescription>
-                      {language === "ar" ? "مهاراتك اللغوية" : "Your language skills"}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="englishLevel" className={errors.englishLevel ? "text-destructive" : ""}>
-                          {language === "ar" ? "مستوى الإنجليزية" : "English Level"}
-                          <span className="text-destructive"> *</span>
-                          <ImpactIcon isAustralia={formData.targetDestination === 'australia'} language={language} />
-                        </Label>
-                        <Select
-                          value={formData.englishLevel}
-                          onValueChange={(value) => handleChange("englishLevel", value)}
-                        >
-                          <SelectTrigger id="englishLevel" className={errors.englishLevel ? "border-destructive" : ""}>
-                            <SelectValue
-                              placeholder={language === "ar" ? "اختر مستوى الإنجليزية" : "Select English level"}
-                            />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="none">{language === "ar" ? "لا يوجد" : "None"}</SelectItem>
-                            <SelectItem value="basic">{language === "ar" ? "أساسي" : "Basic"}</SelectItem>
-                            <SelectItem value="intermediate">
-                              {language === "ar" ? "متوسط" : "Intermediate"}
-                            </SelectItem>
-                            <SelectItem value="advanced">{language === "ar" ? "متقدم" : "Advanced"}</SelectItem>
-                            <SelectItem value="native">{language === "ar" ? "لغة أم" : "Native"}</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="ieltsScore">
-                          {language === "ar" ? "درجة IELTS" : "IELTS Score"}
-                          <ImpactIcon isAustralia={formData.targetDestination === 'australia'} language={language} />
-                        </Label>
-                        <Input
-                          id="ieltsScore"
-                          value={formData.ieltsScore}
-                          onChange={(e) => handleChange("ieltsScore", e.target.value)}
-                          placeholder="e.g., 7.5"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="frenchLevel">
-                          {language === "ar" ? "مستوى الفرنسية" : "French Level"}
-                        </Label>
-                        <Select
-                          value={formData.frenchLevel}
-                          onValueChange={(value) => handleChange("frenchLevel", value)}
-                        >
-                          <SelectTrigger id="frenchLevel">
-                            <SelectValue
-                              placeholder={language === "ar" ? "اختر مستوى الفرنسية" : "Select French level"}
-                            />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="none">{language === "ar" ? "لا يوجد" : "None"}</SelectItem>
-                            <SelectItem value="basic">{language === "ar" ? "أساسي" : "Basic"}</SelectItem>
-                            <SelectItem value="intermediate">
-                              {language === "ar" ? "متوسط" : "Intermediate"}
-                            </SelectItem>
-                            <SelectItem value="advanced">{language === "ar" ? "متقدم" : "Advanced"}</SelectItem>
-                            <SelectItem value="native">{language === "ar" ? "لغة أم" : "Native"}</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="tefScore">
-                          {language === "ar" ? "درجة TEF" : "TEF Score"}
-                        </Label>
-                        <Input
-                          id="tefScore"
-                          value={formData.tefScore}
-                          onChange={(e) => handleChange("tefScore", e.target.value)}
-                          placeholder="e.g., 400"
-                        />
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                <LanguageStep
+                  formData={formData}
+                  handleChange={handleChange}
+                  errors={errors}
+                  language={language}
+                />
               )}
 
               {/* Step 5: Immigration Goals */}
               {step === 5 && (
-                <Card className={cn(errors.immigrationPathway ? "border-destructive" : "")}>
-                  <CardHeader>
-                    <CardTitle>{language === "ar" ? "أهداف الهجرة" : "Immigration Goals"}</CardTitle>
-                    <CardDescription>
-                      {language === "ar" ? "خططك للهجرة" : "Your immigration plans"}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="targetDestination">
-                          {language === "ar" ? "الوجهة المستهدفة" : "Target Destination"}
-                        </Label>
-                        <Select
-                          value={formData.targetDestination}
-                          onValueChange={(value) => handleChange("targetDestination", value)}
-                        >
-                          <SelectTrigger id="targetDestination">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="canada">{language === "ar" ? "كندا" : "Canada"}</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="immigrationPathway" className={errors.immigrationPathway ? "text-destructive" : ""}>
-                          {language === "ar" ? "مسار الهجرة" : "Immigration Pathway"}
-                          <span className="text-destructive"> *</span>
-                        </Label>
-                        <Select
-                          value={formData.immigrationPathway}
-                          onValueChange={(value) => handleChange("immigrationPathway", value)}
-                        >
-                          <SelectTrigger id="immigrationPathway" className={errors.immigrationPathway ? "border-destructive" : ""}>
-                            <SelectValue
-                              placeholder={language === "ar" ? "اختر مسار الهجرة" : "Select immigration pathway"}
-                            />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="express_entry">
-                              {language === "ar" ? "الدخول السريع" : "Express Entry"}
-                            </SelectItem>
-                            <SelectItem value="study_permit">
-                              {language === "ar" ? "تصريح دراسة" : "Study Permit"}
-                            </SelectItem>
-                            <SelectItem value="family_sponsorship">
-                              {language === "ar" ? "كفالة عائلية" : "Family Sponsorship"}
-                            </SelectItem>
-                            <SelectItem value="other">{language === "ar" ? "أخرى" : "Other"}</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                <GoalsStep
+                  formData={formData}
+                  handleChange={handleChange}
+                  errors={errors}
+                  language={language}
+                />
               )}
 
               {/* Navigation & Submit Buttons */}

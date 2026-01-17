@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { LanguageToggle } from "@/components/LanguageToggle";
+import { AppHeader } from "@/components/AppHeader";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { generateSop } from "@/actions/sop";
 import { getProfile } from "@/actions/profile";
@@ -39,7 +39,7 @@ export default function SopNew() {
     education: "",
     workExperience: "",
     motivation: "",
-    whyCanada: "",
+    whyDestination: "",
     careerGoals: "",
     whyThisProgram: "",
     uniqueStrengths: "",
@@ -137,7 +137,7 @@ export default function SopNew() {
   };
 
   const handleGenerate = () => {
-    const requiredFields = ['background', 'whyCanada', 'careerGoals', 'education', 'workExperience'];
+    const requiredFields = ['background', 'whyDestination', 'careerGoals', 'education', 'workExperience'];
     const missing = requiredFields.filter(f => !formData[f as keyof typeof formData]);
 
     if (missing.length > 0) {
@@ -154,7 +154,7 @@ export default function SopNew() {
       education: formData.education,
       workExperience: formData.workExperience,
       motivation: formData.motivation,
-      whyCanada: formData.whyCanada,
+      whyCanada: formData.whyDestination, // Maps to whyCanada for backward compatibility
       careerGoals: formData.careerGoals,
       whyThisProgram: formData.whyThisProgram,
       uniqueStrengths: formData.uniqueStrengths,
@@ -162,6 +162,7 @@ export default function SopNew() {
       targetProgram: formData.targetProgram,
       targetInstitution: formData.targetInstitution,
       language: language as "en" | "ar",
+      targetDestination: profile?.targetDestination || 'canada',
     });
   };
 
@@ -170,17 +171,19 @@ export default function SopNew() {
     router.push("/");
   };
 
-  const CharCount = ({ text, min = MIN_CHAR_COUNT }: { text: string, min?: number }) => {
-    const count = text.length;
-    return (
-      <div className={cn("text-xs text-right mt-1", count < min ? "text-amber-500" : "text-green-500")}>
-        {count} / {min} {language === "ar" ? "حرف (مستحسن)" : "chars (recommended)"}
-      </div>
-    );
+  // Helper functions independent of component state
+  const getDestinationName = (targetDestination: string, language: string) => {
+    const dest = targetDestination || 'canada';
+    const names: Record<string, { ar: string, en: string }> = {
+      canada: { ar: "كندا", en: "Canada" },
+      australia: { ar: "أستراليا", en: "Australia" },
+      portugal: { ar: "البرتغال", en: "Portugal" },
+    };
+    return names[dest]?.[language as 'ar' | 'en'] || names.canada[language as 'ar' | 'en'];
   };
 
-  // AI Prompt Suggestions based on profile
-  const getSuggestions = (field: string): string[] => {
+  const getSuggestions = (field: string, targetDestination: string, language: string): string[] => {
+    const destName = getDestinationName(targetDestination, language);
     const suggestions: Record<string, { ar: string[], en: string[] }> = {
       background: {
         ar: ["ابدأ بذكر مكان نشأتك وعائلتك", "اذكر ما شكّل شخصيتك", "صف اهتماماتك المبكرة"],
@@ -190,20 +193,34 @@ export default function SopNew() {
         ar: ["اذكر شهاداتك الجامعية", "صف تخصصك الأكاديمي", "اذكر أي إنجازات أكاديمية"],
         en: ["State your university degrees", "Describe your major", "Mention academic achievements"]
       },
-      whyCanada: {
-        ar: ["تحدث عن الفرص في كندا", "اذكر جودة المعيشة", "صف البيئة المتعددة الثقافات"],
-        en: ["Discuss opportunities in Canada", "Mention quality of life", "Describe multicultural environment"]
+      whyDestination: {
+        ar: [`تحدث عن الفرص في ${destName}`, "اذكر جودة المعيشة", "صف البيئة والثقافة"],
+        en: [`Discuss opportunities in ${destName}`, "Mention quality of life", "Describe the environment and culture"]
       },
       careerGoals: {
-        ar: ["حدد أهدافك على المدى القريب والبعيد", "اربط أهدافك بكندا"],
-        en: ["Define short and long-term goals", "Connect your goals to Canada"]
+        ar: [`حدد أهدافك على المدى القريب والبعيد`, `اربط أهدافك بـ${destName}`],
+        en: ["Define short and long-term goals", `Connect your goals to ${destName}`]
+      },
+      // Adding whyThisProgram to handle potential missing field
+      whyThisProgram: {
+        ar: ["تحدث عن جودة المنهج", "اذكر سمعة المؤسسة", "صف كيف يخدم أهدافك"],
+        en: ["Discuss curriculum quality", "Mention institution reputation", "Describe how it fits goals"]
       }
     };
     return suggestions[field]?.[language as 'ar' | 'en'] || [];
   };
 
-  const SuggestionChips = ({ field, onClick }: { field: string, onClick: (text: string) => void }) => {
-    const suggestions = getSuggestions(field);
+  const CharCount = ({ text, min = MIN_CHAR_COUNT, language }: { text: string, min?: number, language: string }) => {
+    const count = text.length;
+    return (
+      <div className={cn("text-xs text-right mt-1", count < min ? "text-amber-500" : "text-green-500")}>
+        {count} / {min} {language === "ar" ? "حرف (مستحسن)" : "chars (recommended)"}
+      </div>
+    );
+  };
+
+  const SuggestionChips = ({ field, onClick, targetDestination, language }: { field: string, onClick: (text: string) => void, targetDestination: string, language: string }) => {
+    const suggestions = getSuggestions(field, targetDestination, language);
     if (suggestions.length === 0) return null;
     return (
       <div className="flex flex-wrap gap-2 mt-2">
@@ -239,8 +256,8 @@ export default function SopNew() {
           rows={3}
           className="mt-2 md:min-h-[120px]"
         />
-        <CharCount text={formData.background} />
-        <SuggestionChips field="background" onClick={(s) => handleChange("background", formData.background + " " + s)} />
+        <CharCount text={formData.background} language={language} />
+        <SuggestionChips field="background" onClick={(s) => handleChange("background", formData.background + " " + s)} targetDestination={profile?.targetDestination || 'canada'} language={language} />
       </div>
 
       <div>
@@ -259,8 +276,8 @@ export default function SopNew() {
           rows={4}
           className="mt-2"
         />
-        <CharCount text={formData.education} />
-        <SuggestionChips field="education" onClick={(s) => handleChange("education", formData.education + " " + s)} />
+        <CharCount text={formData.education} language={language} />
+        <SuggestionChips field="education" onClick={(s) => handleChange("education", formData.education + " " + s)} targetDestination={profile?.targetDestination || 'canada'} language={language} />
       </div>
 
       <div>
@@ -279,7 +296,7 @@ export default function SopNew() {
           rows={4}
           className="mt-2"
         />
-        <CharCount text={formData.workExperience} />
+        <CharCount text={formData.workExperience} language={language} />
       </div>
 
       <div>
@@ -292,13 +309,13 @@ export default function SopNew() {
           onChange={(e) => handleChange("motivation", e.target.value)}
           placeholder={
             language === "ar"
-              ? "ما الذي يدفعك للهجرة إلى كندا؟..."
-              : "What motivates you to immigrate to Canada?..."
+              ? `ما الذي يدفعك للهجرة إلى ${getDestinationName(profile?.targetDestination || 'canada', language)}؟...`
+              : `What motivates you to immigrate to ${getDestinationName(profile?.targetDestination || 'canada', language)}?...`
           }
           rows={3}
           className="mt-2"
         />
-        <CharCount text={formData.motivation} min={50} />
+        <CharCount text={formData.motivation} min={50} language={language} />
       </div>
     </div>
   );
@@ -306,23 +323,23 @@ export default function SopNew() {
   const renderStep2 = () => (
     <div className="space-y-6">
       <div>
-        <Label htmlFor="whyCanada">
-          {language === "ar" ? "لماذا كندا؟ *" : "Why Canada? *"}
+        <Label htmlFor="whyDestination">
+          {language === "ar" ? `لماذا ${getDestinationName(profile?.targetDestination || 'canada', language)}؟ *` : `Why ${getDestinationName(profile?.targetDestination || 'canada', language)}? *`}
         </Label>
         <Textarea
-          id="whyCanada"
-          value={formData.whyCanada}
-          onChange={(e) => handleChange("whyCanada", e.target.value)}
+          id="whyDestination"
+          value={formData.whyDestination}
+          onChange={(e) => handleChange("whyDestination", e.target.value)}
           placeholder={
             language === "ar"
-              ? "لماذا اخترت كندا كوجهة للهجرة؟ ما الذي يجذبك؟..."
-              : "Why did you choose Canada as your immigration destination? What attracts you?..."
+              ? `لماذا اخترت ${getDestinationName(profile?.targetDestination || 'canada', language)} كوجهة للهجرة؟ ما الذي يجذبك؟...`
+              : `Why did you choose ${getDestinationName(profile?.targetDestination || 'canada', language)} as your immigration destination? What attracts you?...`
           }
           rows={5}
           className="mt-2"
         />
-        <CharCount text={formData.whyCanada} />
-        <SuggestionChips field="whyCanada" onClick={(s) => handleChange("whyCanada", formData.whyCanada + " " + s)} />
+        <CharCount text={formData.whyDestination} language={language} />
+        <SuggestionChips field="whyDestination" onClick={(s) => handleChange("whyDestination", formData.whyDestination + " " + s)} targetDestination={profile?.targetDestination || 'canada'} language={language} />
       </div>
 
       <div>
@@ -341,8 +358,8 @@ export default function SopNew() {
           rows={4}
           className="mt-2"
         />
-        <CharCount text={formData.careerGoals} />
-        <SuggestionChips field="careerGoals" onClick={(s) => handleChange("careerGoals", formData.careerGoals + " " + s)} />
+        <CharCount text={formData.careerGoals} language={language} />
+        <SuggestionChips field="careerGoals" onClick={(s) => handleChange("careerGoals", formData.careerGoals + " " + s)} targetDestination={profile?.targetDestination || 'canada'} language={language} />
       </div>
 
       <div>
@@ -399,7 +416,7 @@ export default function SopNew() {
           rows={4}
           className="mt-2"
         />
-        <CharCount text={formData.whyThisProgram} min={50} />
+        <CharCount text={formData.whyThisProgram} min={50} language={language} />
       </div>
 
       <div>
@@ -418,7 +435,7 @@ export default function SopNew() {
           rows={4}
           className="mt-2"
         />
-        <CharCount text={formData.uniqueStrengths} min={50} />
+        <CharCount text={formData.uniqueStrengths} min={50} language={language} />
       </div>
 
       <div>
@@ -437,7 +454,7 @@ export default function SopNew() {
           rows={4}
           className="mt-2"
         />
-        <CharCount text={formData.challenges} min={50} />
+        <CharCount text={formData.challenges} min={50} language={language} />
       </div>
     </div>
   );
@@ -445,33 +462,16 @@ export default function SopNew() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       {/* Header */}
-      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
-        <div className="container flex h-16 items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold text-primary">
-              {language === "ar" ? "هجرة" : "Hijraah"}
-            </h1>
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link href="/dashboard" className="hidden md:block">
-              <Button variant="ghost" size="sm">
-                {t("nav.dashboard")}
-              </Button>
-            </Link>
-            <LanguageToggle />
-            <Link href="/profile" className="hidden md:block">
-              <Button variant="ghost" size="sm" className="gap-2">
-                <User className="h-4 w-4" />
-                <span className="hidden sm:inline">{t("nav.profile")}</span>
-              </Button>
-            </Link>
-            <Button variant="ghost" size="sm" onClick={handleLogout} className="gap-2">
-              <LogOut className="h-4 w-4" />
-              <span className="hidden sm:inline">{t("nav.logout")}</span>
+      <AppHeader
+        additionalActions={
+          <Link href="/dashboard" className="hidden md:block">
+            <Button variant="ghost" size="sm">
+              {t("nav.dashboard")}
             </Button>
-          </div>
-        </div>
-      </header>
+          </Link>
+        }
+        showUsage={false}
+      />
 
       <main className="flex-1 container py-8">
         <div className="max-w-3xl mx-auto">

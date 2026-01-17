@@ -1,10 +1,10 @@
 'use server'
 
 import { z } from 'zod'
-import { revalidatePath, unstable_cache } from 'next/cache'
+import { revalidatePath } from 'next/cache'
 import { getAuthenticatedUser } from './auth'
 import { ActionError } from '@/lib/action-client'
-import { CACHE_TAGS, CACHE_DURATIONS, invalidateUserChat } from '@/lib/cache'
+import { invalidateUserChat } from '@/lib/cache'
 import {
     createConversation,
     getUserConversations,
@@ -14,6 +14,10 @@ import {
     createMessage,
     getConversationMessages,
 } from '@/server/db'
+import {
+    getUserDocumentChecklists,
+    getUserDocuments,
+} from '@/../server/documents'
 import { getSubscriptionStatus } from '@/server/stripe'
 import { checkUsageLimit, incrementUsage } from '@/server/usage'
 import { generateChatResponse, GeminiMessage, generateChatTitle } from '@/server/_core/gemini'
@@ -46,13 +50,11 @@ const ConversationIdSchema = z.object({
 export type CreateConversationInput = z.infer<typeof CreateConversationSchema>
 export type SendMessageInput = z.infer<typeof SendMessageSchema>
 
-const getCachedConversations = unstable_cache(
-    async (userId: number) => {
-        return getUserConversations(userId)
-    },
-    ['user-conversations'],
-    { tags: [CACHE_TAGS.CHAT], revalidate: CACHE_DURATIONS.SHORT }
-)
+// Note: We don't cache conversations anymore to avoid stale title issues
+// The cache tag mismatch was causing titles not to update
+async function getCachedConversations(userId: number) {
+    return getUserConversations(userId)
+}
 
 /**
  * List all conversations for the current user
@@ -64,28 +66,25 @@ export async function listConversations() {
 
 /**
  * Get a specific conversation with messages
+ * Note: No caching to ensure fresh titles and messages
  */
-const getCachedConversation = unstable_cache(
-    async (conversationId: number) => {
-        const conversation = await getConversation(conversationId)
-        if (!conversation) return null
+async function getConversationData(conversationId: number) {
+    const conversation = await getConversation(conversationId)
+    if (!conversation) return null
 
-        const messages = await getConversationMessages(conversationId)
+    const messages = await getConversationMessages(conversationId)
 
-        return {
-            conversation,
-            messages
-        }
-    },
-    ['conversation-messages'],
-    { tags: [CACHE_TAGS.CHAT], revalidate: CACHE_DURATIONS.SHORT }
-)
+    return {
+        conversation,
+        messages
+    }
+}
 
 export async function getConversationWithMessages(input: z.infer<typeof ConversationIdSchema>) {
     const user = await getAuthenticatedUser()
     const validated = ConversationIdSchema.parse(input)
 
-    const data = await getCachedConversation(validated.conversationId)
+    const data = await getConversationData(validated.conversationId)
 
     if (!data || !data.conversation) {
         throw new ActionError('Conversation not found', 'NOT_FOUND')
@@ -156,7 +155,7 @@ export async function sendMessage(input: SendMessageInput) {
     })
 
     // Parallelize data fetching
-    const [history, ragContext, userProfile] = await Promise.all([
+    const [history, ragContext, userProfile, userChecklists, userDocuments] = await Promise.all([
         getConversationMessages(validated.conversationId),
         (async () => {
             try {
@@ -178,6 +177,14 @@ export async function sendMessage(input: SendMessageInput) {
         getUserProfile(user.id).catch(err => {
             console.error('Profile fetch failed:', err);
             return null;
+        }),
+        getUserDocumentChecklists(user.id).catch(err => {
+            console.error('Checklists fetch failed:', err);
+            return [];
+        }),
+        getUserDocuments(user.id).catch(err => {
+            console.error('Documents fetch failed:', err);
+            return [];
         })
     ]);
 
@@ -193,13 +200,45 @@ export async function sendMessage(input: SendMessageInput) {
     // System instruction
     // Determine context based on profile
     const targetDest = userProfile?.targetDestination?.toLowerCase() || 'canada'
-    const isAustralia = targetDest === 'australia'
-    const countryNameAr = isAustralia ? 'أستراليا' : 'كندا'
-    const countryNameEn = isAustralia ? 'Australia' : 'Canada'
+    
+    // Destination-specific context
+    const destinationContext: Record<string, { nameAr: string, nameEn: string, contextAr: string, contextEn: string }> = {
+        canada: {
+            nameAr: 'كندا',
+            nameEn: 'Canada',
+            contextAr: 'أنظمة Express Entry و Study Permit والهجرة الإقليمية',
+            contextEn: 'Express Entry, Study Permits, and Provincial Nominee Programs',
+        },
+        australia: {
+            nameAr: 'أستراليا',
+            nameEn: 'Australia',
+            contextAr: 'نظام SkillSelect وتأشيرات العمل والدراسة',
+            contextEn: 'SkillSelect system, work and study visas',
+        },
+        portugal: {
+            nameAr: 'البرتغال',
+            nameEn: 'Portugal',
+            contextAr: 'تأشيرات D2 (رواد الأعمال), D7 (الدخل السلبي), D8 (الرحالة الرقميين), وتأشيرة البحث عن عمل',
+            contextEn: 'D2 (Entrepreneur), D7 (Passive Income), D8 (Digital Nomad) visas, and Job Seeker Visa',
+        },
+    }
+    
+    const destConfig = destinationContext[targetDest] || destinationContext.canada
+    const countryNameAr = destConfig.nameAr
+    const countryNameEn = destConfig.nameEn
 
     // System instruction with MENA Cultural Context
     const baseSystemInstruction = conversation.language === 'ar'
         ? `أنت "هجرة" - مستشارك الذكي للهجرة إلى ${countryNameAr}، متخصص في مساعدة المتقدمين من منطقة الشرق الأوسط وشمال أفريقيا (MENA).
+        
+        معرفتك المتخصصة لـ${countryNameAr}:
+        - ${destConfig.contextAr}
+        
+        قدراتك المتعلقة بالمستندات:
+        - لديك إمكانية الوصول إلى مستندات المستخدم وقوائم المتطلبات.
+        - يمكنك مراجعة حالة المستندات (مرفوعة/معلقة) وتقديم نصائح مخصصة.
+        - عند السؤال عن المستندات، راجع قائمة المستندات أدناه وقدم إرشادات محددة.
+        - ساعد في التحقق من اكتمال المستندات وأي متطلبات ناقصة.
         
         سياقك الثقافي ومعرفتك:
         - تفهم التحديات الشائعة للمتقدمين عربياً (مثل معادلة الشهادات, إثبات القدرة المالية, المخاوف الأمنية).
@@ -210,6 +249,15 @@ export async function sendMessage(input: SendMessageInput) {
         في نهاية إجابتك، اقترح دائماً 3 أسئلة متابعة قصيرة ذات صلة بصيغة مصفوفة JSON داخل وسوم <suggestions>، مثال:
         <suggestions>["كيفية التقديم؟", "ما هي التكلفة؟", "المستندات المطلوبة"]</suggestions>`
         : `You are "Hijraah" - a specialized AI immigration assistant helping people from the MENA region (Middle East & North Africa) immigrate to ${countryNameEn}.
+        
+        Your specialized knowledge for ${countryNameEn}:
+        - ${destConfig.contextEn}
+        
+        Your Document Capabilities:
+        - You have access to the user's uploaded documents and requirement checklists.
+        - You can review document status (uploaded/pending) and provide tailored advice.
+        - When asked about documents, reference the document list below and give specific guidance.
+        - Help verify document completeness and identify any missing requirements.
         
         Your Context & Persona:
         - You understand common challenges for MENA applicants (e.g., degree equivalency, proof of funds, visa processing times in local embassies).
@@ -260,7 +308,84 @@ export async function sendMessage(input: SendMessageInput) {
             `- Immigration Pathway: ${userProfile.immigrationPathway || 'Unknown'}\n`
     }
 
-    const finalSystemInstruction = systemInstruction + profileContext + memoryContext
+    // Build document context for AI to reference user's uploaded documents
+    let documentContext = ''
+    if (userChecklists && userChecklists.length > 0) {
+        const isArabic = conversation.language === 'ar'
+        
+        documentContext = isArabic
+            ? `\n\n📋 مستندات المستخدم ومتطلباته:\n`
+            : `\n\n📋 User's Documents & Requirements:\n`
+        
+        for (const checklist of userChecklists) {
+            const items = checklist.items as any[]
+            if (!items || !Array.isArray(items)) continue
+            
+            const pathwayLabel = checklist.immigrationPathway || 'Unknown'
+            const sourceLabel = checklist.sourceCountry || 'Unknown'
+            
+            documentContext += isArabic
+                ? `\nقائمة المستندات (${pathwayLabel} - من ${sourceLabel}):\n`
+                : `\nDocument Checklist (${pathwayLabel} - from ${sourceLabel}):\n`
+            
+            // Group items by status
+            const pending = items.filter((item: any) => item.status === 'pending')
+            const uploaded = items.filter((item: any) => item.status === 'uploaded' || item.status === 'completed' || item.status === 'verified')
+            
+            if (uploaded.length > 0) {
+                documentContext += isArabic ? `  ✅ المستندات المرفوعة (${uploaded.length}):\n` : `  ✅ Uploaded Documents (${uploaded.length}):\n`
+                for (const item of uploaded) {
+                    const title = isArabic ? (item.titleAr || item.title) : item.title
+                    const desc = isArabic ? (item.descriptionAr || item.description) : item.description
+                    documentContext += `    - ${title}${item.required ? (isArabic ? ' (مطلوب)' : ' (Required)') : ''}\n`
+                    if (desc) documentContext += `      ${desc}\n`
+                }
+            }
+            
+            if (pending.length > 0) {
+                documentContext += isArabic ? `  ⏳ المستندات المعلقة (${pending.length}):\n` : `  ⏳ Pending Documents (${pending.length}):\n`
+                for (const item of pending) {
+                    const title = isArabic ? (item.titleAr || item.title) : item.title
+                    const desc = isArabic ? (item.descriptionAr || item.description) : item.description
+                    documentContext += `    - ${title}${item.required ? (isArabic ? ' (مطلوب)' : ' (Required)') : ''}\n`
+                    if (desc) documentContext += `      ${desc}\n`
+                }
+            }
+            
+            // Summary
+            const completionRate = items.length > 0 ? Math.round((uploaded.length / items.length) * 100) : 0
+            documentContext += isArabic
+                ? `  📊 نسبة الاكتمال: ${completionRate}% (${uploaded.length}/${items.length})\n`
+                : `  📊 Completion: ${completionRate}% (${uploaded.length}/${items.length})\n`
+        }
+        
+        // Add uploaded files info
+        if (userDocuments && userDocuments.length > 0) {
+            documentContext += isArabic
+                ? `\n📁 الملفات المرفوعة:\n`
+                : `\n📁 Uploaded Files:\n`
+            
+            for (const doc of userDocuments) {
+                const uploadDate = doc.createdAt ? new Date(doc.createdAt).toLocaleDateString() : 'Unknown'
+                documentContext += `  - ${doc.fileName} (${doc.documentType}) - ${isArabic ? 'رفع في' : 'Uploaded'}: ${uploadDate}\n`
+                
+                // Include OCR text if available (useful for AI to analyze document content)
+                if (doc.ocrText) {
+                    const truncatedText = doc.ocrText.length > 500 ? doc.ocrText.substring(0, 500) + '...' : doc.ocrText
+                    documentContext += isArabic
+                        ? `    📝 محتوى المستند (ملخص): ${truncatedText}\n`
+                        : `    📝 Document Content (Summary): ${truncatedText}\n`
+                }
+            }
+        }
+        
+        // Add helpful instruction for AI
+        documentContext += isArabic
+            ? `\n💡 يمكنك مساعدة المستخدم في: مراجعة المستندات، التحقق من الاكتمال، اقتراح المستندات الناقصة، أو الإجابة عن أي استفسارات حول متطلبات المستندات.\n`
+            : `\n💡 You can help the user with: reviewing documents, checking completeness, suggesting missing documents, or answering questions about document requirements.\n`
+    }
+
+    const finalSystemInstruction = systemInstruction + profileContext + documentContext + memoryContext
 
     // Generate AI response
     const aiResponse = await generateChatResponse({

@@ -145,13 +145,6 @@ export function useHijraahChat(options: UseHijraahChatOptions = {}) {
     }
   }, [aiSendMessage]);
 
-  // Log status changes and raw messages
-  console.log("[useHijraahChat] Status:", status, "Messages count:", messages.length);
-  if (messages.length > 0) {
-    const lastMsg = messages[messages.length - 1];
-    console.log("[useHijraahChat] Last message role:", lastMsg.role, "parts:", lastMsg.parts?.length, "parts detail:", JSON.stringify(lastMsg.parts));
-  }
-
   // Convert AI SDK message format to extended format with sources
   const formattedMessages = useMemo((): HijraahChatMessage[] => {
     return messages.map((msg, index) => {

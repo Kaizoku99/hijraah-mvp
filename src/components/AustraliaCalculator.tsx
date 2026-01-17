@@ -10,7 +10,7 @@ import { Separator } from "@/components/ui/separator"
 import { useLanguage } from "@/contexts/LanguageContext"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { getProfile } from "@/actions/profile"
-import { calculateAustraliaPoints } from "@/actions/points-test"
+import { calculateAustraliaPoints, getLatestAustraliaPoints } from "@/actions/points-test"
 import { calculateAustraliaPoints as calculateClient, AustraliaPointsData, AustraliaPointsResult } from "@/lib/australia-calculator"
 import { useDebounce } from "@/hooks/useDebounce"
 import {
@@ -66,6 +66,11 @@ export function AustraliaCalculator() {
         queryFn: getProfile,
     })
 
+    const { data: savedAssessment, isLoading: isLoadingAssessment } = useQuery({
+        queryKey: ['australia-points', 'latest'],
+        queryFn: getLatestAustraliaPoints,
+    })
+
     const [result, setResult] = useState<AustraliaPointsResult | null>(null)
     const debouncedFormData = useDebounce(formData, 500)
 
@@ -100,52 +105,113 @@ export function AustraliaCalculator() {
         setFormData(prev => ({ ...prev, englishLevel: level }))
     }, [rawScores, testType])
 
-    // Auto-populate
+    // Auto-populate from Profile OR Saved Assessment
     useEffect(() => {
-        if (profile && !isPreFilled) {
-            const age = profile.dateOfBirth
-                ? new Date().getFullYear() - new Date(profile.dateOfBirth).getFullYear()
-                : 25
+        if (isLoadingAssessment) return
 
-            const newData = { ...formData, age }
+        if (!isPreFilled) {
+            let newData = { ...formData }
+            let dataFound = false
 
-            // Map english (simple approximation)
-            if (profile.ieltsScore) {
-                // Pre-fill raw score as identical for all bands for simplicity
-                setRawScores({
-                    listening: profile.ieltsScore,
-                    reading: profile.ieltsScore,
-                    writing: profile.ieltsScore,
-                    speaking: profile.ieltsScore
-                })
-                setTestType('ielts')
-            }
+            // 1. Try to restore from saved assessment (more specific)
+            if (savedAssessment) {
+                // Restore booleans from scores (0 = false, >0 = true)
+                newData.specialistEducation = savedAssessment.specialistEducationScore > 0
+                newData.australianStudy = savedAssessment.australianStudyScore > 0
+                newData.professionalYear = savedAssessment.professionalYearScore > 0
+                newData.credentialledCommunityLanguage = savedAssessment.communityLanguageScore > 0
+                newData.regionalStudy = savedAssessment.regionalStudyScore > 0
 
-            // Map education
-            if (profile.educationLevel === 'phd') newData.educationLevel = 'phd'
-            else if (profile.educationLevel === 'master') newData.educationLevel = 'master'
-            else if (profile.educationLevel === 'bachelor') newData.educationLevel = 'bachelor'
-            else if (profile.educationLevel === 'high_school') newData.educationLevel = 'other'
-            else if (profile.educationLevel === 'other') newData.educationLevel = 'other'
+                // Restore Enums from Scores (Approximation)
+                // Age - can't reverse score to age, so keep default or profile
 
-            // Map experience
-            if (profile.yearsOfExperience) {
-                const y = profile.yearsOfExperience
-                if (y >= 8) newData.overseasExperience = '8_plus'
-                else if (y >= 5) newData.overseasExperience = '5_to_8'
-                else if (y >= 3) newData.overseasExperience = '3_to_5'
+                // English
+                if (savedAssessment.englishScore === 20) newData.englishLevel = 'superior'
+                else if (savedAssessment.englishScore === 10) newData.englishLevel = 'proficient'
+                else newData.englishLevel = 'competent'
+
+                // Overseas Experience
+                if (savedAssessment.overseasExperienceScore === 15) newData.overseasExperience = '8_plus'
+                else if (savedAssessment.overseasExperienceScore === 10) newData.overseasExperience = '5_to_8'
+                else if (savedAssessment.overseasExperienceScore === 5) newData.overseasExperience = '3_to_5'
                 else newData.overseasExperience = 'less_than_3'
+
+                // Australian Experience
+                if (savedAssessment.australianExperienceScore === 20) newData.australianExperience = '8_plus'
+                else if (savedAssessment.australianExperienceScore === 15) newData.australianExperience = '5_to_8'
+                else if (savedAssessment.australianExperienceScore === 10) newData.australianExperience = '3_to_5'
+                else if (savedAssessment.australianExperienceScore === 5) newData.australianExperience = '1_to_3'
+                else newData.australianExperience = 'less_than_1'
+
+                // Education - ambiguous, mapped best effort
+                if (savedAssessment.educationScore === 20) newData.educationLevel = 'phd'
+                else if (savedAssessment.educationScore === 15) newData.educationLevel = 'bachelor' // could be master
+                else if (savedAssessment.educationScore === 10) newData.educationLevel = 'diploma' // could be trade
+                else newData.educationLevel = 'other'
+
+                // Partner - ambiguous
+                if (savedAssessment.partnerScore === 10) newData.partnerSkills = 'single' // or skilled/pr
+                else if (savedAssessment.partnerScore === 5) newData.partnerSkills = 'partner_english'
+                else newData.partnerSkills = 'partner_no_points'
+
+                // Nomination
+                if (savedAssessment.nominationScore === 15) newData.nomination = 'regional_491'
+                else if (savedAssessment.nominationScore === 5) newData.nomination = 'state_190'
+                else newData.nomination = 'none'
+
+                dataFound = true
             }
 
-            setFormData(newData)
-            setIsPreFilled(true)
-            toast.success(
-                language === "ar"
-                    ? "تم ملء الحقول من ملفك الشخصي"
-                    : "Fields pre-filled from your profile"
-            )
+            // 2. Overlay User Profile Data (if available and no conflict, or to refine ambiguities)
+            if (profile) {
+                const age = profile.dateOfBirth
+                    ? new Date().getFullYear() - new Date(profile.dateOfBirth).getFullYear()
+                    : 25
+                newData.age = age
+
+                // If we didn't have saved assessment, map others from profile
+                if (!savedAssessment) {
+                    if (profile.educationLevel === 'phd') newData.educationLevel = 'phd'
+                    else if (profile.educationLevel === 'master') newData.educationLevel = 'master'
+                    else if (profile.educationLevel === 'bachelor') newData.educationLevel = 'bachelor'
+                    else if (profile.educationLevel === 'high_school') newData.educationLevel = 'other'
+                    else if (profile.educationLevel === 'other') newData.educationLevel = 'other'
+
+                    if (profile.yearsOfExperience) {
+                        const y = profile.yearsOfExperience
+                        if (y >= 8) newData.overseasExperience = '8_plus'
+                        else if (y >= 5) newData.overseasExperience = '5_to_8'
+                        else if (y >= 3) newData.overseasExperience = '3_to_5'
+                        else newData.overseasExperience = 'less_than_3'
+                    }
+
+                    // Map english raw scores if available
+                    if (profile.ieltsScore) {
+                        setRawScores({
+                            listening: profile.ieltsScore,
+                            reading: profile.ieltsScore,
+                            writing: profile.ieltsScore,
+                            speaking: profile.ieltsScore
+                        })
+                        setTestType('ielts')
+                    }
+                } else {
+                    // Refine ambiguous mappings using Profile if scores match
+                    // e.g. if saved score is 15 (Bachelor/Master) and Profile says Master, choose Master
+                    if (savedAssessment.educationScore === 15) {
+                        if (profile.educationLevel === 'master') newData.educationLevel = 'master'
+                        else if (profile.educationLevel === 'bachelor') newData.educationLevel = 'bachelor'
+                    }
+                }
+                dataFound = true
+            }
+
+            if (dataFound) {
+                setFormData(newData)
+                setIsPreFilled(true)
+            }
         }
-    }, [profile, isPreFilled, language])
+    }, [profile, savedAssessment, isLoadingAssessment, isPreFilled, language])
 
     // Real-time Calc
     useEffect(() => {

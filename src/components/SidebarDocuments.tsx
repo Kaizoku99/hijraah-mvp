@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { getChecklists } from "@/actions/documents";
+import { queryKeys } from "@/lib/query-keys";
 import {
     SidebarGroup,
     SidebarGroupContent,
@@ -25,7 +26,7 @@ export function SidebarDocuments() {
     const router = useRouter();
 
     const { data: checklists, isLoading } = useQuery({
-        queryKey: ["checklists"],
+        queryKey: queryKeys.documents.checklists(),
         queryFn: async () => await getChecklists(),
     });
 

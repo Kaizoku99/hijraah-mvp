@@ -1,16 +1,20 @@
-'use client'
+import { HydrationBoundary, dehydrate } from '@tanstack/react-query'
+import { getProfile } from '@/actions/profile'
+import { queryKeys } from '@/lib/query-keys'
+import getQueryClient from '../get-query-client'
+import ProfilePage from '@/components/pages/ProfilePage'
 
-import dynamic from 'next/dynamic'
+export default async function Profile() {
+  const queryClient = getQueryClient()
 
-const ProfilePage = dynamic(() => import('@/components/pages/ProfilePage'), { 
-  ssr: false,
-  loading: () => (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-    </div>
+  await queryClient.prefetchQuery({
+    queryKey: queryKeys.user.profile(),
+    queryFn: getProfile,
+  })
+
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <ProfilePage />
+    </HydrationBoundary>
   )
-})
-
-export default function Profile() {
-  return <ProfilePage />
 }

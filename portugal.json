@@ -1,0 +1,541 @@
+{
+  "visa_types": [
+    {
+      "visa_name": "Residency Visa for Subordinate Work",
+      "visa_name_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency",
+      "visa_subclass": "D1",
+      "visa_subclass_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency",
+      "visa_category": "Residency",
+      "country_code": "PT",
+      "source_url": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency",
+      "duration_of_stay": "4 months (initial visa), leads to 2-year residence permit",
+      "is_path_to_permanent_residency": true,
+      "eligibility_requirements": [
+        {
+          "category": "Employment",
+          "requirement": "Valid work contract or work promise in Portugal",
+          "requirement_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency",
+          "is_mandatory": true
+        }
+      ],
+      "age_restrictions": {
+        "min_age": 18
+      },
+      "work_rights": {
+        "can_work": true,
+        "can_work_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency",
+        "restrictions": "Specific to the employer who provided the contract"
+      },
+      "application_fees": [
+        {
+          "fee_type": "Processing Fee",
+          "currency": "EUR",
+          "currency_citation": "https://vistos.mne.gov.pt/en/national-visas/general-information/visa-fees",
+          "amount_local_currency": 110,
+          "usd_equivalent": 121.00000000000001
+        }
+      ],
+      "processing_timelines": "60 days for decision after submission",
+      "required_documents": [
+        {
+          "value": "National Visa application form, filled and signed",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        },
+        {
+          "value": "2 recent passport-type photos",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        },
+        {
+          "value": "Passport valid for 3 months after estimated return date",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        },
+        {
+          "value": "Proof of regular status (if applicable)",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        },
+        {
+          "value": "Valid travel insurance (medical, urgent assistance, repatriation)",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        },
+        {
+          "value": "Criminal record certificate (Apostilled/Legalized)",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        },
+        {
+          "value": "Proof of financial resources (means of subsistence)",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        },
+        {
+          "value": "Proof of accommodation in Portugal",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        },
+        {
+          "value": "Work contract, work promise, or demonstration of interest",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        }
+      ],
+      "contact_information": {
+        "authority_name": "Ministry of Foreign Affairs (MFA) / Agência para a Integração, Migrações e Asilo (AIMA)",
+        "authority_name_citation": "https://aima.gov.pt/pt/contactos",
+        "website": "https://vistos.mne.gov.pt",
+        "website_citation": "https://vistos.mne.gov.pt",
+        "email": "geral@aima.gov.pt",
+        "phone": "+351 217 115 000",
+        "address": "Avenida Panorâmica de Monsanto, 1449-005 Lisboa (AIMA HQ)",
+        "address_citation": "https://aima.gov.pt/pt/contactos"
+      },
+      "policy_flags": [
+        {
+          "value": "New European Entry/Exit System (EES) implemented Oct 12, 2025",
+          "value_citation": "https://vistos.mne.gov.pt/en/highlights/portugal-implements-new-european-entry-exit-system-ees-on-october-12,-2026"
+        },
+        {
+          "value": "Residence visas now issued without separate AIMA appointment (October 2024 change)",
+          "value_citation": "https://vistos.mne.gov.pt/en/highlights/residence-visa-issued-without-appointment-at-aima"
+        },
+        {
+          "value": "Job Seeker visa regime changed; appointments after Oct 23, 2025 cancelled",
+          "value_citation": "https://vistos.mne.gov.pt/en/highlights/change-in-the-regime-regarding-work-seeking-visa-applications"
+        }
+      ],
+      "last_verified_date": "2026-01-15"
+    },
+    {
+      "visa_name": "Residency Visa for Independent Work or Migrant Entrepreneurs",
+      "visa_name_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency",
+      "visa_subclass": "D2",
+      "visa_subclass_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency",
+      "visa_category": "Residency",
+      "country_code": "PT",
+      "source_url": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency",
+      "duration_of_stay": "4 months (initial visa), leads to 2-year residence permit",
+      "is_path_to_permanent_residency": true,
+      "eligibility_requirements": [
+        {
+          "category": "Entrepreneurship",
+          "requirement": "Executed investment operations or proof of financial means available in Portugal",
+          "requirement_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency",
+          "is_mandatory": true
+        },
+        {
+          "category": "Business Plan",
+          "requirement": "Intention to invest in Portuguese territory with a viable business plan",
+          "requirement_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency",
+          "is_mandatory": true
+        },
+        {
+          "category": "Independent Work",
+          "requirement": "Contract or proposal for service provision for liberal professions",
+          "requirement_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency",
+          "is_mandatory": true
+        }
+      ],
+      "age_restrictions": {
+        "min_age": 18
+      },
+      "work_rights": {
+        "can_work": true,
+        "can_work_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency",
+        "restrictions": "Limited to the entrepreneurial or independent activity declared"
+      },
+      "application_fees": [
+        {
+          "fee_type": "Processing Fee",
+          "currency": "EUR",
+          "currency_citation": "https://vistos.mne.gov.pt/en/national-visas/general-information/visa-fees",
+          "amount_local_currency": 110,
+          "usd_equivalent": 121.00000000000001
+        }
+      ],
+      "processing_timelines": "60 days for decision after submission",
+      "required_documents": [
+        {
+          "value": "National Visa application form, filled and signed",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        },
+        {
+          "value": "2 recent passport-type photos",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        },
+        {
+          "value": "Passport valid for 3 months after estimated return date",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        },
+        {
+          "value": "Proof of regular status (if applicable)",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        },
+        {
+          "value": "Valid travel insurance (medical, urgent assistance, repatriation)",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        },
+        {
+          "value": "Criminal record certificate (Apostilled/Legalized)",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        },
+        {
+          "value": "Proof of financial resources (means of subsistence)",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        },
+        {
+          "value": "Proof of accommodation in Portugal",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        },
+        {
+          "value": "Investment proof or Business Plan",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        },
+        {
+          "value": "Declaration of professional competence (if applicable)",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        }
+      ],
+      "contact_information": {
+        "authority_name": "Ministry of Foreign Affairs (MFA) / Agência para a Integração, Migrações e Asilo (AIMA)",
+        "authority_name_citation": "https://aima.gov.pt/pt/contactos",
+        "website": "https://vistos.mne.gov.pt",
+        "website_citation": "https://vistos.mne.gov.pt",
+        "email": "geral@aima.gov.pt",
+        "phone": "+351 217 115 000",
+        "address": "Avenida Panorâmica de Monsanto, 1449-005 Lisboa (AIMA HQ)",
+        "address_citation": "https://aima.gov.pt/pt/contactos"
+      },
+      "policy_flags": [
+        {
+          "value": "New European Entry/Exit System (EES) implemented Oct 12, 2025",
+          "value_citation": "https://vistos.mne.gov.pt/en/highlights/portugal-implements-new-european-entry-exit-system-ees-on-october-12,-2026"
+        },
+        {
+          "value": "Residence visas now issued without separate AIMA appointment (October 2024 change)",
+          "value_citation": "https://vistos.mne.gov.pt/en/highlights/residence-visa-issued-without-appointment-at-aima"
+        },
+        {
+          "value": "Job Seeker visa regime changed; appointments after Oct 23, 2025 cancelled",
+          "value_citation": "https://vistos.mne.gov.pt/en/highlights/change-in-the-regime-regarding-work-seeking-visa-applications"
+        }
+      ],
+      "last_verified_date": "2026-01-15"
+    },
+    {
+      "visa_name": "Residency Visa for Retirement, Religious Purposes, or Passive Income",
+      "visa_name_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency",
+      "visa_subclass": "D7",
+      "visa_subclass_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency",
+      "visa_category": "Residency",
+      "country_code": "PT",
+      "source_url": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency",
+      "duration_of_stay": "4 months (initial visa), leads to 2-year residence permit",
+      "is_path_to_permanent_residency": true,
+      "eligibility_requirements": [
+        {
+          "category": "Financial",
+          "requirement": "Proof of passive income (pensions, real estate, intellectual property, financial assets)",
+          "requirement_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency",
+          "is_mandatory": true
+        },
+        {
+          "category": "Means of Subsistence",
+          "requirement": "Monthly income of at least €920.0 for main applicant",
+          "requirement_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency",
+          "is_mandatory": true
+        }
+      ],
+      "age_restrictions": {
+        "min_age": 18
+      },
+      "work_rights": {
+        "can_work": true,
+        "can_work_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency",
+        "restrictions": "May exercise professional activity in Portugal"
+      },
+      "application_fees": [
+        {
+          "fee_type": "Processing Fee",
+          "currency": "EUR",
+          "currency_citation": "https://vistos.mne.gov.pt/en/national-visas/general-information/visa-fees",
+          "amount_local_currency": 110,
+          "usd_equivalent": 121.00000000000001
+        }
+      ],
+      "processing_timelines": "60 days for decision after submission",
+      "required_documents": [
+        {
+          "value": "National Visa application form, filled and signed",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        },
+        {
+          "value": "2 recent passport-type photos",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        },
+        {
+          "value": "Passport valid for 3 months after estimated return date",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        },
+        {
+          "value": "Proof of regular status (if applicable)",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        },
+        {
+          "value": "Valid travel insurance (medical, urgent assistance, repatriation)",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        },
+        {
+          "value": "Criminal record certificate (Apostilled/Legalized)",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        },
+        {
+          "value": "Proof of financial resources (means of subsistence)",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        },
+        {
+          "value": "Proof of accommodation in Portugal",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        },
+        {
+          "value": "Document certifying retirement amount or passive income sources",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        }
+      ],
+      "contact_information": {
+        "authority_name": "Ministry of Foreign Affairs (MFA) / Agência para a Integração, Migrações e Asilo (AIMA)",
+        "authority_name_citation": "https://aima.gov.pt/pt/contactos",
+        "website": "https://vistos.mne.gov.pt",
+        "website_citation": "https://vistos.mne.gov.pt",
+        "email": "geral@aima.gov.pt",
+        "phone": "+351 217 115 000",
+        "address": "Avenida Panorâmica de Monsanto, 1449-005 Lisboa (AIMA HQ)",
+        "address_citation": "https://aima.gov.pt/pt/contactos"
+      },
+      "policy_flags": [
+        {
+          "value": "New European Entry/Exit System (EES) implemented Oct 12, 2025",
+          "value_citation": "https://vistos.mne.gov.pt/en/highlights/portugal-implements-new-european-entry-exit-system-ees-on-october-12,-2026"
+        },
+        {
+          "value": "Residence visas now issued without separate AIMA appointment (October 2024 change)",
+          "value_citation": "https://vistos.mne.gov.pt/en/highlights/residence-visa-issued-without-appointment-at-aima"
+        },
+        {
+          "value": "Job Seeker visa regime changed; appointments after Oct 23, 2025 cancelled",
+          "value_citation": "https://vistos.mne.gov.pt/en/highlights/change-in-the-regime-regarding-work-seeking-visa-applications"
+        }
+      ],
+      "last_verified_date": "2026-01-15"
+    },
+    {
+      "visa_name": "Residency Visa for Digital Nomads (Remote Work)",
+      "visa_name_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency",
+      "visa_subclass": "D8",
+      "visa_subclass_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency",
+      "visa_category": "Residency",
+      "country_code": "PT",
+      "source_url": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency",
+      "duration_of_stay": "4 months (initial visa), leads to 2-year residence permit",
+      "is_path_to_permanent_residency": true,
+      "eligibility_requirements": [
+        {
+          "category": "Financial",
+          "requirement": "Average monthly income for the last 3 months of at least 4 times the minimum wage (€3680.0)",
+          "requirement_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency",
+          "is_mandatory": true
+        },
+        {
+          "category": "Employment",
+          "requirement": "Proof of remote work for an employer outside Portugal or independent professional activity",
+          "requirement_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency",
+          "is_mandatory": true
+        },
+        {
+          "category": "Residency",
+          "requirement": "Proof of fiscal residence",
+          "requirement_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency",
+          "is_mandatory": true
+        }
+      ],
+      "age_restrictions": {
+        "min_age": 18
+      },
+      "work_rights": {
+        "can_work": true,
+        "can_work_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency",
+        "restrictions": "Remote work for non-residents; can also work for Portuguese entities"
+      },
+      "application_fees": [
+        {
+          "fee_type": "Processing Fee",
+          "currency": "EUR",
+          "currency_citation": "https://vistos.mne.gov.pt/en/national-visas/general-information/visa-fees",
+          "amount_local_currency": 110,
+          "usd_equivalent": 121.00000000000001
+        }
+      ],
+      "processing_timelines": "60 days for decision after submission",
+      "required_documents": [
+        {
+          "value": "National Visa application form, filled and signed",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        },
+        {
+          "value": "2 recent passport-type photos",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        },
+        {
+          "value": "Passport valid for 3 months after estimated return date",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        },
+        {
+          "value": "Proof of regular status (if applicable)",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        },
+        {
+          "value": "Valid travel insurance (medical, urgent assistance, repatriation)",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        },
+        {
+          "value": "Criminal record certificate (Apostilled/Legalized)",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        },
+        {
+          "value": "Proof of financial resources (means of subsistence)",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        },
+        {
+          "value": "Proof of accommodation in Portugal",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        },
+        {
+          "value": "Work contract or proof of remote service provision",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        },
+        {
+          "value": "Bank statements for the last 3 months",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        }
+      ],
+      "contact_information": {
+        "authority_name": "Ministry of Foreign Affairs (MFA) / Agência para a Integração, Migrações e Asilo (AIMA)",
+        "authority_name_citation": "https://aima.gov.pt/pt/contactos",
+        "website": "https://vistos.mne.gov.pt",
+        "website_citation": "https://vistos.mne.gov.pt",
+        "email": "geral@aima.gov.pt",
+        "phone": "+351 217 115 000",
+        "address": "Avenida Panorâmica de Monsanto, 1449-005 Lisboa (AIMA HQ)",
+        "address_citation": "https://aima.gov.pt/pt/contactos"
+      },
+      "policy_flags": [
+        {
+          "value": "New European Entry/Exit System (EES) implemented Oct 12, 2025",
+          "value_citation": "https://vistos.mne.gov.pt/en/highlights/portugal-implements-new-european-entry-exit-system-ees-on-october-12,-2026"
+        },
+        {
+          "value": "Residence visas now issued without separate AIMA appointment (October 2024 change)",
+          "value_citation": "https://vistos.mne.gov.pt/en/highlights/residence-visa-issued-without-appointment-at-aima"
+        },
+        {
+          "value": "Job Seeker visa regime changed; appointments after Oct 23, 2025 cancelled",
+          "value_citation": "https://vistos.mne.gov.pt/en/highlights/change-in-the-regime-regarding-work-seeking-visa-applications"
+        }
+      ],
+      "last_verified_date": "2026-01-15"
+    },
+    {
+      "visa_name": "Job Seeker Visa",
+      "visa_name_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency",
+      "visa_subclass": "Job Seeker",
+      "visa_category": "Temporary Stay",
+      "country_code": "PT",
+      "source_url": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/job-seeker-visa",
+      "duration_of_stay": "120 days, extendable by 60 days",
+      "is_path_to_permanent_residency": true,
+      "eligibility_requirements": [
+        {
+          "category": "Status",
+          "requirement": "Status as of late 2025: Regime changed; check latest MFA updates",
+          "requirement_citation": "https://vistos.mne.gov.pt/en/highlights/change-in-the-regime-regarding-work-seeking-visa-applications",
+          "is_mandatory": true
+        }
+      ],
+      "age_restrictions": {
+        "min_age": 18
+      },
+      "work_rights": {
+        "can_work": true,
+        "can_work_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency",
+        "restrictions": "Can work while seeking employment; must convert to residence permit upon finding work"
+      },
+      "application_fees": [
+        {
+          "fee_type": "Processing Fee",
+          "currency": "EUR",
+          "currency_citation": "https://vistos.mne.gov.pt/en/national-visas/general-information/visa-fees",
+          "amount_local_currency": 75,
+          "usd_equivalent": 82.5
+        }
+      ],
+      "processing_timelines": "60 days for decision after submission",
+      "required_documents": [
+        {
+          "value": "National Visa application form, filled and signed",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        },
+        {
+          "value": "2 recent passport-type photos",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        },
+        {
+          "value": "Passport valid for 3 months after estimated return date",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        },
+        {
+          "value": "Proof of regular status (if applicable)",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        },
+        {
+          "value": "Valid travel insurance (medical, urgent assistance, repatriation)",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        },
+        {
+          "value": "Criminal record certificate (Apostilled/Legalized)",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        },
+        {
+          "value": "Proof of financial resources (means of subsistence)",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        },
+        {
+          "value": "Proof of accommodation in Portugal",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        },
+        {
+          "value": "Declaration of expression of interest for job seeking (IEFP registration)",
+          "value_citation": "https://vistos.mne.gov.pt/en/national-visas/necessary-documentation/residency"
+        }
+      ],
+      "contact_information": {
+        "authority_name": "Ministry of Foreign Affairs (MFA) / Agência para a Integração, Migrações e Asilo (AIMA)",
+        "authority_name_citation": "https://aima.gov.pt/pt/contactos",
+        "website": "https://vistos.mne.gov.pt",
+        "website_citation": "https://vistos.mne.gov.pt",
+        "email": "geral@aima.gov.pt",
+        "phone": "+351 217 115 000",
+        "address": "Avenida Panorâmica de Monsanto, 1449-005 Lisboa (AIMA HQ)",
+        "address_citation": "https://aima.gov.pt/pt/contactos"
+      },
+      "policy_flags": [
+        {
+          "value": "New European Entry/Exit System (EES) implemented Oct 12, 2025",
+          "value_citation": "https://vistos.mne.gov.pt/en/highlights/portugal-implements-new-european-entry-exit-system-ees-on-october-12,-2026"
+        },
+        {
+          "value": "Residence visas now issued without separate AIMA appointment (October 2024 change)",
+          "value_citation": "https://vistos.mne.gov.pt/en/highlights/residence-visa-issued-without-appointment-at-aima"
+        },
+        {
+          "value": "Job Seeker visa regime changed; appointments after Oct 23, 2025 cancelled",
+          "value_citation": "https://vistos.mne.gov.pt/en/highlights/change-in-the-regime-regarding-work-seeking-visa-applications"
+        }
+      ],
+      "last_verified_date": "2026-01-15"
+    }
+  ]
+}

@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { LanguageToggle } from "@/components/LanguageToggle";
+import { AppHeader } from "@/components/AppHeader";
 import { SopQualityScore } from "@/components/SopQualityScore";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getSop, regenerateSopSection } from "@/actions/sop";
@@ -154,33 +154,16 @@ export default function SopDisplay() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       {/* Header */}
-      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
-        <div className="container flex h-16 items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold text-primary">
-              {language === "ar" ? "هجرة" : "Hijraah"}
-            </h1>
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link href="/dashboard" className="hidden md:block">
-              <Button variant="ghost" size="sm">
-                {t("nav.dashboard")}
-              </Button>
-            </Link>
-            <LanguageToggle />
-            <Link href="/profile" className="hidden md:block">
-              <Button variant="ghost" size="sm" className="gap-2">
-                <User className="h-4 w-4" />
-                <span className="hidden sm:inline">{t("nav.profile")}</span>
-              </Button>
-            </Link>
-            <Button variant="ghost" size="sm" onClick={handleLogout} className="gap-2">
-              <LogOut className="h-4 w-4" />
-              <span className="hidden sm:inline">{t("nav.logout")}</span>
+      <AppHeader
+        additionalActions={
+          <Link href="/dashboard" className="hidden md:block">
+            <Button variant="ghost" size="sm">
+              {t("nav.dashboard")}
             </Button>
-          </div>
-        </div>
-      </header>
+          </Link>
+        }
+        showUsage={false}
+      />
 
       {/* Main Content */}
       <main className="flex-1 container py-8">

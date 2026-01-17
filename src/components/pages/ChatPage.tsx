@@ -1,56 +1,76 @@
-'use client'
+"use client";
 
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { LanguageToggle } from "@/components/LanguageToggle";
+import { AppHeader } from "@/components/AppHeader";
+import { Logo } from "@/components/Logo";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useUserProfile, TargetDestination } from "@/hooks/useUserProfile";
+
+// Destination-aware default follow-up suggestions
+const defaultFollowUps: Record<TargetDestination, { ar: string[]; en: string[] }> = {
+  canada: {
+    ar: ["المزيد من التفاصيل", "كيف أحسب نقاطي؟", "ما الخطوة التالية؟"],
+    en: ["More details", "How do I calculate my score?", "What's the next step?"],
+  },
+  australia: {
+    ar: ["المزيد من التفاصيل", "كيف أقدم للـ SkillSelect؟", "ما الخطوة التالية؟"],
+    en: ["More details", "How do I apply to SkillSelect?", "What's the next step?"],
+  },
+  portugal: {
+    ar: ["المزيد من التفاصيل", "ما المتطلبات المالية؟", "ما الخطوة التالية؟"],
+    en: ["More details", "What are the financial requirements?", "What's the next step?"],
+  },
+  other: {
+    ar: ["المزيد من التفاصيل", "كيف أبدأ؟", "ما الخطوة التالية؟"],
+    en: ["More details", "How do I start?", "What's the next step?"],
+  },
+};
+
+function getDefaultFollowUpSuggestions(destination: TargetDestination, language: 'ar' | 'en'): string[] {
+  return defaultFollowUps[destination]?.[language] || defaultFollowUps.other[language];
+}
 import {
   listConversations,
   getConversationWithMessages,
   createNewConversation,
   deleteConversation,
-  updateConversationTitleAction
+  updateConversationTitleAction,
 } from "@/actions/chat";
-import { useHijraahChat, HijraahChatMessage, ChatSource } from "@/hooks/useHijraahChat";
+import { useHijraahChat, HijraahChatMessage } from "@/hooks/useHijraahChat";
 import {
   MessageSquare,
   Plus,
   User,
   LogOut,
-  Trash2,
   Bot,
-  Send,
   StopCircle,
-  Sparkles,
-  FileText,
-  Calculator,
-  Globe,
-  Menu,
   Copy,
-  Check,
-  Pencil,
   ThumbsUp,
   ThumbsDown,
-  Edit2,
-  Search,
-  Tag
 } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect, useCallback } from "react";
 import { StickToBottom, useStickToBottomContext } from "use-stick-to-bottom";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-import PullToRefresh from "react-simple-pull-to-refresh";
+
+// Sidebar components
+import {
+  SidebarProvider,
+  SidebarInset,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
+
+// Chat components (extracted for better maintainability)
+import {
+  ChatEmptyState,
+  ChatTypingIndicator,
+  CopyButton,
+  ChatAppSidebar,
+} from "@/components/chat";
 
 // AI Elements Components
 import {
@@ -58,7 +78,7 @@ import {
   MessageContent,
   MessageResponse,
   MessageActions,
-  MessageAction
+  MessageAction,
 } from "@/components/ai-elements/message";
 import { Loader } from "@/components/ai-elements/loader";
 import { Suggestions, Suggestion } from "@/components/ai-elements/suggestion";
@@ -119,206 +139,42 @@ function ConversationScrollButton() {
   );
 }
 
-// Copy button component
-function CopyButton({ text }: { text: string }) {
-  const [copied, setCopied] = useState(false);
-
-  const handleCopy = async () => {
-    await navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  return (
-    <Button
-      variant="ghost"
-      size="icon"
-      className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
-      onClick={handleCopy}
-    >
-      {copied ? (
-        <Check className="h-3.5 w-3.5 text-green-500" />
-      ) : (
-        <Copy className="h-3.5 w-3.5" />
-      )}
-    </Button>
-  );
-}
-
-// Empty state for new conversations
-function ConversationEmptyState({
-  language,
-  onSuggestionClick
-}: {
-  language: string;
-  onSuggestionClick: (suggestion: string) => void;
-}) {
-  const suggestions = language === "ar" ? [
-    { icon: Calculator, text: "كيف يمكنني حساب نقاط CRS الخاصة بي؟" },
-    { icon: FileText, text: "ما هي المستندات المطلوبة للتقديم على Express Entry؟" },
-    { icon: Globe, text: "ما هي خياراتي للهجرة إلى كندا؟" },
-    { icon: Sparkles, text: "كيف يمكنني تحسين نقاطي في Express Entry؟" },
-  ] : [
-    { icon: Calculator, text: "How can I calculate my CRS score?" },
-    { icon: FileText, text: "What documents do I need for Express Entry?" },
-    { icon: Globe, text: "What are my options to immigrate to Canada?" },
-    { icon: Sparkles, text: "How can I improve my Express Entry score?" },
-  ];
-
-  const [showSample, setShowSample] = useState(false);
-
-  const sampleMessages = language === "ar" ? [
-    { role: "user", content: "كيف يتم حساب نقاط العمر في ملف Express Entry؟" },
-    { role: "assistant", content: "في نظام التصنيف الشامل (CRS)، يتم منح نقاط للعمر كالتالي:\n\n• **20-29 سنة:** 110 نقاط (الحد الأقصى) للأعزب، أو 100 للمتزوج.\n• **30 سنة:** 105 نقاط للأعزب.\n• **45 سنة فأكثر:** 0 نقطة.\n\nتفقد النقاط تدريجياً بعد سن 29. هل تود حساب نقاطك الحالية؟" }
-  ] : [
-    { role: "user", content: "How are age points calculated in Express Entry?" },
-    { role: "assistant", content: "In the CRS system, age points are awarded as follows:\n\n• **20-29 years:** 110 points (max) if single, or 100 if married.\n• **30 years:** 105 points if single.\n• **45+ years:** 0 points.\n\nYou start losing points gradually after age 29. Would you like to calculate your current score?" }
-  ];
-
-  if (showSample) {
-    return (
-      <div className="flex flex-col h-full max-w-3xl mx-auto w-full p-4 gap-6">
-        <div className="flex items-center justify-between mb-2">
-          <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
-            {language === "ar" ? "مثال للمحادثة" : "Conversation Preview"}
-          </h3>
-          <Button variant="ghost" size="sm" onClick={() => setShowSample(false)}>
-            {language === "ar" ? "إغلاق المثال" : "Close Preview"}
-          </Button>
-        </div>
-
-        {sampleMessages.map((msg, idx) => (
-          // @ts-ignore - borrowing Message component logic loosely
-          <Message key={idx} from={msg.role} className="group">
-            {msg.role === "assistant" ? (
-              <div className="flex items-start gap-3">
-                <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center flex-shrink-0">
-                  <Bot className="h-4 w-4 text-white" />
-                </div>
-                <MessageContent className="bg-muted rounded-2xl rounded-tl-md px-4 py-3">
-                  <MessageResponse>{msg.content}</MessageResponse>
-                </MessageContent>
-              </div>
-            ) : (
-              <MessageContent className="bg-primary text-primary-foreground rounded-2xl rounded-tr-md px-4 py-3">
-                {msg.content}
-              </MessageContent>
-            )}
-          </Message>
-        ))}
-
-        <div className="mt-4 flex justify-center">
-          <Button onClick={() => onSuggestionClick(language === "ar" ? "أريد حساب نقاطي" : "I want to calculate my score")}>
-            {language === "ar" ? "ابدأ محادثتك الخاصة الآن" : "Start your own chat now"}
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="flex flex-col items-center justify-center h-full py-12 px-4">
-      <div className="relative mb-6">
-        <div className="h-20 w-20 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-lg">
-          <Bot className="h-10 w-10 text-white" />
-        </div>
-        <div className="absolute -bottom-1 -right-1 h-6 w-6 rounded-full bg-green-500 border-4 border-background" />
-      </div>
-
-      <h3 className="text-2xl font-bold mb-2 text-center">
-        {language === "ar" ? "مرحباً! أنا مساعدك للهجرة" : "Hi! I'm your Immigration Assistant"}
-      </h3>
-      <p className="text-muted-foreground text-center mb-6 max-w-md">
-        {language === "ar"
-          ? "يمكنني مساعدتك في أسئلة الهجرة إلى كندا، حسابات CRS، والمزيد."
-          : "I can help you with Canada immigration questions, CRS calculations, document requirements, and more."}
-      </p>
-
-      <Button
-        variant="outline"
-        size="sm"
-        className="mb-8 gap-2 text-muted-foreground"
-        onClick={() => setShowSample(true)}
-      >
-        <MessageSquare className="h-4 w-4" />
-        {language === "ar" ? "شاهد مثالاً للمحادثة" : "See a sample conversation"}
-      </Button>
-
-      <div className="w-full max-w-2xl">
-        <p className="text-sm text-muted-foreground mb-3 text-center">
-          {language === "ar" ? "جرب أحد هذه الأسئلة:" : "Try one of these questions:"}
-        </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {suggestions.map((suggestion, index) => (
-            <button
-              key={index}
-              onClick={() => onSuggestionClick(suggestion.text)}
-              className="flex items-center gap-3 p-4 rounded-xl border bg-card hover:bg-accent transition-colors text-left group"
-            >
-              <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
-                <suggestion.icon className="h-5 w-5 text-primary" />
-              </div>
-              <span className="text-sm">{suggestion.text}</span>
-            </button>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// Typing indicator
-function TypingIndicator() {
-  return (
-    <div className="flex gap-3 justify-start">
-      <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center flex-shrink-0">
-        <Bot className="h-4 w-4 text-white" />
-      </div>
-      <div className="bg-muted rounded-2xl rounded-tl-md px-4 py-3">
-        <div className="flex items-center gap-1.5">
-          <Loader size={14} />
-          <span className="text-sm text-muted-foreground">Thinking...</span>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export default function ChatPage() {
   const { logout } = useAuth();
   const { t, language } = useLanguage();
   const router = useRouter();
   const searchParams = useSearchParams();
   const idParam = searchParams.get("id");
+  
+  // Fetch user profile for destination-aware UI
+  const { targetDestination } = useUserProfile();
 
   const isNewChat = searchParams.get("new") === "true";
-  const [selectedConversationId, setSelectedConversationId] = useState<number | null>(
-    idParam ? parseInt(idParam) : null
-  );
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [editingConversationId, setEditingConversationId] = useState<number | null>(null);
+  const [selectedConversationId, setSelectedConversationId] = useState<
+    number | null
+  >(idParam ? parseInt(idParam) : null);
+  const [editingConversationId, setEditingConversationId] = useState<
+    number | null
+  >(null);
   const [editTitle, setEditTitle] = useState("");
-  const [responseLanguage, setResponseLanguage] = useState<"auto" | "ar" | "en">("auto");
+  const [responseLanguage, setResponseLanguage] = useState<
+    "auto" | "ar" | "en"
+  >("auto");
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
-  const categories = [
-    { id: "immigration", label: language === "ar" ? "هجرة" : "Immigration" },
-    { id: "documents", label: language === "ar" ? "مستندات" : "Documents" },
-    { id: "crs", label: language === "ar" ? "CRS" : "CRS" },
-    { id: "general", label: language === "ar" ? "عام" : "General" },
-  ];
   const queryClient = useQueryClient();
 
   // Fetch conversations list from Server Action
-  const { data: conversations, refetch: refetchConversations } = useQuery({
-    queryKey: ['chat', 'list'],
+  const { data: conversations, refetch: refetchConversations, isLoading: conversationsLoading } = useQuery({
+    queryKey: ["chat", "list"],
     queryFn: listConversations,
   });
 
   // Fetch initial messages when conversation is selected
   const { data: conversationData, isLoading: conversationLoading } = useQuery({
-    queryKey: ['chat', 'get', selectedConversationId],
-    queryFn: () => getConversationWithMessages({ conversationId: selectedConversationId! }),
+    queryKey: ["chat", "get", selectedConversationId],
+    queryFn: () =>
+      getConversationWithMessages({ conversationId: selectedConversationId! }),
     enabled: selectedConversationId !== null,
   });
 
@@ -339,11 +195,18 @@ export default function ChatPage() {
     language: language as "ar" | "en",
     onFinish: () => {
       if (selectedConversationId) {
-        queryClient.invalidateQueries({ queryKey: ['chat', 'get', selectedConversationId] });
+        queryClient.invalidateQueries({
+          queryKey: ["chat", "get", selectedConversationId],
+        });
       }
       refetchConversations();
+      // Delayed refetch to catch async title generation from server's after()
+      // Title generation runs asynchronously after response stream ends
+      setTimeout(() => {
+        refetchConversations();
+      }, 2000);
     },
-    onError: (error) => {
+    onError: error => {
       console.error("Chat error:", error);
     },
   });
@@ -351,7 +214,7 @@ export default function ChatPage() {
   // Create conversation mutation
   const createConversationMutation = useMutation({
     mutationFn: createNewConversation,
-    onSuccess: (data) => {
+    onSuccess: data => {
       setSelectedConversationId(data.conversationId);
       router.push(`/chat?id=${data.conversationId}`);
       refetchConversations();
@@ -389,20 +252,24 @@ export default function ChatPage() {
     }
   }, [idParam, selectedConversationId]);
 
-
-
   // Combine database messages with streaming messages
   const displayMessages = useCallback((): HijraahChatMessage[] => {
-    const dbMessages: HijraahChatMessage[] = (conversationData?.messages || []).map((msg) => {
+    const dbMessages: HijraahChatMessage[] = (
+      conversationData?.messages || []
+    ).map(msg => {
       const content = msg.content;
       let suggestions: string[] = [];
-      const suggestionsMatch = content.match(/<suggestions>([\s\S]*?)<\/suggestions>/);
+      const suggestionsMatch = content.match(
+        /<suggestions>([\s\S]*?)<\/suggestions>/
+      );
       let cleanContent = content;
 
       if (suggestionsMatch) {
         try {
           suggestions = JSON.parse(suggestionsMatch[1]);
-          cleanContent = content.replace(/<suggestions>[\s\S]*?<\/suggestions>/, "").trim();
+          cleanContent = content
+            .replace(/<suggestions>[\s\S]*?<\/suggestions>/, "")
+            .trim();
         } catch (e) {
           console.error("Failed to parse suggestions in DB message:", e);
         }
@@ -416,8 +283,6 @@ export default function ChatPage() {
         createdAt: new Date(msg.createdAt),
       };
     });
-
-
 
     if (streamMessages.length > 0) {
       const dbMessageIds = new Set(dbMessages.map(m => m.content));
@@ -433,17 +298,17 @@ export default function ChatPage() {
 
   const handleNewChat = useCallback(() => {
     createConversationMutation.mutate({ language: language as "ar" | "en" });
-  }, [createConversationMutation.mutate, language]);
+  }, [createConversationMutation, language]);
 
   const handleSendMessage = async (messageText?: string) => {
     let text = messageText || input;
     if (!text.trim() || !selectedConversationId || isStreaming) return;
 
     // Append language instruction if not already handled and not auto
-    if (!messageText && responseLanguage !== 'auto') {
-      if (responseLanguage === 'ar') {
+    if (!messageText && responseLanguage !== "auto") {
+      if (responseLanguage === "ar") {
         text += "\n\n(Please answer in Arabic)";
-      } else if (responseLanguage === 'en') {
+      } else if (responseLanguage === "en") {
         text += "\n\n(Please answer in English)";
       }
     }
@@ -454,21 +319,23 @@ export default function ChatPage() {
 
   const handleSuggestionClick = (suggestion: string) => {
     if (!selectedConversationId) {
-      createConversationMutation.mutate({ language: language as "ar" | "en" }, {
-        onSuccess: () => {
-          setTimeout(() => {
-            handleSendMessage(suggestion);
-          }, 100);
+      createConversationMutation.mutate(
+        { language: language as "ar" | "en" },
+        {
+          onSuccess: () => {
+            setTimeout(() => {
+              handleSendMessage(suggestion);
+            }, 100);
+          },
         }
-      });
+      );
     } else {
-
       setInput(suggestion);
       // Determine if we need to append language instruction
       let finalMessage = suggestion;
-      if (responseLanguage === 'ar') {
+      if (responseLanguage === "ar") {
         finalMessage += "\n\n(Please answer in Arabic)";
-      } else if (responseLanguage === 'en') {
+      } else if (responseLanguage === "en") {
         finalMessage += "\n\n(Please answer in English)";
       }
       handleSendMessage(finalMessage);
@@ -477,12 +344,22 @@ export default function ChatPage() {
 
   const handleDeleteConversation = (e: React.MouseEvent, id: number) => {
     e.stopPropagation();
-    if (confirm(language === "ar" ? "هل أنت متأكد من حذف هذه المحادثة؟" : "Are you sure you want to delete this conversation?")) {
+    if (
+      confirm(
+        language === "ar"
+          ? "هل أنت متأكد من حذف هذه المحادثة؟"
+          : "Are you sure you want to delete this conversation?"
+      )
+    ) {
       deleteConversationMutation.mutate({ conversationId: id });
     }
   };
 
-  const handleRenameConversation = (e: React.MouseEvent, id: number, title: string) => {
+  const handleRenameConversation = (
+    e: React.MouseEvent,
+    id: number,
+    title: string
+  ) => {
     e.stopPropagation();
     setEditingConversationId(id);
     setEditTitle(title);
@@ -493,16 +370,21 @@ export default function ChatPage() {
     if (editingConversationId && editTitle.trim()) {
       renameConversationMutation.mutate({
         conversationId: editingConversationId,
-        title: editTitle.trim()
+        title: editTitle.trim(),
       });
     }
   };
 
-  const handleFeedback = (messageId: string, type: 'up' | 'down') => {
+  const handleFeedback = (messageId: string, type: "up" | "down") => {
     // Show toast feedback to user
-    const feedbackText = language === "ar"
-      ? (type === 'up' ? "شكراً لملاحظاتك!" : "سنعمل على تحسين ذلك.")
-      : (type === 'up' ? "Thanks for your feedback!" : "We'll work on improving this.");
+    const feedbackText =
+      language === "ar"
+        ? type === "up"
+          ? "شكراً لملاحظاتك!"
+          : "سنعمل على تحسين ذلك."
+        : type === "up"
+          ? "Thanks for your feedback!"
+          : "We'll work on improving this.";
 
     toast.success(feedbackText, { duration: 2000 });
   };
@@ -514,19 +396,34 @@ export default function ChatPage() {
 
   useEffect(() => {
     if (
-      (conversations && conversations.length === 0 && !createConversationMutation.isPending) ||
-      (isNewChat && !selectedConversationId && !createConversationMutation.isPending)
+      (conversations &&
+        conversations.length === 0 &&
+        !createConversationMutation.isPending) ||
+      (isNewChat &&
+        !selectedConversationId &&
+        !createConversationMutation.isPending)
     ) {
       handleNewChat();
     }
-  }, [conversations, isNewChat, selectedConversationId, createConversationMutation.isPending, handleNewChat]);
+  }, [
+    conversations,
+    isNewChat,
+    selectedConversationId,
+    createConversationMutation.isPending,
+    handleNewChat,
+  ]);
 
   useEffect(() => {
     // Only auto-select if:
     // 1. We have conversations
     // 2. No conversation is currently selected
     // 3. The user did NOT explicitly ask for a new chat (via ?new=true)
-    if (conversations && conversations.length > 0 && !selectedConversationId && !isNewChat) {
+    if (
+      conversations &&
+      conversations.length > 0 &&
+      !selectedConversationId &&
+      !isNewChat
+    ) {
       setSelectedConversationId(conversations[0].id);
     }
     // If it IS a new chat request and we have no selected ID, ensure the UI reflects that (it should be null already)
@@ -539,363 +436,135 @@ export default function ChatPage() {
   const allMessages = displayMessages();
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <SidebarProvider>
       <ChatLiveRegion messages={allMessages} isStreaming={isStreaming} />
-      {/* Header */}
-      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
-        <div className="container flex h-14 items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="md:hidden h-11 w-11 touch-manipulation"
-              onClick={() => setSidebarOpen(true)}
-              aria-label={language === "ar" ? "فتح القائمة" : "Open menu"}
-            >
-              <Menu className="h-5 w-5" />
-            </Button>
-            <Link href="/" className="flex items-center gap-2">
-              <h1 className="text-xl font-bold text-primary">
-                {language === "ar" ? "هجرة" : "Hijraah"}
-              </h1>
-            </Link>
-          </div>
-          <div className="flex items-center gap-2">
+      
+      {/* Unified Sidebar using shadcn Sidebar */}
+      <ChatAppSidebar
+        conversations={conversations}
+        conversationsLoading={conversationsLoading}
+        selectedConversationId={selectedConversationId}
+        language={language}
+        searchQuery={searchQuery}
+        categoryFilter={categoryFilter}
+        editingConversationId={editingConversationId}
+        editTitle={editTitle}
+        isCreating={createConversationMutation.isPending}
+        targetDestination={targetDestination}
+        onSelectConversation={(id) => {
+          setSelectedConversationId(id);
+          router.push(`/chat?id=${id}`);
+        }}
+        onNewChat={handleNewChat}
+        onDeleteConversation={handleDeleteConversation}
+        onRenameConversation={handleRenameConversation}
+        onSearchChange={setSearchQuery}
+        onCategoryChange={setCategoryFilter}
+        onEditTitleChange={setEditTitle}
+        onSaveRename={saveRename}
+        onCancelEdit={() => setEditingConversationId(null)}
+      />
+
+      <SidebarInset className="flex flex-col min-h-screen">
+        {/* Header */}
+        <AppHeader
+          leftSection={
+            <div className="flex items-center gap-4">
+              <SidebarTrigger className="h-9 w-9" />
+              <Logo />
+            </div>
+          }
+          additionalActions={
             <Link href="/dashboard" className="hidden md:block">
               <Button variant="ghost" size="sm">
                 {t("nav.dashboard")}
               </Button>
             </Link>
-            <LanguageToggle />
-            <Link href="/profile" className="hidden md:block">
-              <Button variant="ghost" size="icon">
-                <User className="h-4 w-4" />
-              </Button>
-            </Link>
-            <Button variant="ghost" size="icon" onClick={handleLogout}>
-              <LogOut className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-      </header>
+          }
+          showUsage={false}
+        />
 
-      <div className="flex-1 flex overflow-hidden">
-        {/* Mobile Sidebar - Sheet Drawer */}
-        <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
-          <SheetContent side="left" className="w-72 p-0 flex flex-col">
-            <SheetHeader className="p-3 border-b">
-              <SheetTitle className="sr-only">
-                {language === "ar" ? "المحادثات" : "Conversations"}
-              </SheetTitle>
-              <Button
-                onClick={() => {
-                  handleNewChat();
-                  setSidebarOpen(false);
-                }}
-                className="w-full gap-2 rounded-xl h-11 touch-manipulation"
-                disabled={createConversationMutation.isPending}
-              >
-                {createConversationMutation.isPending ? (
-                  <Loader size={16} />
-                ) : (
-                  <Plus className="h-4 w-4" />
-                )}
-                {language === "ar" ? "محادثة جديدة" : "New Chat"}
-              </Button>
-              <div className="mt-2 relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder={language === "ar" ? "بحث في المحادثات..." : "Search conversations..."}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-9 h-11 rounded-xl touch-manipulation"
-                />
-              </div>
-              {/* Category Filter Chips */}
-              <div className="flex flex-wrap gap-1.5 mt-2">
-                <button
-                  onClick={() => setCategoryFilter(null)}
-                  className={cn(
-                    "text-xs px-3 py-1.5 rounded-full transition-colors min-h-[32px] touch-manipulation",
-                    categoryFilter === null ? "bg-primary text-primary-foreground" : "bg-secondary hover:bg-secondary/80 active:bg-secondary/70"
-                  )}
-                >
-                  {language === "ar" ? "الكل" : "All"}
-                </button>
-                {categories.map((cat) => (
-                  <button
-                    key={cat.id}
-                    onClick={() => setCategoryFilter(categoryFilter === cat.id ? null : cat.id)}
-                    className={cn(
-                      "text-xs px-3 py-1.5 rounded-full transition-colors flex items-center gap-1 min-h-[32px] touch-manipulation",
-                      categoryFilter === cat.id ? "bg-primary text-primary-foreground" : "bg-secondary hover:bg-secondary/80 active:bg-secondary/70"
-                    )}
-                  >
-                    <Tag className="h-3 w-3" />
-                    {cat.label}
-                  </button>
-                ))}
-              </div>
-            </SheetHeader>
-            <ScrollArea className="flex-1">
-              <PullToRefresh
-                onRefresh={async () => {
-                  await refetchConversations();
-                }}
-                pullingContent={
-                  <div className="flex justify-center py-2">
-                    <Loader size={16} />
-                  </div>
-                }
-                refreshingContent={
-                  <div className="flex justify-center py-2">
-                    <Loader size={16} />
-                  </div>
-                }
-              >
-                <div className="p-2 space-y-1">
-                  {conversations
-                    ?.filter((conv) => {
-                      if (!searchQuery.trim()) return true;
-                      const title = conv.title?.toLowerCase() || "";
-                      return title.includes(searchQuery.toLowerCase());
-                    })
-                    .map((conv) => (
-                      <button
-                        key={conv.id}
-                        className={cn(
-                          "w-full flex items-center justify-between p-3 rounded-xl cursor-pointer transition-all min-h-[56px] touch-manipulation text-left",
-                          selectedConversationId === conv.id
-                            ? "bg-primary/10 border border-primary/20"
-                            : "hover:bg-accent active:bg-accent/80"
-                        )}
-                        onClick={() => {
-                          setSelectedConversationId(conv.id);
-                          router.push(`/chat?id=${conv.id}`);
-                          setSidebarOpen(false);
-                        }}
-                      >
-                        <div className="flex items-center gap-3 flex-1 min-w-0">
-                          <div className={cn(
-                            "h-10 w-10 rounded-lg flex items-center justify-center flex-shrink-0",
-                            selectedConversationId === conv.id
-                              ? "bg-primary/20"
-                              : "bg-muted"
-                          )}>
-                            <MessageSquare className="h-5 w-5" />
-                          </div>
-                          <span className="text-sm truncate">
-                            {conv.title || (language === "ar" ? "محادثة جديدة" : "New Chat")}
-                          </span>
-                        </div>
-                      </button>
-                    ))}
-                </div>
-              </PullToRefresh>
-            </ScrollArea>
-          </SheetContent>
-        </Sheet>
-
-        {/* Desktop Sidebar - Fixed */}
-        <aside className="hidden md:flex w-72 border-r bg-muted/30 flex-col">
-          <div className="p-3 border-b">
-            <Button
-              onClick={handleNewChat}
-              className="w-full gap-2 rounded-xl h-11"
-              disabled={createConversationMutation.isPending}
-            >
-              {createConversationMutation.isPending ? (
-                <Loader size={16} />
-              ) : (
-                <Plus className="h-4 w-4" />
-              )}
-              {language === "ar" ? "محادثة جديدة" : "New Chat"}
-            </Button>
-            <div className="mt-2 relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder={language === "ar" ? "بحث في المحادثات..." : "Search conversations..."}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9 h-10 rounded-xl"
-              />
-            </div>
-            {/* Category Filter Chips */}
-            <div className="flex flex-wrap gap-1.5 mt-2">
-              <button
-                onClick={() => setCategoryFilter(null)}
-                className={cn(
-                  "text-xs px-3 py-1.5 rounded-full transition-colors",
-                  categoryFilter === null ? "bg-primary text-primary-foreground" : "bg-secondary hover:bg-secondary/80"
-                )}
-              >
-                {language === "ar" ? "الكل" : "All"}
-              </button>
-              {categories.map((cat) => (
-                <button
-                  key={cat.id}
-                  onClick={() => setCategoryFilter(categoryFilter === cat.id ? null : cat.id)}
-                  className={cn(
-                    "text-xs px-3 py-1.5 rounded-full transition-colors flex items-center gap-1",
-                    categoryFilter === cat.id ? "bg-primary text-primary-foreground" : "bg-secondary hover:bg-secondary/80"
-                  )}
-                >
-                  <Tag className="h-3 w-3" />
-                  {cat.label}
-                </button>
-              ))}
-            </div>
-          </div>
-          <ScrollArea className="flex-1">
-            <PullToRefresh
-              onRefresh={async () => {
-                await refetchConversations();
-              }}
-              pullingContent={
-                <div className="flex justify-center py-2">
-                  <Loader size={16} />
-                </div>
-              }
-              refreshingContent={
-                <div className="flex justify-center py-2">
-                  <Loader size={16} />
-                </div>
-              }
-            >
-              <div className="p-2 space-y-1">
-                {conversations
-                  ?.filter((conv) => {
-                    if (!searchQuery.trim()) return true;
-                    const title = conv.title?.toLowerCase() || "";
-                    return title.includes(searchQuery.toLowerCase());
-                  })
-                  .map((conv) => (
-                    <div
-                      key={conv.id}
-                      className={cn(
-                        "group flex items-center justify-between p-3 rounded-xl cursor-pointer transition-all min-h-[52px]",
-                        selectedConversationId === conv.id
-                          ? "bg-primary/10 border border-primary/20"
-                          : "hover:bg-accent"
-                      )}
-                      onClick={() => {
-                        setSelectedConversationId(conv.id);
-                        router.push(`/chat?id=${conv.id}`);
-                      }}
-                    >
-                      <div className="flex items-center gap-3 flex-1 min-w-0">
-                        <div className={cn(
-                          "h-9 w-9 rounded-lg flex items-center justify-center flex-shrink-0",
-                          selectedConversationId === conv.id
-                            ? "bg-primary/20"
-                            : "bg-muted"
-                        )}>
-                          <MessageSquare className="h-4 w-4" />
-                        </div>
-                        {editingConversationId === conv.id ? (
-                          <form onSubmit={saveRename} className="flex-1 min-w-0 flex items-center gap-2" onClick={e => e.stopPropagation()}>
-                            <input
-                              autoFocus
-                              value={editTitle}
-                              onChange={(e) => setEditTitle(e.target.value)}
-                              onBlur={() => setEditingConversationId(null)}
-                              className="flex-1 bg-background border rounded px-2 py-1 text-sm h-8 min-w-0"
-                            />
-                            <button type="submit" className="hidden" />
-                          </form>
-                        ) : (
-                          <span className="text-sm truncate">
-                            {conv.title || (language === "ar" ? "محادثة جديدة" : "New Chat")}
-                          </span>
-                        )}
-                      </div>
-                      <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        {!editingConversationId && (
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 rounded-lg text-muted-foreground hover:text-foreground"
-                            onClick={(e) => handleRenameConversation(e, conv.id, conv.title || "")}
-                          >
-                            <Pencil className="h-3.5 w-3.5" />
-                          </Button>
-                        )}
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 rounded-lg text-muted-foreground hover:text-destructive"
-                          onClick={(e) => {
-                            handleDeleteConversation(e, conv.id);
-                          }}
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-              </div>
-            </PullToRefresh>
-          </ScrollArea>
-        </aside>
-
-        {/* Main Chat Area */}
+        <div className="flex-1 flex overflow-hidden">
+          {/* Main Chat Area */}
         <div id="main-content" className="flex-1 flex flex-col min-w-0">
           {selectedConversationId ? (
             <>
-              <StickToBottom className="flex-1 relative overflow-hidden" resize="smooth" initial="smooth">
+              <StickToBottom
+                className="flex-1 relative overflow-hidden"
+                resize="smooth"
+                initial="smooth"
+              >
                 <StickToBottom.Content className="flex flex-col gap-6 p-4 pb-6">
                   {conversationLoading ? (
                     <div className="flex items-center justify-center py-8">
                       <Loader size={24} />
                     </div>
                   ) : allMessages.length === 0 ? (
-                    <ConversationEmptyState
+                    <ChatEmptyState
                       language={language}
+                      targetDestination={targetDestination}
                       onSuggestionClick={handleSuggestionClick}
                     />
                   ) : (
                     <>
                       {allMessages.map((message, index) => (
-                        <Message key={message.id} from={message.role} className="group">
+                        <Message
+                          key={message.id}
+                          from={message.role}
+                          className="group"
+                        >
                           {message.role === "assistant" && (
                             <div className="flex items-start gap-3">
-                              <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center flex-shrink-0">
+                              <div className="h-8 w-8 rounded-full bg-linear-to-br from-blue-500 to-blue-700 flex items-center justify-center shrink-0">
                                 <Bot className="h-4 w-4 text-white" />
                               </div>
                               <div className="flex-1 min-w-0">
                                 {/* Reasoning indicator - shows during streaming for the last message */}
-                                {isStreaming && index === allMessages.length - 1 && !message.content && (
-                                  <Reasoning isStreaming={true} defaultOpen={true}>
-                                    <ReasoningTrigger
-                                      getThinkingMessage={(streaming) =>
-                                        streaming
-                                          ? (language === "ar" ? "جاري التفكير..." : "Thinking...")
-                                          : (language === "ar" ? "تم التفكير" : "Thought process")
-                                      }
-                                    />
-                                    <ReasoningContent>
-                                      {language === "ar"
-                                        ? "أقوم بتحليل سؤالك والبحث في قاعدة المعرفة..."
-                                        : "Analyzing your question and searching the knowledge base..."}
-                                    </ReasoningContent>
-                                  </Reasoning>
-                                )}
+                                {isStreaming &&
+                                  index === allMessages.length - 1 &&
+                                  !message.content && (
+                                    <Reasoning
+                                      isStreaming={true}
+                                      defaultOpen={true}
+                                    >
+                                      <ReasoningTrigger
+                                        getThinkingMessage={streaming =>
+                                          streaming
+                                            ? language === "ar"
+                                              ? "جاري التفكير..."
+                                              : "Thinking..."
+                                            : language === "ar"
+                                              ? "تم التفكير"
+                                              : "Thought process"
+                                        }
+                                      />
+                                      <ReasoningContent>
+                                        {language === "ar"
+                                          ? "أقوم بتحليل سؤالك والبحث في قاعدة المعرفة..."
+                                          : "Analyzing your question and searching the knowledge base..."}
+                                      </ReasoningContent>
+                                    </Reasoning>
+                                  )}
 
                                 {/* Chain of Thought - shows AI's thinking steps */}
                                 {message.reasoning && !isStreaming && (
                                   <ChainOfThought className="mb-3">
                                     <ChainOfThoughtHeader>
-                                      {language === "ar" ? "مسار التفكير" : "Chain of Thought"}
+                                      {language === "ar"
+                                        ? "مسار التفكير"
+                                        : "Chain of Thought"}
                                     </ChainOfThoughtHeader>
                                     <ChainOfThoughtContent>
                                       {Array.isArray(message.reasoning) ? (
-                                        message.reasoning.map((step: string, idx: number) => (
-                                          <ChainOfThoughtStep
-                                            key={idx}
-                                            label={step}
-                                            status="complete"
-                                          />
-                                        ))
+                                        message.reasoning.map(
+                                          (step: string, idx: number) => (
+                                            <ChainOfThoughtStep
+                                              key={idx}
+                                              label={step}
+                                              status="complete"
+                                            />
+                                          )
+                                        )
                                       ) : (
                                         <ChainOfThoughtStep
                                           label={message.reasoning}
@@ -907,7 +576,9 @@ export default function ChatPage() {
                                 )}
 
                                 <MessageContent className="bg-muted rounded-2xl rounded-tl-md px-4 py-3">
-                                  <MessageResponse>{message.content}</MessageResponse>
+                                  <MessageResponse>
+                                    {message.content}
+                                  </MessageResponse>
                                 </MessageContent>
 
                                 {/* AI Artifact Components - auto-render when data exists */}
@@ -916,110 +587,153 @@ export default function ChatPage() {
                                 <ComparisonTable />
 
                                 {/* Inline Citations - show if message has sources with URLs */}
-                                {message.sources && message.sources.length > 0 && message.sources.some(s => s.url) && (
-                                  <div className="mt-2 flex flex-wrap gap-2">
-                                    {message.sources.filter(s => s.url).slice(0, 3).map((source) => (
-                                      <InlineCitation key={source.id}>
-                                        <InlineCitationCard>
-                                          <InlineCitationCardTrigger sources={[source.url]} />
-                                          <InlineCitationCardBody>
-                                            <InlineCitationSource
-                                              title={source.title}
-                                              url={source.url}
-                                              description={source.relevance ? `${source.relevance}% ${language === "ar" ? "صلة" : "relevant"}` : undefined}
-                                            />
-                                          </InlineCitationCardBody>
-                                        </InlineCitationCard>
-                                      </InlineCitation>
-                                    ))}
-                                  </div>
-                                )}
+                                {message.sources &&
+                                  message.sources.length > 0 &&
+                                  message.sources.some(s => s.url) && (
+                                    <div className="mt-2 flex flex-wrap gap-2">
+                                      {message.sources
+                                        .filter(s => s.url)
+                                        .slice(0, 3)
+                                        .map(source => (
+                                          <InlineCitation key={source.id}>
+                                            <InlineCitationCard>
+                                              <InlineCitationCardTrigger
+                                                sources={[source.url]}
+                                              />
+                                              <InlineCitationCardBody>
+                                                <InlineCitationSource
+                                                  title={source.title}
+                                                  url={source.url}
+                                                  description={
+                                                    source.relevance
+                                                      ? `${source.relevance}% ${language === "ar" ? "صلة" : "relevant"}`
+                                                      : undefined
+                                                  }
+                                                />
+                                              </InlineCitationCardBody>
+                                            </InlineCitationCard>
+                                          </InlineCitation>
+                                        ))}
+                                    </div>
+                                  )}
 
                                 {/* Sources display - show if message has sources */}
-                                {message.sources && message.sources.length > 0 && (
-                                  <div className="mt-2">
-                                    <Sources>
-                                      <SourcesTrigger count={message.sources.length}>
-                                        <span className="font-medium text-xs">
-                                          {language === "ar"
-                                            ? `${message.sources.length} مصادر مستخدمة`
-                                            : `${message.sources.length} sources used`}
-                                        </span>
-                                      </SourcesTrigger>
-                                      <SourcesContent>
-                                        {message.sources.map((source) => (
-                                          <Source
-                                            key={source.id}
-                                            href={source.url}
-                                            title={source.title}
-                                          >
-                                            <span className="text-xs">
-                                              {source.title}
-                                              {source.relevance && (
-                                                <span className="text-muted-foreground ml-1">
-                                                  ({source.relevance}% {language === "ar" ? "صلة" : "relevant"})
-                                                </span>
-                                              )}
-                                            </span>
-                                          </Source>
-                                        ))}
-                                      </SourcesContent>
-                                    </Sources>
-                                  </div>
-                                )}
+                                {message.sources &&
+                                  message.sources.length > 0 && (
+                                    <div className="mt-2">
+                                      <Sources>
+                                        <SourcesTrigger
+                                          count={message.sources.length}
+                                        >
+                                          <span className="font-medium text-xs">
+                                            {language === "ar"
+                                              ? `${message.sources.length} مصادر مستخدمة`
+                                              : `${message.sources.length} sources used`}
+                                          </span>
+                                        </SourcesTrigger>
+                                        <SourcesContent>
+                                          {message.sources.map(source => (
+                                            <Source
+                                              key={source.id}
+                                              href={source.url}
+                                              title={source.title}
+                                            >
+                                              <span className="text-xs">
+                                                {source.title}
+                                                {source.relevance && (
+                                                  <span className="text-muted-foreground ml-1">
+                                                    ({source.relevance}%{" "}
+                                                    {language === "ar"
+                                                      ? "صلة"
+                                                      : "relevant"}
+                                                    )
+                                                  </span>
+                                                )}
+                                              </span>
+                                            </Source>
+                                          ))}
+                                        </SourcesContent>
+                                      </Sources>
+                                    </div>
+                                  )}
 
                                 {/* Show current sources while streaming */}
-                                {isStreaming && index === allMessages.length - 1 && currentSources.length > 0 && !message.sources && (
-                                  <div className="mt-2">
-                                    <Sources defaultOpen>
-                                      <SourcesTrigger count={currentSources.length}>
-                                        <span className="font-medium text-xs">
-                                          {language === "ar"
-                                            ? `${currentSources.length} مصادر مستخدمة`
-                                            : `${currentSources.length} sources used`}
-                                        </span>
-                                      </SourcesTrigger>
-                                      <SourcesContent>
-                                        {currentSources.map((source) => (
-                                          <Source
-                                            key={source.id}
-                                            href={source.url}
-                                            title={source.title}
-                                          >
-                                            <span className="text-xs">
-                                              {source.title}
-                                              {source.relevance && (
-                                                <span className="text-muted-foreground ml-1">
-                                                  ({source.relevance}% {language === "ar" ? "صلة" : "relevant"})
-                                                </span>
-                                              )}
-                                            </span>
-                                          </Source>
-                                        ))}
-                                      </SourcesContent>
-                                    </Sources>
-                                  </div>
-                                )}
+                                {isStreaming &&
+                                  index === allMessages.length - 1 &&
+                                  currentSources.length > 0 &&
+                                  !message.sources && (
+                                    <div className="mt-2">
+                                      <Sources defaultOpen>
+                                        <SourcesTrigger
+                                          count={currentSources.length}
+                                        >
+                                          <span className="font-medium text-xs">
+                                            {language === "ar"
+                                              ? `${currentSources.length} مصادر مستخدمة`
+                                              : `${currentSources.length} sources used`}
+                                          </span>
+                                        </SourcesTrigger>
+                                        <SourcesContent>
+                                          {currentSources.map(source => (
+                                            <Source
+                                              key={source.id}
+                                              href={source.url}
+                                              title={source.title}
+                                            >
+                                              <span className="text-xs">
+                                                {source.title}
+                                                {source.relevance && (
+                                                  <span className="text-muted-foreground ml-1">
+                                                    ({source.relevance}%{" "}
+                                                    {language === "ar"
+                                                      ? "صلة"
+                                                      : "relevant"}
+                                                    )
+                                                  </span>
+                                                )}
+                                              </span>
+                                            </Source>
+                                          ))}
+                                        </SourcesContent>
+                                      </Sources>
+                                    </div>
+                                  )}
 
                                 {/* Feedback Actions */}
                                 {!isStreaming && (
                                   <div className="mt-2 flex items-center justify-end">
                                     <MessageActions>
                                       <MessageAction
-                                        tooltip={language === "ar" ? "مفيد" : "Helpful"}
-                                        onClick={() => handleFeedback(message.id, 'up')}
+                                        tooltip={
+                                          language === "ar" ? "مفيد" : "Helpful"
+                                        }
+                                        onClick={() =>
+                                          handleFeedback(message.id, "up")
+                                        }
                                       >
                                         <ThumbsUp className="h-4 w-4" />
                                       </MessageAction>
                                       <MessageAction
-                                        tooltip={language === "ar" ? "غير مفيد" : "Not helpful"}
-                                        onClick={() => handleFeedback(message.id, 'down')}
+                                        tooltip={
+                                          language === "ar"
+                                            ? "غير مفيد"
+                                            : "Not helpful"
+                                        }
+                                        onClick={() =>
+                                          handleFeedback(message.id, "down")
+                                        }
                                       >
                                         <ThumbsDown className="h-4 w-4" />
                                       </MessageAction>
                                       <MessageAction
-                                        tooltip={language === "ar" ? "نسخ" : "Copy"}
-                                        onClick={() => navigator.clipboard.writeText(message.content)}
+                                        tooltip={
+                                          language === "ar" ? "نسخ" : "Copy"
+                                        }
+                                        onClick={() =>
+                                          navigator.clipboard.writeText(
+                                            message.content
+                                          )
+                                        }
                                       >
                                         <Copy className="h-4 w-4" />
                                       </MessageAction>
@@ -1037,13 +751,15 @@ export default function ChatPage() {
                             <div className="flex items-start gap-3 justify-end">
                               <div className="flex-1 min-w-0 flex flex-col items-end">
                                 <MessageContent className="bg-primary text-primary-foreground rounded-2xl rounded-tr-md px-4 py-3">
-                                  <p className="whitespace-pre-wrap">{message.content}</p>
+                                  <p className="whitespace-pre-wrap">
+                                    {message.content}
+                                  </p>
                                 </MessageContent>
                                 <div className="flex items-center gap-1 mt-1">
                                   <CopyButton text={message.content} />
                                 </div>
                               </div>
-                              <div className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center flex-shrink-0">
+                              <div className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center shrink-0">
                                 <User className="h-4 w-4" />
                               </div>
                             </div>
@@ -1052,12 +768,10 @@ export default function ChatPage() {
                       ))}
 
                       {/* Show typing indicator when streaming and waiting for assistant response */}
-                      {isStreaming && (
-                        allMessages.length === 0 ||
-                        allMessages[allMessages.length - 1]?.role === 'user'
-                      ) && (
-                          <TypingIndicator />
-                        )}
+                      {isStreaming &&
+                        (allMessages.length === 0 ||
+                          allMessages[allMessages.length - 1]?.role ===
+                            "user") && <ChatTypingIndicator />}
                     </>
                   )}
                 </StickToBottom.Content>
@@ -1068,15 +782,12 @@ export default function ChatPage() {
               {allMessages.length > 0 && !isStreaming && (
                 <div className="px-4 pb-2">
                   <Suggestions>
-                    {(
-                      // Use suggestions from the last assistant message if available
-                      allMessages[allMessages.length - 1].role === "assistant" &&
-                        allMessages[allMessages.length - 1].suggestions
-                        ? allMessages[allMessages.length - 1].suggestions
-                        : (language === "ar"
-                          ? ["المزيد من التفاصيل", "كيف أبدأ؟", "ما الخطوة التالية؟"]
-                          : ["More details", "How do I start?", "What's the next step?"])
-                    )?.map((suggestion) => (
+                    {// Use suggestions from the last assistant message if available
+                    (allMessages[allMessages.length - 1].role === "assistant" &&
+                    allMessages[allMessages.length - 1].suggestions
+                      ? allMessages[allMessages.length - 1].suggestions
+                      : getDefaultFollowUpSuggestions(targetDestination, language as 'ar' | 'en')
+                    )?.map(suggestion => (
                       <Suggestion
                         key={suggestion}
                         suggestion={suggestion}
@@ -1087,15 +798,15 @@ export default function ChatPage() {
                 </div>
               )}
 
-              <div className="border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+              <div className="border-t bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
                 <div className="max-w-3xl mx-auto">
                   <PromptInput
                     onSubmit={async ({ text }) => {
                       if (!text.trim() || isStreaming) return;
                       let finalText = text;
-                      if (responseLanguage === 'ar') {
+                      if (responseLanguage === "ar") {
                         finalText += "\n\n(Please answer in Arabic)";
-                      } else if (responseLanguage === 'en') {
+                      } else if (responseLanguage === "en") {
                         finalText += "\n\n(Please answer in English)";
                       }
                       await sendMessage(finalText);
@@ -1104,8 +815,12 @@ export default function ChatPage() {
                   >
                     <PromptInputTextarea
                       value={input}
-                      onChange={(e) => setInput(e.target.value)}
-                      placeholder={language === "ar" ? "اكتب رسالتك هنا..." : "Type your message here..."}
+                      onChange={e => setInput(e.target.value)}
+                      placeholder={
+                        language === "ar"
+                          ? "اكتب رسالتك هنا..."
+                          : "Type your message here..."
+                      }
                       disabled={isStreaming}
                       className="min-h-[44px] text-base touch-manipulation"
                     />
@@ -1114,20 +829,38 @@ export default function ChatPage() {
                         <PromptInputButton
                           className={cn(
                             "h-10 w-10 touch-manipulation",
-                            responseLanguage === 'ar' && "text-primary bg-primary/10"
+                            responseLanguage === "ar" &&
+                              "text-primary bg-primary/10"
                           )}
-                          onClick={() => setResponseLanguage(responseLanguage === 'ar' ? 'auto' : 'ar')}
-                          aria-label={language === "ar" ? "اطلب الإجابة بالعربية" : "Ask for Arabic answer"}
+                          onClick={() =>
+                            setResponseLanguage(
+                              responseLanguage === "ar" ? "auto" : "ar"
+                            )
+                          }
+                          aria-label={
+                            language === "ar"
+                              ? "اطلب الإجابة بالعربية"
+                              : "Ask for Arabic answer"
+                          }
                         >
                           <span className="text-sm font-bold">ع</span>
                         </PromptInputButton>
                         <PromptInputButton
                           className={cn(
                             "h-10 w-10 touch-manipulation",
-                            responseLanguage === 'en' && "text-primary bg-primary/10"
+                            responseLanguage === "en" &&
+                              "text-primary bg-primary/10"
                           )}
-                          onClick={() => setResponseLanguage(responseLanguage === 'en' ? 'auto' : 'en')}
-                          aria-label={language === "ar" ? "اطلب الإجابة بالإنجليزية" : "Ask for English answer"}
+                          onClick={() =>
+                            setResponseLanguage(
+                              responseLanguage === "en" ? "auto" : "en"
+                            )
+                          }
+                          aria-label={
+                            language === "ar"
+                              ? "اطلب الإجابة بالإنجليزية"
+                              : "Ask for English answer"
+                          }
                         >
                           <span className="text-sm font-bold">En</span>
                         </PromptInputButton>
@@ -1162,11 +895,13 @@ export default function ChatPage() {
           ) : (
             <div className="flex-1 flex items-center justify-center">
               <div className="text-center px-4">
-                <div className="h-16 w-16 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center mx-auto mb-4">
+                <div className="h-16 w-16 rounded-full bg-linear-to-br from-blue-500 to-blue-700 flex items-center justify-center mx-auto mb-4">
                   <MessageSquare className="h-8 w-8 text-white" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2">
-                  {language === "ar" ? "لا توجد محادثة محددة" : "No Conversation Selected"}
+                  {language === "ar"
+                    ? "لا توجد محادثة محددة"
+                    : "No Conversation Selected"}
                 </h3>
                 <p className="text-muted-foreground mb-4 max-w-sm">
                   {language === "ar"
@@ -1182,7 +917,7 @@ export default function ChatPage() {
           )}
         </div>
       </div>
-    </div>
+    </SidebarInset>
+  </SidebarProvider>
   );
 }
-

@@ -5,11 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { AppHeader } from "@/components/AppHeader";
+import { Logo } from "@/components/Logo";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createCheckout, getInvoices } from "@/actions/subscription";
 import { Check, Crown, Sparkles, Star, Zap, User, LogOut, ArrowLeft, Loader2 } from "lucide-react";
 import Link from "next/link";
-import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -184,48 +185,32 @@ export default function Pricing() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       {/* Header */}
-      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
-        <div className="container flex h-16 items-center justify-between">
-          <Link href="/" className="relative h-8 w-32">
-            <Image
-              src="/Hijraah_logo.png"
-              alt="Hijraah"
-              fill
-              className="object-contain object-left"
-              priority
-            />
-          </Link>
-          <div className="flex items-center gap-4">
-            {user ? (
-              <>
-                <Link href="/dashboard" className="hidden md:block">
-                  <Button variant="ghost" size="sm">
-                    {language === "ar" ? "لوحة التحكم" : "Dashboard"}
-                  </Button>
-                </Link>
-                <LanguageToggle />
-                <Link href="/profile" className="hidden md:block">
-                  <Button variant="ghost" size="sm" className="gap-2">
-                    <User className="h-4 w-4" />
-                  </Button>
-                </Link>
-                <Button variant="ghost" size="sm" onClick={handleLogout}>
-                  <LogOut className="h-4 w-4" />
+      {user ? (
+        <AppHeader
+          additionalActions={
+            <Link href="/dashboard" className="hidden md:block">
+              <Button variant="ghost" size="sm">
+                {language === "ar" ? "لوحة التحكم" : "Dashboard"}
+              </Button>
+            </Link>
+          }
+          showUsage={false}
+        />
+      ) : (
+        <header className="border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 sticky top-0 z-50">
+          <div className="container flex h-16 items-center justify-between">
+            <Logo priority />
+            <div className="flex items-center gap-4">
+              <LanguageToggle />
+              <Link href="/login">
+                <Button variant="outline" size="sm">
+                  {language === "ar" ? "تسجيل الدخول" : "Login"}
                 </Button>
-              </>
-            ) : (
-              <>
-                <LanguageToggle />
-                <Link href="/login">
-                  <Button variant="outline" size="sm">
-                    {language === "ar" ? "تسجيل الدخول" : "Login"}
-                  </Button>
-                </Link>
-              </>
-            )}
+              </Link>
+            </div>
           </div>
-        </div>
-      </header>
+        </header>
+      )}
 
       <main className="flex-1 py-12">
         <div className="container max-w-7xl">
@@ -244,8 +229,8 @@ export default function Pricing() {
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               {language === "ar"
-                ? "اختر الخطة المناسبة لك وابدأ رحلتك نحو كندا اليوم"
-                : "Select the plan that's right for you and start your journey to Canada today"}
+                ? "اختر الخطة المناسبة لك وابدأ رحلتك نحو وجهتك المثالية اليوم"
+                : "Select the plan that's right for you and start your journey to your dream destination today"}
             </p>
           </div>
 
@@ -282,7 +267,7 @@ export default function Pricing() {
                     <ul className="space-y-3 flex-1">
                       {tier.features.map((feature, i) => (
                         <li key={i} className="flex items-start gap-2">
-                          <Check className={cn("h-5 w-5 flex-shrink-0 mt-0.5", tier.color)} />
+                          <Check className={cn("h-5 w-5 shrink-0 mt-0.5", tier.color)} />
                           <span className="text-sm">{feature}</span>
                         </li>
                       ))}

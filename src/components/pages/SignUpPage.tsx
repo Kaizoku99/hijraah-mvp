@@ -59,8 +59,8 @@ export default function SignUp() {
   const t = {
     title: language === "ar" ? "إنشاء حساب في هجرة" : "Create an Account",
     subtitle: language === "ar" 
-      ? "ابدأ رحلتك إلى كندا اليوم" 
-      : "Start your journey to Canada today",
+      ? "ابدأ رحلتك إلى وجهتك المثالية اليوم" 
+      : "Start your journey to your dream destination today",
     signIn: language === "ar" ? "تسجيل الدخول" : "Sign In",
     signUp: language === "ar" ? "إنشاء حساب" : "Sign Up",
     email: language === "ar" ? "البريد الإلكتروني" : "Email",

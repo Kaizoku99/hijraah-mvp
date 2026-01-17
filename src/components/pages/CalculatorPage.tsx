@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { LanguageToggle } from "@/components/LanguageToggle";
+import { AppHeader } from "@/components/AppHeader";
 import { DrawComparison } from "@/components/DrawComparison";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { getProfile } from "@/actions/profile";
@@ -43,6 +43,17 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 // Lazy load AustraliaCalculator to reduce initial bundle size
 const AustraliaCalculator = dynamic(() => import("../AustraliaCalculator").then(mod => mod.AustraliaCalculator), {
+  loading: () => (
+    <div className="space-y-4">
+      <Skeleton className="h-8 w-1/3" />
+      <Skeleton className="h-[200px] w-full" />
+      <Skeleton className="h-[300px] w-full" />
+    </div>
+  ),
+});
+
+// Lazy load PortugalCalculator
+const PortugalCalculator = dynamic(() => import("../PortugalCalculator").then(mod => mod.PortugalCalculator), {
   loading: () => (
     <div className="space-y-4">
       <Skeleton className="h-8 w-1/3" />
@@ -248,14 +259,9 @@ export default function CalculatorPage() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       {/* Header */}
-      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
-        <div className="container flex h-16 items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold text-primary">
-              {language === "ar" ? "هجرة" : "Hijraah"}
-            </h1>
-          </Link>
-          <div className="flex items-center gap-4">
+      <AppHeader
+        additionalActions={
+          <>
             <Link href="/dashboard" className="hidden md:block">
               <Button variant="ghost" size="sm">
                 {t("nav.dashboard")}
@@ -266,20 +272,10 @@ export default function CalculatorPage() {
                 {t("nav.chat")}
               </Button>
             </Link>
-            <LanguageToggle />
-            <Link href="/profile" className="hidden md:block">
-              <Button variant="ghost" size="sm" className="gap-2">
-                <User className="h-4 w-4" />
-                <span className="hidden sm:inline">{t("nav.profile")}</span>
-              </Button>
-            </Link>
-            <Button variant="ghost" size="sm" onClick={handleLogout} className="gap-2">
-              <LogOut className="h-4 w-4" />
-              <span className="hidden sm:inline">{t("nav.logout")}</span>
-            </Button>
-          </div>
-        </div>
-      </header>
+          </>
+        }
+        showUsage={false}
+      />
 
       <main className="flex-1 container py-8">
         <div className="max-w-6xl mx-auto space-y-8">
@@ -287,17 +283,25 @@ export default function CalculatorPage() {
           <div className="space-y-2">
             <h1 className="text-3xl font-bold flex items-center gap-2">
               <CalculatorIcon className="h-8 w-8" />
-              {profile?.targetDestination === 'australia' ? (language === "ar" ? "حاسبة النقاط الأسترالية" : "Australia Points Calculator") : t("calculator.title")}
+              {profile?.targetDestination === 'australia' 
+                ? (language === "ar" ? "حاسبة النقاط الأسترالية" : "Australia Points Calculator") 
+                : profile?.targetDestination === 'portugal'
+                  ? (language === "ar" ? "أهلية تأشيرات البرتغال" : "Portugal Visa Eligibility")
+                  : t("calculator.title")}
             </h1>
             <p className="text-muted-foreground">
               {profile?.targetDestination === 'australia'
                 ? (language === "ar" ? "تحقق من أهليتك للهجرة إلى أستراليا" : "Check your eligibility for Australian immigration")
-                : t("calculator.subtitle")}
+                : profile?.targetDestination === 'portugal'
+                  ? (language === "ar" ? "اكتشف أفضل تأشيرة لك وتحقق من أهليتك" : "Find the best visa for you and check your eligibility")
+                  : t("calculator.subtitle")}
             </p>
           </div>
 
           {profile?.targetDestination === 'australia' ? (
             <AustraliaCalculator />
+          ) : profile?.targetDestination === 'portugal' ? (
+            <PortugalCalculator />
           ) : (
             <div className="grid lg:grid-cols-3 gap-8">
               {/* Calculator Form */}

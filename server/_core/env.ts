@@ -6,6 +6,7 @@ const envSchema = z.object({
     STRIPE_WEBHOOK_SECRET: z.string().min(1).optional(),
     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string().min(1).optional(),
     GOOGLE_GENERATIVE_AI_API_KEY: z.string().min(1).optional(),
+    COHERE_API_KEY: z.string().min(1).optional(),
     NEXT_PUBLIC_SUPABASE_URL: z.string().url(),
     NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
     SUPABASE_SERVICE_ROLE_KEY: z.string().min(1).optional(),

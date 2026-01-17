@@ -1,11 +1,22 @@
-'use client'
+"use client";
 
 import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { Logo } from "@/components/Logo";
 import { useQuery } from "@tanstack/react-query";
-import { listGuides, getCategories, searchGuidesAction } from "@/actions/guides";
+import {
+  listGuides,
+  getCategories,
+  searchGuidesAction,
+} from "@/actions/guides";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -24,7 +35,7 @@ import {
   DollarSign,
   Calendar,
   Home,
-  HelpCircle
+  HelpCircle,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -69,23 +80,24 @@ export default function Guides() {
 
   // Fetch guides
   const { data: guides, isLoading } = useQuery({
-    queryKey: ['guides', 'list', selectedCategory],
-    queryFn: () => listGuides({
-      category: selectedCategory || undefined,
-      limit: 50,
-      offset: 0,
-    }),
+    queryKey: ["guides", "list", selectedCategory],
+    queryFn: () =>
+      listGuides({
+        category: selectedCategory || undefined,
+        limit: 50,
+        offset: 0,
+      }),
   });
 
   // Fetch categories
   const { data: categoriesData } = useQuery({
-    queryKey: ['guides', 'categories'],
+    queryKey: ["guides", "categories"],
     queryFn: getCategories,
   });
 
   // Search guides
   const { data: searchResults, isLoading: isSearching } = useQuery({
-    queryKey: ['guides', 'search', searchQuery],
+    queryKey: ["guides", "search", searchQuery],
     queryFn: () => searchGuidesAction({ query: searchQuery, limit: 10 }),
     enabled: searchQuery.length >= 2,
   });
@@ -95,19 +107,9 @@ export default function Guides() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       {/* Header */}
-      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
+      <header className="border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 sticky top-0 z-50">
         <div className="container flex h-16 items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Link href="/">
-              <Button variant="ghost" size="sm" className="gap-2">
-                {language === "ar" ? <ArrowRight className="h-4 w-4" /> : <ArrowLeft className="h-4 w-4" />}
-                {language === "ar" ? "الرئيسية" : "Home"}
-              </Button>
-            </Link>
-            <h1 className="text-2xl font-bold text-primary">
-              {language === "ar" ? "هجرة" : "Hijraah"}
-            </h1>
-          </div>
+          <Logo priority />
           <div className="flex items-center gap-4">
             <LanguageToggle />
             <Link href="/login" className="hidden md:block">
@@ -133,8 +135,8 @@ export default function Guides() {
             </h1>
             <p className="text-lg text-muted-foreground">
               {language === "ar"
-                ? "دليلك الشامل للهجرة إلى كندا. اكتشف البرامج المتاحة والمتطلبات والخطوات اللازمة."
-                : "Your comprehensive guide to immigrating to Canada. Discover available programs, requirements, and steps to take."}
+                ? "دليلك الشامل للهجرة. اكتشف البرامج المتاحة والمتطلبات والخطوات اللازمة."
+                : "Your comprehensive immigration guide. Discover available programs, requirements, and steps to take."}
             </p>
           </div>
 
@@ -143,9 +145,11 @@ export default function Guides() {
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder={language === "ar" ? "ابحث في الأدلة..." : "Search guides..."}
+                placeholder={
+                  language === "ar" ? "ابحث في الأدلة..." : "Search guides..."
+                }
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={e => setSearchQuery(e.target.value)}
                 className="pl-10"
               />
             </div>
@@ -160,15 +164,22 @@ export default function Guides() {
             >
               {language === "ar" ? "الكل" : "All"}
             </Button>
-            {categoriesData?.categories.map((category) => {
-              const count = categoriesData.counts.find((c) => c.category === category)?.count || 0;
+            {categoriesData?.categories.map(category => {
+              const count =
+                categoriesData.counts.find(c => c.category === category)
+                  ?.count || 0;
               const Icon = categoryIcons[category] || HelpCircle;
-              const label = categoryLabels[category] || { en: category, ar: category };
+              const label = categoryLabels[category] || {
+                en: category,
+                ar: category,
+              };
 
               return (
                 <Button
                   key={category}
-                  variant={selectedCategory === category ? "default" : "outline"}
+                  variant={
+                    selectedCategory === category ? "default" : "outline"
+                  }
                   size="sm"
                   onClick={() => setSelectedCategory(category)}
                   className="gap-2"
@@ -203,23 +214,30 @@ export default function Guides() {
             </div>
           ) : displayedGuides && displayedGuides.length > 0 ? (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {displayedGuides.map((guide) => {
+              {displayedGuides.map(guide => {
                 const Icon = categoryIcons[guide.category] || HelpCircle;
-                const categoryLabel = categoryLabels[guide.category] || { en: guide.category, ar: guide.category };
+                const categoryLabel = categoryLabels[guide.category] || {
+                  en: guide.category,
+                  ar: guide.category,
+                };
 
                 return (
                   <Link key={guide.id} href={`/guides/${guide.slug}`}>
                     <Card className="h-full hover:border-primary transition-all hover:shadow-md cursor-pointer">
                       <CardHeader>
                         <div className="flex items-start justify-between">
-                          <div className={cn(
-                            "h-10 w-10 rounded-lg flex items-center justify-center mb-3",
-                            "bg-blue-50 text-blue-600"
-                          )}>
+                          <div
+                            className={cn(
+                              "h-10 w-10 rounded-lg flex items-center justify-center mb-3",
+                              "bg-blue-50 text-blue-600"
+                            )}
+                          >
                             <Icon className="h-5 w-5" />
                           </div>
                           <Badge variant="outline">
-                            {language === "ar" ? categoryLabel.ar : categoryLabel.en}
+                            {language === "ar"
+                              ? categoryLabel.ar
+                              : categoryLabel.en}
                           </Badge>
                         </div>
                         <CardTitle className="line-clamp-2">
@@ -227,9 +245,10 @@ export default function Guides() {
                         </CardTitle>
                         <CardDescription className="line-clamp-3">
                           {language === "ar"
-                            ? (guide.metaDescriptionAr || guide.contentAr.substring(0, 150) + "...")
-                            : (guide.metaDescriptionEn || guide.contentEn.substring(0, 150) + "...")
-                          }
+                            ? guide.metaDescriptionAr ||
+                              guide.contentAr.substring(0, 150) + "..."
+                            : guide.metaDescriptionEn ||
+                              guide.contentEn.substring(0, 150) + "..."}
                         </CardDescription>
                       </CardHeader>
                       <CardContent>
@@ -248,7 +267,8 @@ export default function Guides() {
                               return (
                                 <span className="flex items-center gap-1">
                                   <Tag className="h-3 w-3" />
-                                  {tags.length} {language === "ar" ? "وسم" : "tags"}
+                                  {tags.length}{" "}
+                                  {language === "ar" ? "وسم" : "tags"}
                                 </span>
                               );
                             }
@@ -280,7 +300,7 @@ export default function Guides() {
           )}
 
           {/* CTA Section */}
-          <Card className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-950/30 dark:to-blue-900/30 border-blue-200">
+          <Card className="bg-linear-to-r from-blue-50 to-blue-100 dark:from-blue-950/30 dark:to-blue-900/30 border-blue-200">
             <CardContent className="py-8 text-center">
               <h2 className="text-2xl font-bold mb-3">
                 {language === "ar"
@@ -289,8 +309,8 @@ export default function Guides() {
               </h2>
               <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
                 {language === "ar"
-                  ? "سجل الآن للحصول على مساعد ذكي يجيب على جميع استفساراتك حول الهجرة إلى كندا"
-                  : "Sign up now to get an AI assistant that answers all your questions about immigrating to Canada"}
+                  ? "سجل الآن للحصول على مساعد ذكي يجيب على جميع استفساراتك حول الهجرة"
+                  : "Sign up now to get an AI assistant that answers all your immigration questions"}
               </p>
               <div className="flex gap-4 justify-center flex-wrap">
                 <Link href="/login">
@@ -321,4 +341,3 @@ export default function Guides() {
     </div>
   );
 }
-

@@ -1,5 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { supabaseAdmin } from "./_core/supabase";
+import { rerank } from "ai";
+import { cohere } from "@ai-sdk/cohere";
 
 let genAI: GoogleGenerativeAI | null = null;
 
@@ -75,7 +77,7 @@ export interface KgRelationship {
 
 /**
  * Perform semantic search using vector similarity
- * Uses cosine similarity with pgvector
+ * Uses cosine similarity with pgvector via dedicated RPC function
  */
 export async function semanticSearch(
   query: string,
@@ -90,81 +92,23 @@ export async function semanticSearch(
   // Generate embedding for the query
   const queryEmbedding = await generateEmbedding(query);
 
-  // Query Supabase with vector similarity search
+  // Query Supabase with vector similarity search using dedicated RPC function
   const supabase = supabaseAdmin;
 
-  // Build the SQL query for vector similarity search
-  const embeddingStr = `[${queryEmbedding.join(",")}]`;
-
-  let sql = `
-    SELECT 
-      dc.id,
-      dc.document_id,
-      dc.text_content,
-      dc.chunk_index,
-      dc.language,
-      dc.entities,
-      dc.key_phrases,
-      dc.chunk_metadata,
-      rd.source_url,
-      1 - (dc.embedding <=> '${embeddingStr}'::vector) as similarity
-    FROM document_chunks_enhanced dc
-    LEFT JOIN rag_documents rd ON dc.document_id = rd.id
-    WHERE dc.embedding IS NOT NULL
-  `;
-
-  if (language) {
-    sql += ` AND dc.language = '${language}'`;
-  }
-
-  sql += `
-    AND 1 - (dc.embedding <=> '${embeddingStr}'::vector) > ${threshold}
-    ORDER BY dc.embedding <=> '${embeddingStr}'::vector
-    LIMIT ${limit}
-  `;
-
-  const { data, error } = await supabase.rpc("execute_sql", { query: sql });
+  // Use the match_document_chunks RPC function for proper vector similarity
+  const { data, error } = await supabase.rpc("match_document_chunks", {
+    query_embedding: queryEmbedding,
+    match_threshold: threshold,
+    match_count: limit,
+    filter_language: language || null,
+  });
 
   if (error) {
-    // Fallback to direct query if RPC doesn't exist
-    console.error("RPC execute_sql not available, using direct query");
-
-    // Use a simpler approach with Supabase client
-    const { data: chunks, error: chunksError } = await supabase
-      .from("document_chunks_enhanced")
-      .select(`
-        id,
-        document_id,
-        text_content,
-        chunk_index,
-        language,
-        entities,
-        key_phrases,
-        chunk_metadata,
-        rag_documents (source_url)
-      `)
-      .not("embedding", "is", null)
-      .limit(limit * 3); // Get more to filter client-side
-
-    if (chunksError) {
-      throw new Error(`Failed to search: ${chunksError.message}`);
-    }
-
-    // For now, return top results without vector similarity (fallback)
-    return (chunks || []).slice(0, limit).map((chunk: any) => ({
-      id: chunk.id,
-      documentId: chunk.document_id,
-      textContent: chunk.text_content,
-      similarity: 0.8, // Placeholder
-      metadata: {
-        chunkIndex: chunk.chunk_index,
-        language: chunk.language,
-        entities: chunk.entities,
-        keyPhrases: chunk.key_phrases,
-        sourceUrl: chunk.rag_documents?.source_url,
-      },
-    }));
+    console.error("[RAG] Vector search RPC failed:", error.message);
+    throw new Error(`Failed to search: ${error.message}`);
   }
+
+  console.log(`[RAG] Vector search found ${data?.length || 0} results above threshold ${threshold}`);
 
   return (data || []).map((row: any) => ({
     id: row.id,
@@ -285,6 +229,7 @@ export async function getRelatedEntities(
 /**
  * Combined RAG + Knowledge Graph query
  * Returns relevant document chunks and related knowledge graph entities
+ * Now includes optional re-ranking using Cohere for improved relevance
  */
 export async function ragQuery(
   query: string,
@@ -293,6 +238,8 @@ export async function ragQuery(
     entityLimit?: number;
     language?: string;
     includeRelatedEntities?: boolean;
+    enableReranking?: boolean; // Enable Cohere re-ranking (default: true if API key is configured)
+    oversampleFactor?: number; // How many extra results to fetch for re-ranking (default: 3)
   } = {}
 ): Promise<{
   chunks: RagSearchResult[];
@@ -304,13 +251,31 @@ export async function ragQuery(
     entityLimit = 5,
     language,
     includeRelatedEntities = true,
+    enableReranking = true,
+    oversampleFactor = 3,
   } = options;
+
+  // Determine if we should use re-ranking
+  const shouldRerank = enableReranking && isCohereConfigured();
+  
+  // Fetch more results initially if re-ranking is enabled (oversampling strategy)
+  const searchLimit = shouldRerank ? chunkLimit * oversampleFactor : chunkLimit;
+  const searchThreshold = shouldRerank ? 0.3 : 0.5; // Lower threshold when oversampling
 
   // Parallel search for documents and entities
   const [chunks, entities] = await Promise.all([
-    semanticSearch(query, { limit: chunkLimit, language }),
+    semanticSearch(query, { 
+      limit: searchLimit, 
+      threshold: searchThreshold,
+      language 
+    }),
     searchEntities(query, { limit: entityLimit }),
   ]);
+
+  // Re-rank the chunks if enabled
+  const finalChunks = shouldRerank 
+    ? await rerankResults(query, chunks, chunkLimit)
+    : chunks;
 
   // Get related entities if requested and we found matching entities
   let relatedEntities: { entity: KgEntity; relationship: KgRelationship }[] = [];
@@ -323,7 +288,7 @@ export async function ragQuery(
   }
 
   return {
-    chunks,
+    chunks: finalChunks,
     entities,
     relatedEntities,
   };
@@ -332,6 +297,7 @@ export async function ragQuery(
 /**
  * Build context string from RAG results for use in AI prompts
  * Uses clear delimiters and structured format for better model comprehension
+ * Supports both vector similarity and re-ranked scores
  */
 export function buildRagContext(
   results: {
@@ -360,7 +326,10 @@ export function buildRagContext(
       language === "ar" ? "## المعلومات ذات الصلة:" : "## Relevant Information:";
     contextParts.push(header);
 
-    chunks.forEach((chunk, index) => {
+    // Sort chunks by score (highest first) - they should already be sorted, but ensure it
+    const sortedChunks = [...chunks].sort((a, b) => b.similarity - a.similarity);
+
+    sortedChunks.forEach((chunk, index) => {
       contextParts.push(`\n### Source ${index + 1}:`);
       contextParts.push("```");
       contextParts.push(chunk.textContent);
@@ -368,7 +337,10 @@ export function buildRagContext(
       if (chunk.metadata.sourceUrl) {
         contextParts.push(`URL: ${chunk.metadata.sourceUrl}`);
       }
-      contextParts.push(`Relevance Score: ${(chunk.similarity * 100).toFixed(1)}%`);
+      // Format relevance score - Cohere scores are typically 0-1, vector similarity can vary
+      const scoreLabel = language === "ar" ? "درجة الصلة" : "Relevance Score";
+      const score = chunk.similarity > 1 ? chunk.similarity : chunk.similarity * 100;
+      contextParts.push(`${scoreLabel}: ${score.toFixed(1)}%`);
     });
   }
 
@@ -501,6 +473,132 @@ function chunkText(text: string, maxChunkSize: number = 1000): string[] {
   }
 
   return chunks;
+}
+
+/**
+ * Check if Cohere API key is configured
+ */
+function isCohereConfigured(): boolean {
+  return !!env.COHERE_API_KEY;
+}
+
+/**
+ * Re-rank search results using Cohere's reranking model
+ * Improves relevance by using a cross-encoder model to re-score results
+ * @param query - The user's search query
+ * @param results - Array of RAG search results to re-rank
+ * @param topN - Number of top results to return (default: same as input length)
+ * @returns Re-ranked results sorted by relevance score
+ */
+export async function rerankResults(
+  query: string,
+  results: RagSearchResult[],
+  topN?: number
+): Promise<RagSearchResult[]> {
+  // Skip re-ranking if no results or Cohere not configured
+  if (results.length === 0) {
+    return results;
+  }
+
+  if (!isCohereConfigured()) {
+    console.log("[RAG] Cohere API key not configured, skipping re-ranking");
+    return results;
+  }
+
+  try {
+    const documents = results.map((r) => r.textContent);
+    const effectiveTopN = topN ?? results.length;
+
+    const { ranking } = await rerank({
+      model: cohere.reranking("rerank-v3.5"),
+      documents,
+      query,
+      topN: effectiveTopN,
+    });
+
+    // Map the ranking back to RagSearchResult objects
+    const rerankedResults: RagSearchResult[] = ranking.map((item) => {
+      const originalResult = results[item.originalIndex];
+      return {
+        ...originalResult,
+        // Update similarity score with the rerank score (normalized)
+        similarity: item.score,
+      };
+    });
+
+    console.log(
+      `[RAG] Re-ranked ${results.length} results, returning top ${effectiveTopN}`
+    );
+
+    return rerankedResults;
+  } catch (error) {
+    console.error("[RAG] Re-ranking failed, returning original results:", error);
+    // Gracefully fall back to original results
+    return results;
+  }
+}
+
+/**
+ * Enhanced RAG query with re-ranking
+ * 1. First performs semantic search to get initial candidates (oversampling)
+ * 2. Then re-ranks using Cohere's cross-encoder for better relevance
+ * 3. Returns top results after re-ranking
+ */
+export async function ragQueryWithReranking(
+  query: string,
+  options: {
+    chunkLimit?: number;
+    entityLimit?: number;
+    language?: string;
+    includeRelatedEntities?: boolean;
+    oversampleFactor?: number; // How many more results to fetch before re-ranking
+  } = {}
+): Promise<{
+  chunks: RagSearchResult[];
+  entities: KgEntity[];
+  relatedEntities?: { entity: KgEntity; relationship: KgRelationship }[];
+}> {
+  const {
+    chunkLimit = 5,
+    entityLimit = 5,
+    language,
+    includeRelatedEntities = true,
+    oversampleFactor = 3, // Fetch 3x more results, then re-rank to get top N
+  } = options;
+
+  // Fetch more results initially for re-ranking (oversampling)
+  const oversampledLimit = isCohereConfigured()
+    ? chunkLimit * oversampleFactor
+    : chunkLimit;
+
+  // Parallel search for documents and entities
+  const [chunks, entities] = await Promise.all([
+    semanticSearch(query, {
+      limit: oversampledLimit,
+      threshold: 0.3, // Lower threshold when oversampling
+      language,
+    }),
+    searchEntities(query, { limit: entityLimit }),
+  ]);
+
+  // Re-rank the chunks using Cohere
+  const rerankedChunks = await rerankResults(query, chunks, chunkLimit);
+
+  // Get related entities if requested and we found matching entities
+  let relatedEntities: { entity: KgEntity; relationship: KgRelationship }[] = [];
+  if (includeRelatedEntities && entities.length > 0) {
+    const relatedPromises = entities
+      .slice(0, 3)
+      .map((entity) => getRelatedEntities(entity.id, { limit: 5 }));
+    const relatedResults = await Promise.all(relatedPromises);
+    relatedEntities = relatedResults.flat();
+  }
+
+  return {
+    chunks: rerankedChunks,
+    entities,
+    relatedEntities,
+  };
 }
 
 /**

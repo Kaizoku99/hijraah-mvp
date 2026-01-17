@@ -19,65 +19,211 @@ import {
   australiaAssessments,
   AustraliaAssessment,
   InsertAustraliaAssessment,
+  portugalAssessments,
+  PortugalAssessment,
+  InsertPortugalAssessment,
 } from "../drizzle/schema";
 import { env } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
 let _client: ReturnType<typeof postgres> | null = null;
+let _connectionAttempts = 0;
+const MAX_RETRY_ATTEMPTS = 3;
 
-// Lazily create the drizzle instance so local tooling can run without a DB.
+/**
+ * Database connection configuration optimized for Supabase Supavisor pooler.
+ * 
+ * Settings based on Supabase docs for handling connection timeouts:
+ * - connect_timeout: Time to wait for connection (seconds)
+ * - idle_timeout: Close idle connections after this time
+ * - max_lifetime: Maximum connection lifetime before recycling
+ * - prepare: Disabled for Transaction pool mode compatibility
+ * 
+ * @see https://supabase.com/docs/guides/database/connecting-to-postgres
+ */
+const DB_CONFIG = {
+  prepare: false, // Required for Supabase "Transaction" pool mode (port 6543)
+  connect_timeout: 15, // 15 seconds connection timeout (reduced for faster failure detection)
+  idle_timeout: 10, // Close idle connections after 10 seconds (helps with connection recycling)
+  max_lifetime: 60 * 2, // Recycle connections every 2 minutes (more aggressive recycling)
+  max: 3, // Reduce max connections - serverless apps should use fewer connections
+  fetch_types: false, // Faster startup, skip type fetching
+  onnotice: () => { }, // Suppress notices
+  connection: {
+    application_name: 'hijraah-mvp', // Helps identify connections in logs
+  },
+};
+
+/**
+ * Lazily create the drizzle instance with retry logic for transient errors.
+ * Handles Supabase connection pooler timeouts gracefully.
+ */
 export async function getDb() {
-  if (!_db && env.DATABASE_URL) {
+  if (_db) return _db;
+
+  if (!env.DATABASE_URL) {
+    console.warn("[Database] DATABASE_URL not configured");
+    return null;
+  }
+
+  // Reset connection attempts if we haven't tried in a while
+  const now = Date.now();
+
+  try {
+    _connectionAttempts++;
+    console.log(`[Database] Connecting... (attempt ${_connectionAttempts})`);
+
+    // Add connection timeout to URL if not present
+    let connectionUrl = env.DATABASE_URL;
+    if (!connectionUrl.includes('connect_timeout')) {
+      const separator = connectionUrl.includes('?') ? '&' : '?';
+      connectionUrl = `${connectionUrl}${separator}connect_timeout=30`;
+    }
+
+    _client = postgres(connectionUrl, DB_CONFIG);
+    _db = drizzle(_client);
+
+    // Test the connection with a simple query
+    await _client`SELECT 1`;
+
+    console.log("[Database] Connected successfully");
+    _connectionAttempts = 0;
+
+    return _db;
+  } catch (error: any) {
+    console.warn(`[Database] Connection failed (attempt ${_connectionAttempts}):`, error?.message || error);
+
+    // Clean up failed connection
+    if (_client) {
+      try {
+        await _client.end();
+      } catch {
+        // Ignore cleanup errors
+      }
+    }
+    _client = null;
+    _db = null;
+
+    // For transient errors, allow retry
+    if (
+      error?.code === 'CONNECT_TIMEOUT' ||
+      error?.code === 'ECONNREFUSED' ||
+      error?.code === 'ENOTFOUND' ||
+      error?.message?.includes('timeout')
+    ) {
+      if (_connectionAttempts < MAX_RETRY_ATTEMPTS) {
+        console.log(`[Database] Retrying connection in 2 seconds...`);
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        return getDb(); // Retry
+      }
+      console.error(`[Database] Max retry attempts (${MAX_RETRY_ATTEMPTS}) reached`);
+    }
+
+    return null;
+  }
+}
+
+/**
+ * Force reconnection to the database.
+ * Useful when connection becomes stale or after errors.
+ */
+export async function reconnectDb() {
+  console.log("[Database] Forcing reconnection...");
+  if (_client) {
     try {
-      // Disable prefetch as it is not supported for "Transaction" pool mode
-      _client = postgres(env.DATABASE_URL, { prepare: false });
-      _db = drizzle(_client);
-    } catch (error) {
-      console.warn("[Database] Failed to connect:", error);
-      _db = null;
+      await _client.end();
+    } catch {
+      // Ignore cleanup errors
     }
   }
-  return _db;
+  _client = null;
+  _db = null;
+  _connectionAttempts = 0;
+  return getDb();
 }
 
 // Get or create user by Supabase auth ID
 export async function getOrCreateUserByAuthId(authId: string, userData?: { email?: string; name?: string }): Promise<typeof users.$inferSelect | null> {
-  const db = await getDb();
+  let db = await getDb();
   if (!db) {
     console.warn("[Database] Cannot get/create user: database not available");
     return null;
   }
 
-  // Try to find existing user
-  const existingUser = await db
-    .select()
-    .from(users)
-    .where(eq(users.authId, authId))
-    .limit(1);
+  try {
+    // Try to find existing user
+    const existingUser = await db
+      .select()
+      .from(users)
+      .where(eq(users.authId, authId))
+      .limit(1);
 
-  if (existingUser.length > 0) {
-    // Update last signed in
-    await db
-      .update(users)
-      .set({ lastSignedIn: new Date() })
-      .where(eq(users.authId, authId));
-    return existingUser[0];
+    if (existingUser.length > 0) {
+      // Update last signed in
+      await db
+        .update(users)
+        .set({ lastSignedIn: new Date() })
+        .where(eq(users.authId, authId));
+      return existingUser[0];
+    }
+
+    // Create new user
+    const newUser: InsertUser = {
+      authId,
+      email: userData?.email ?? null,
+      name: userData?.name ?? null,
+      lastSignedIn: new Date(),
+    };
+
+    const result = await db
+      .insert(users)
+      .values(newUser)
+      .returning();
+
+    return result[0];
+  } catch (error: any) {
+    // Handle connection timeout - retry once with fresh connection
+    if (error?.code === 'CONNECT_TIMEOUT' || error?.message?.includes('timeout')) {
+      console.warn("[Database] Connection timeout, attempting reconnect...");
+      db = await reconnectDb();
+      if (!db) {
+        console.error("[Database] Reconnection failed");
+        return null;
+      }
+
+      // Retry the query
+      const existingUser = await db
+        .select()
+        .from(users)
+        .where(eq(users.authId, authId))
+        .limit(1);
+
+      if (existingUser.length > 0) {
+        await db
+          .update(users)
+          .set({ lastSignedIn: new Date() })
+          .where(eq(users.authId, authId));
+        return existingUser[0];
+      }
+
+      const newUser: InsertUser = {
+        authId,
+        email: userData?.email ?? null,
+        name: userData?.name ?? null,
+        lastSignedIn: new Date(),
+      };
+
+      const result = await db
+        .insert(users)
+        .values(newUser)
+        .returning();
+
+      return result[0];
+    }
+
+    // Re-throw other errors
+    throw error;
   }
-
-  // Create new user
-  const newUser: InsertUser = {
-    authId,
-    email: userData?.email ?? null,
-    name: userData?.name ?? null,
-    lastSignedIn: new Date(),
-  };
-
-  const result = await db
-    .insert(users)
-    .values(newUser)
-    .returning();
-
-  return result[0];
 }
 
 export async function getUserByAuthId(authId: string) {
@@ -360,4 +506,68 @@ export async function getLatestAustraliaAssessment(userId: number): Promise<Aust
     .limit(1);
 
   return result.length > 0 ? result[0] : null;
+}
+
+// Portugal Assessment functions
+export async function createPortugalAssessment(assessment: InsertPortugalAssessment): Promise<number> {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  const result = await db.insert(portugalAssessments).values(assessment).returning({ id: portugalAssessments.id });
+  return result[0].id;
+}
+
+export async function getUserPortugalAssessments(userId: number): Promise<PortugalAssessment[]> {
+  const db = await getDb();
+  if (!db) {
+    return [];
+  }
+
+  return await db
+    .select()
+    .from(portugalAssessments)
+    .where(eq(portugalAssessments.userId, userId))
+    .orderBy(desc(portugalAssessments.createdAt));
+}
+
+export async function getLatestPortugalAssessment(userId: number): Promise<PortugalAssessment | null> {
+  const db = await getDb();
+  if (!db) {
+    return null;
+  }
+
+  const result = await db
+    .select()
+    .from(portugalAssessments)
+    .where(eq(portugalAssessments.userId, userId))
+    .orderBy(desc(portugalAssessments.createdAt))
+    .limit(1);
+
+  return result.length > 0 ? result[0] : null;
+}
+
+export async function getPortugalAssessmentByVisaType(
+  userId: number,
+  visaType: string
+): Promise<PortugalAssessment | null> {
+  const db = await getDb();
+  if (!db) {
+    return null;
+  }
+
+  const result = await db
+    .select()
+    .from(portugalAssessments)
+    .where(eq(portugalAssessments.userId, userId))
+    .orderBy(desc(portugalAssessments.createdAt))
+    .limit(1);
+
+  // Return only if matching visa type
+  if (result.length > 0 && result[0].visaType === visaType) {
+    return result[0];
+  }
+
+  return null;
 }

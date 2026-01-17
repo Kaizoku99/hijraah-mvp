@@ -8,6 +8,20 @@
       "when": 1768234969260,
       "tag": "0000_easy_colonel_america",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1768520881267,
+      "tag": "0001_sad_miss_america",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1737072000000,
+      "tag": "0002_application_tracking",
+      "breakpoints": true
     }
   ]
 }

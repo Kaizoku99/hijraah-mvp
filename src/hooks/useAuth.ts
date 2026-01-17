@@ -5,6 +5,7 @@ import { getMe } from "@/actions/auth"
 import { supabase } from "@/lib/supabase"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import type { User as SupabaseUser, Session } from "@supabase/supabase-js"
+import { resetOnboarding } from "@/components/OnboardingWizard"
 
 type UseAuthOptions = {
   redirectOnUnauthenticated?: boolean
@@ -78,17 +79,11 @@ export function useAuth(options?: UseAuthOptions) {
   }, [])
 
   const signInWithEmail = useCallback(async (email: string, password: string) => {
-    console.log('[useAuth] Attempting signInWithPassword for:', email)
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     })
-    console.log('[useAuth] signInWithPassword result:', { data, error })
-    if (error) {
-      console.error('[useAuth] signInWithPassword error:', error)
-      throw error
-    }
-    console.log('[useAuth] signInWithPassword success, user:', data.user?.id)
+    if (error) throw error
   }, [])
 
   // Sign up with email - sends OTP code to email for verification
@@ -140,18 +135,16 @@ export function useAuth(options?: UseAuthOptions) {
 
   const logout = useCallback(async () => {
     await supabase.auth.signOut()
+    resetOnboarding()
     queryClient.setQueryData(['auth', 'me'], null)
     await queryClient.invalidateQueries({ queryKey: ['auth', 'me'] })
   }, [queryClient])
 
-  const state = useMemo(() => {
-    const user = meQuery.data ?? null
-    if (typeof window !== 'undefined') {
-      localStorage.setItem("hijraah-user-info", JSON.stringify(user))
-    }
 
+
+  const state = useMemo(() => {
     return {
-      user,
+      user: meQuery.data ?? null,
       supabaseUser,
       session,
       loading: loading || meQuery.isLoading,

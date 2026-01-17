@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/sheet";
 import { DocumentScanner } from "@/components/DocumentScanner";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { LanguageToggle } from "@/components/LanguageToggle";
+import { AppHeader } from "@/components/AppHeader";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
@@ -31,6 +31,7 @@ import {
   deleteChecklist,
   uploadDocument,
 } from "@/actions/documents";
+import { getProfile } from "@/actions/profile";
 import {
   FileText,
   User,
@@ -46,7 +47,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 
 // Proper types for checklist items
@@ -64,8 +65,42 @@ export default function Documents() {
   const queryClient = useQueryClient();
 
   const [selectedCountry, setSelectedCountry] = useState<string>("");
+  const [selectedResidenceCountry, setSelectedResidenceCountry] = useState<string>("");
   const [selectedPathway, setSelectedPathway] = useState<string>("");
   const [selectedChecklistId, setSelectedChecklistId] = useState<number | null>(null);
+  const [isProfileLoaded, setIsProfileLoaded] = useState(false);
+
+  // Fetch user profile to pre-fill form
+  const profileQuery = useQuery({
+    queryKey: ['profile'],
+    queryFn: getProfile,
+  });
+
+  // Pre-fill form with profile data when available
+  useEffect(() => {
+    if (profileQuery.data && !isProfileLoaded) {
+      const profile = profileQuery.data;
+      
+      // Map nationality/sourceCountry to lowercase for the select
+      if (profile.nationality) {
+        setSelectedCountry(profile.nationality.toLowerCase());
+      } else if (profile.sourceCountry) {
+        setSelectedCountry(profile.sourceCountry.toLowerCase());
+      }
+      
+      // Set current country of residence
+      if (profile.currentCountry) {
+        setSelectedResidenceCountry(profile.currentCountry.toLowerCase());
+      }
+      
+      // Set immigration pathway
+      if (profile.immigrationPathway) {
+        setSelectedPathway(profile.immigrationPathway);
+      }
+      
+      setIsProfileLoaded(true);
+    }
+  }, [profileQuery.data, isProfileLoaded]);
 
   const checklistsQuery = useQuery({
     queryKey: ['documents', 'checklists'],
@@ -134,6 +169,7 @@ export default function Documents() {
 
     generateChecklistMutation.mutate({
       sourceCountry: selectedCountry as any,
+      currentCountry: selectedResidenceCountry ? selectedResidenceCountry as any : undefined,
       immigrationPathway: selectedPathway as any,
     });
   };
@@ -201,14 +237,9 @@ export default function Documents() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       {/* Header */}
-      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
-        <div className="container flex h-16 items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold text-primary">
-              {language === "ar" ? "هجرة" : "Hijraah"}
-            </h1>
-          </Link>
-          <div className="flex items-center gap-4">
+      <AppHeader
+        additionalActions={
+          <>
             <div className="hidden md:block">
               <Button variant="ghost" size="sm" asChild>
                 <Link href="/dashboard">
@@ -230,22 +261,10 @@ export default function Documents() {
                 </Link>
               </Button>
             </div>
-            <LanguageToggle />
-            <div className="hidden md:block">
-              <Button variant="ghost" size="sm" className="gap-2" asChild>
-                <Link href="/profile">
-                  <User className="h-4 w-4" />
-                  <span className="hidden sm:inline">{t("nav.profile")}</span>
-                </Link>
-              </Button>
-            </div>
-            <Button variant="ghost" size="sm" onClick={handleLogout} className="gap-2">
-              <LogOut className="h-4 w-4" />
-              <span className="hidden sm:inline">{t("nav.logout")}</span>
-            </Button>
-          </div>
-        </div>
-      </header>
+          </>
+        }
+        showUsage={false}
+      />
 
       <main className="flex-1 container py-8">
         <div className="max-w-6xl mx-auto space-y-8">
@@ -289,43 +308,116 @@ export default function Documents() {
               <CardHeader>
                 <CardTitle>{language === "ar" ? "إنشاء قائمة مستندات جديدة" : "Create New Checklist"}</CardTitle>
                 <CardDescription>
-                  {language === "ar"
-                    ? "اختر بلدك المصدر ومسار الهجرة لإنشاء قائمة مخصصة"
-                    : "Select your source country and immigration pathway to generate a customized checklist"}
+                  {isProfileLoaded && (selectedCountry || selectedPathway) ? (
+                    <span className="flex items-center gap-2">
+                      <CheckCircle2 className="h-4 w-4 text-green-500" />
+                      {language === "ar"
+                        ? "تم ملء البيانات من ملفك الشخصي. يمكنك تعديلها إذا لزم الأمر."
+                        : "Pre-filled from your profile. You can modify if needed."}
+                    </span>
+                  ) : (
+                    language === "ar"
+                      ? "اختر بلدك المصدر ومسار الهجرة لإنشاء قائمة مخصصة"
+                      : "Select your source country and immigration pathway to generate a customized checklist"
+                  )}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {profileQuery.isLoading ? (
+                  <div className="flex items-center gap-2 text-muted-foreground py-4">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    {language === "ar" ? "جاري تحميل بيانات الملف الشخصي..." : "Loading profile data..."}
+                  </div>
+                ) : null}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="space-y-2">
-                    <Label>{language === "ar" ? "البلد المصدر" : "Source Country"}</Label>
-                    <Select value={selectedCountry} onValueChange={setSelectedCountry}>
+                    <Label>{language === "ar" ? "الجنسية (البلد الأصلي)" : "Nationality (Source Country)"}</Label>
+                    <Select value={selectedCountry} onValueChange={setSelectedCountry} disabled={profileQuery.isLoading}>
                       <SelectTrigger>
                         <SelectValue placeholder={language === "ar" ? "اختر البلد" : "Select country"} />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="tunisia">{language === "ar" ? "تونس" : "Tunisia"}</SelectItem>
+                        <SelectItem value="morocco">{language === "ar" ? "المغرب" : "Morocco"}</SelectItem>
+                        <SelectItem value="algeria">{language === "ar" ? "الجزائر" : "Algeria"}</SelectItem>
+                        <SelectItem value="egypt">{language === "ar" ? "مصر" : "Egypt"}</SelectItem>
+                        <SelectItem value="libya">{language === "ar" ? "ليبيا" : "Libya"}</SelectItem>
+                        <SelectItem value="sudan">{language === "ar" ? "السودان" : "Sudan"}</SelectItem>
                         <SelectItem value="jordan">{language === "ar" ? "الأردن" : "Jordan"}</SelectItem>
                         <SelectItem value="lebanon">{language === "ar" ? "لبنان" : "Lebanon"}</SelectItem>
-                        <SelectItem value="morocco">{language === "ar" ? "المغرب" : "Morocco"}</SelectItem>
-                        <SelectItem value="egypt">{language === "ar" ? "مصر" : "Egypt"}</SelectItem>
-                        <SelectItem value="sudan">{language === "ar" ? "السودان" : "Sudan"}</SelectItem>
-                        <SelectItem value="iran">{language === "ar" ? "إيران" : "Iran"}</SelectItem>
                         <SelectItem value="syria">{language === "ar" ? "سوريا" : "Syria"}</SelectItem>
+                        <SelectItem value="palestine">{language === "ar" ? "فلسطين" : "Palestine"}</SelectItem>
+                        <SelectItem value="iraq">{language === "ar" ? "العراق" : "Iraq"}</SelectItem>
+                        <SelectItem value="yemen">{language === "ar" ? "اليمن" : "Yemen"}</SelectItem>
+                        <SelectItem value="iran">{language === "ar" ? "إيران" : "Iran"}</SelectItem>
+                        <SelectItem value="other">{language === "ar" ? "أخرى" : "Other"}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
                   <div className="space-y-2">
+                    <Label>{language === "ar" ? "بلد الإقامة الحالي" : "Current Country of Residence"}</Label>
+                    <Select value={selectedResidenceCountry} onValueChange={setSelectedResidenceCountry} disabled={profileQuery.isLoading}>
+                      <SelectTrigger>
+                        <SelectValue placeholder={language === "ar" ? "اختر بلد الإقامة" : "Select residence"} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {/* GCC Countries - Most Common */}
+                        <SelectItem value="uae">{language === "ar" ? "🇦🇪 الإمارات" : "🇦🇪 UAE"}</SelectItem>
+                        <SelectItem value="saudi_arabia">{language === "ar" ? "🇸🇦 السعودية" : "🇸🇦 Saudi Arabia"}</SelectItem>
+                        <SelectItem value="qatar">{language === "ar" ? "🇶🇦 قطر" : "🇶🇦 Qatar"}</SelectItem>
+                        <SelectItem value="kuwait">{language === "ar" ? "🇰🇼 الكويت" : "🇰🇼 Kuwait"}</SelectItem>
+                        <SelectItem value="bahrain">{language === "ar" ? "🇧🇭 البحرين" : "🇧🇭 Bahrain"}</SelectItem>
+                        <SelectItem value="oman">{language === "ar" ? "🇴🇲 عُمان" : "🇴🇲 Oman"}</SelectItem>
+                        {/* Common Destinations */}
+                        <SelectItem value="turkey">{language === "ar" ? "🇹🇷 تركيا" : "🇹🇷 Turkey"}</SelectItem>
+                        <SelectItem value="malaysia">{language === "ar" ? "🇲🇾 ماليزيا" : "🇲🇾 Malaysia"}</SelectItem>
+                        <SelectItem value="uk">{language === "ar" ? "🇬🇧 المملكة المتحدة" : "🇬🇧 United Kingdom"}</SelectItem>
+                        <SelectItem value="germany">{language === "ar" ? "🇩🇪 ألمانيا" : "🇩🇪 Germany"}</SelectItem>
+                        <SelectItem value="france">{language === "ar" ? "🇫🇷 فرنسا" : "🇫🇷 France"}</SelectItem>
+                        <SelectItem value="usa">{language === "ar" ? "🇺🇸 الولايات المتحدة" : "🇺🇸 USA"}</SelectItem>
+                        <SelectItem value="canada">{language === "ar" ? "🇨🇦 كندا" : "🇨🇦 Canada"}</SelectItem>
+                        <SelectItem value="australia">{language === "ar" ? "🇦🇺 أستراليا" : "🇦🇺 Australia"}</SelectItem>
+                        {/* MENA - for those residing there */}
+                        <SelectItem value="jordan">{language === "ar" ? "🇯🇴 الأردن" : "🇯🇴 Jordan"}</SelectItem>
+                        <SelectItem value="sudan">{language === "ar" ? "🇸🇩 السودان" : "🇸🇩 Sudan"}</SelectItem>
+                        <SelectItem value="egypt">{language === "ar" ? "🇪🇬 مصر" : "🇪🇬 Egypt"}</SelectItem>
+                        <SelectItem value="lebanon">{language === "ar" ? "🇱🇧 لبنان" : "🇱🇧 Lebanon"}</SelectItem>
+                        <SelectItem value="iraq">{language === "ar" ? "🇮🇶 العراق" : "🇮🇶 Iraq"}</SelectItem>
+                        <SelectItem value="iran">{language === "ar" ? "🇮🇷 إيران" : "🇮🇷 Iran"}</SelectItem>
+                        {/* Same as source */}
+                        <SelectItem value="other">{language === "ar" ? "أخرى / نفس البلد الأصلي" : "Other / Same as nationality"}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <p className="text-xs text-muted-foreground">
+                      {language === "ar" 
+                        ? "سيتم إضافة مستندات خاصة ببلد إقامتك (مثل الهوية الإماراتية، الإقامة السعودية...)"
+                        : "Residence-specific documents will be added (e.g., Emirates ID, Iqama...)"}
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
                     <Label>{language === "ar" ? "مسار الهجرة" : "Immigration Pathway"}</Label>
-                    <Select value={selectedPathway} onValueChange={setSelectedPathway}>
+                    <Select value={selectedPathway} onValueChange={setSelectedPathway} disabled={profileQuery.isLoading}>
                       <SelectTrigger>
                         <SelectValue placeholder={language === "ar" ? "اختر المسار" : "Select pathway"} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="express_entry">{language === "ar" ? "Express Entry" : "Express Entry"}</SelectItem>
-                        <SelectItem value="study_permit">{language === "ar" ? "تصريح دراسة" : "Study Permit"}</SelectItem>
-                        <SelectItem value="work_permit">{language === "ar" ? "تصريح عمل" : "Work Permit"}</SelectItem>
-                        <SelectItem value="family_sponsorship">{language === "ar" ? "كفالة عائلية" : "Family Sponsorship"}</SelectItem>
+                        {/* Canada Pathways */}
+                        <SelectItem value="express_entry">{language === "ar" ? "🇨🇦 Express Entry" : "🇨🇦 Express Entry"}</SelectItem>
+                        <SelectItem value="study_permit">{language === "ar" ? "🇨🇦 تصريح دراسة" : "🇨🇦 Study Permit"}</SelectItem>
+                        <SelectItem value="work_permit">{language === "ar" ? "🇨🇦 تصريح عمل" : "🇨🇦 Work Permit"}</SelectItem>
+                        <SelectItem value="family_sponsorship">{language === "ar" ? "🇨🇦 كفالة عائلية" : "🇨🇦 Family Sponsorship"}</SelectItem>
+                        {/* Australia Pathways */}
+                        <SelectItem value="skilled_independent">{language === "ar" ? "🇦🇺 هجرة الكفاءات (189)" : "🇦🇺 Skilled Independent (189)"}</SelectItem>
+                        <SelectItem value="state_nominated">{language === "ar" ? "🇦🇺 ترشيح الولاية (190)" : "🇦🇺 State Nominated (190)"}</SelectItem>
+                        <SelectItem value="study_visa">{language === "ar" ? "🇦🇺 تأشيرة طالب (500)" : "🇦🇺 Student Visa (500)"}</SelectItem>
+                        {/* Portugal Pathways */}
+                        <SelectItem value="d1_subordinate_work">{language === "ar" ? "🇵🇹 D1 - عمل تابع" : "🇵🇹 D1 - Subordinate Work"}</SelectItem>
+                        <SelectItem value="d2_independent_entrepreneur">{language === "ar" ? "🇵🇹 D2 - رواد أعمال" : "🇵🇹 D2 - Entrepreneur"}</SelectItem>
+                        <SelectItem value="d7_passive_income">{language === "ar" ? "🇵🇹 D7 - دخل سلبي" : "🇵🇹 D7 - Passive Income"}</SelectItem>
+                        <SelectItem value="d8_digital_nomad">{language === "ar" ? "🇵🇹 D8 - رحالة رقمي" : "🇵🇹 D8 - Digital Nomad"}</SelectItem>
+                        <SelectItem value="job_seeker_pt">{language === "ar" ? "🇵🇹 البحث عن عمل" : "🇵🇹 Job Seeker"}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -334,7 +426,7 @@ export default function Documents() {
                 <Button
                   onClick={handleGenerateChecklist}
                   className="w-full"
-                  disabled={generateChecklistMutation.isPending || !selectedCountry || !selectedPathway}
+                  disabled={generateChecklistMutation.isPending || profileQuery.isLoading || !selectedCountry || !selectedPathway}
                 >
                   {generateChecklistMutation.isPending ? (
                     <>
@@ -364,8 +456,11 @@ export default function Documents() {
                   size="sm"
                   onClick={() => {
                     setSelectedChecklistId(null);
-                    setSelectedCountry("");
-                    setSelectedPathway("");
+                    // Reset to profile data instead of empty strings
+                    const profile = profileQuery.data;
+                    setSelectedCountry(profile?.nationality?.toLowerCase() || profile?.sourceCountry?.toLowerCase() || "");
+                    setSelectedResidenceCountry(profile?.currentCountry?.toLowerCase() || "");
+                    setSelectedPathway(profile?.immigrationPathway || "");
                   }}
                 >
                   <Plus className="mr-2 h-4 w-4" />

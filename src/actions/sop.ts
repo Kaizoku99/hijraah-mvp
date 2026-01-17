@@ -26,12 +26,13 @@ const GenerateSopSchema = z.object({
     workExperience: z.string(),
     motivation: z.string(),
     careerGoals: z.string(),
-    whyCanada: z.string(),
+    whyCanada: z.string(), // Kept for backward compatibility - represents "whyDestination"
     whyThisProgram: z.string(),
     uniqueStrengths: z.string(),
     challenges: z.string().optional(),
     additionalInfo: z.string().optional(),
     language: z.enum(['en', 'ar']),
+    targetDestination: z.string().optional().default('canada'),
 })
 
 const SopIdSchema = z.object({
@@ -69,10 +70,18 @@ export async function generateSop(input: GenerateSopInput) {
         )
     }
 
-    const { language, ...questionnaireData } = validated
+    const { language, targetDestination, ...questionnaireData } = validated
+
+    // Get destination name for prompt
+    const destinationNames: Record<string, string> = {
+        canada: 'Canada',
+        australia: 'Australia',
+        portugal: 'Portugal',
+    }
+    const destinationName = destinationNames[targetDestination || 'canada'] || 'Canada'
 
     // Generate SOP using Gemini
-    const prompt = `You are an expert immigration consultant. Generate a professional Statement of Purpose (SOP) for a Canada immigration/study application based on:
+    const prompt = `You are an expert immigration consultant. Generate a professional Statement of Purpose (SOP) for a ${destinationName} immigration/study application based on:
 
 Target Program: ${validated.targetProgram}
 ${validated.targetInstitution ? `Target Institution: ${validated.targetInstitution}` : ''}
@@ -82,7 +91,7 @@ Education: ${validated.education}
 Work Experience: ${validated.workExperience}
 Motivation: ${validated.motivation}
 Career Goals: ${validated.careerGoals}
-Why Canada: ${validated.whyCanada}
+Why ${destinationName}: ${validated.whyCanada}
 Why This Program: ${validated.whyThisProgram}
 Unique Strengths: ${validated.uniqueStrengths}
 ${validated.challenges ? `Challenges: ${validated.challenges}` : ''}

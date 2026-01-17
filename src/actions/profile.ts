@@ -19,6 +19,7 @@ import {
 const preprocessEmpty = <T extends z.ZodTypeAny>(schema: T) => z.preprocess((val) => (val === "" ? undefined : val), schema);
 
 const ProfileCreateSchema = z.object({
+    is_onboarded: z.boolean().optional(),
     dateOfBirth: preprocessEmpty(z.string().optional()),
     nationality: preprocessEmpty(z.string().optional()),
     sourceCountry: preprocessEmpty(z.string().optional()),
@@ -34,7 +35,24 @@ const ProfileCreateSchema = z.object({
     ieltsScore: preprocessEmpty(z.string().optional()),
     tefScore: preprocessEmpty(z.string().optional()),
     targetDestination: preprocessEmpty(z.string().optional()),
-    immigrationPathway: preprocessEmpty(z.enum(['express_entry', 'study_permit', 'family_sponsorship', 'skilled_independent', 'state_nominated', 'study_visa', 'other']).optional()),
+    immigrationPathway: preprocessEmpty(z.enum([
+        // Canada pathways
+        'express_entry',
+        'study_permit',
+        'family_sponsorship',
+        // Australia pathways
+        'skilled_independent',
+        'state_nominated',
+        'study_visa',
+        // Portugal pathways
+        'd2_independent_entrepreneur',
+        'd7_passive_income',
+        'd8_digital_nomad',
+        'd1_subordinate_work',
+        'job_seeker_pt',
+        // Generic
+        'other'
+    ]).optional()),
 })
 
 const ProfileUpdateSchema = ProfileCreateSchema
@@ -48,17 +66,21 @@ export type ProfileInput = z.infer<typeof ProfileCreateSchema>
 /**
  * Get the current user's profile
  */
-const getCachedProfile = unstable_cache(
-    async (userId: number) => {
-        return getUserProfile(userId)
-    },
-    ['user-profile'],
-    { tags: [CACHE_TAGS.PROFILE], revalidate: CACHE_DURATIONS.SHORT }
-)
-
+/**
+ * Get the current user's profile
+ */
 export async function getProfile() {
     const user = await getAuthenticatedUser()
-    const profile = await getCachedProfile(user.id)
+
+    const profile = await unstable_cache(
+        async () => getUserProfile(user.id),
+        [`user-profile-${user.id}`],
+        {
+            tags: [userTag(CACHE_TAGS.PROFILE, user.id)],
+            revalidate: CACHE_DURATIONS.SHORT
+        }
+    )()
+
     return profile || null
 }
 
@@ -74,6 +96,7 @@ export async function createProfile(input: ProfileInput) {
     await createUserProfile({
         userId: user.id,
         dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : undefined,
+        isOnboarded: validated.is_onboarded,
         ...rest,
     })
 
@@ -100,6 +123,7 @@ export async function createProfile(input: ProfileInput) {
     invalidateUserProfile(user.id)
     revalidatePath('/profile')
     revalidatePath('/dashboard')
+    revalidatePath('/calculator')
 
     return { success: true as const }
 }
@@ -115,6 +139,7 @@ export async function updateProfile(input: ProfileInput) {
 
     await updateUserProfile(user.id, {
         dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : undefined,
+        isOnboarded: validated.is_onboarded,
         ...rest,
     })
 
@@ -141,6 +166,7 @@ export async function updateProfile(input: ProfileInput) {
     invalidateUserProfile(user.id)
     revalidatePath('/profile')
     revalidatePath('/dashboard')
+    revalidatePath('/calculator')
 
     return { success: true as const }
 }

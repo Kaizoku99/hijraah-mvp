@@ -2,7 +2,9 @@ import type { Metadata } from 'next'
 import { Noto_Sans_Arabic } from 'next/font/google'
 import './globals.css'
 import { Providers } from './providers'
-import { SpeedInsights } from "@vercel/speed-insights/next"
+import { DeferredAnalytics } from '@/components/DeferredAnalytics'
+import { cookies } from 'next/headers'
+import { type Language } from '@/contexts/LanguageContext'
 
 const notoSansArabic = Noto_Sans_Arabic({
   subsets: ['arabic'],
@@ -82,25 +84,48 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const cookieStore = await cookies()
+  const language = cookieStore.get('hijraah-language')?.value as Language | undefined
   return (
-    <html lang="en" suppressHydrationWarning className={notoSansArabic.variable}>
+    <html suppressHydrationWarning className={notoSansArabic.variable}>
+      <head>
+        {/* Inline script to set language direction immediately, before React hydrates */}
+        {/* This prevents the RTL/LTR flicker by reading the cookie synchronously */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var match = document.cookie.match(/hijraah-language=(ar|en)/);
+                  var lang = match ? match[1] : 'ar';
+                  document.documentElement.lang = lang;
+                  document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+                } catch (e) {
+                  document.documentElement.lang = 'ar';
+                  document.documentElement.dir = 'rtl';
+                }
+              })();
+            `,
+          }}
+        />
+      </head>
       <body>
         {/* Skip Navigation Link for Accessibility */}
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded focus:outline-ring"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-100 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded focus:outline-ring"
         >
           Skip to main content
         </a>
-        <Providers>
+        <Providers initialLanguage={language}>
           {children}
         </Providers>
-        <SpeedInsights />
+        <DeferredAnalytics />
       </body>
     </html>
   )
