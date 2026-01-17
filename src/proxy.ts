@@ -1,19 +1,13 @@
-
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import createMiddleware from 'next-intl/middleware';
+import { routing } from './i18n/routing';
+
+const handleI18nRouting = createMiddleware(routing);
 
 export async function proxy(request: NextRequest) {
-    console.log('[Proxy] Processing request:', request.nextUrl.pathname)
-    const allCookies = request.cookies.getAll()
-    console.log('[Proxy] Cookies found:', allCookies.map(c => c.name).join(', '))
-    console.log('[Proxy] Supabase URL configured:', process.env.NEXT_PUBLIC_SUPABASE_URL ? 'Yes' : 'NO!')
-    console.log('[Proxy] Supabase Anon Key configured:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'Yes' : 'NO!')
-
-    let response = NextResponse.next({
-        request: {
-            headers: request.headers,
-        },
-    })
+    // 1. Run next-intl middleware first to handle i18n routing
+    let response = handleI18nRouting(request);
 
     const isProduction = process.env.NODE_ENV === 'production'
 
@@ -28,9 +22,6 @@ export async function proxy(request: NextRequest) {
                 setAll(cookiesToSet) {
                     cookiesToSet.forEach(({ name, value, options }) => {
                         request.cookies.set(name, value)
-                    })
-                    response = NextResponse.next({
-                        request,
                     })
                     cookiesToSet.forEach(({ name, value, options }) => {
                         response.cookies.set(name, value, options)
@@ -72,6 +63,6 @@ export const config = {
          * - favicon.ico (favicon file)
          * Feel free to modify this pattern to include more paths.
          */
-        '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+        '/((?!api|trpc|_next|_vercel|.*\\..*).*)'
     ],
 }

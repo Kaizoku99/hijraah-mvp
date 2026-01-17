@@ -1,12 +1,16 @@
 import { Button } from "@/components/ui/button";
-import { useLanguage } from "@/contexts/LanguageContext";
 import { Languages } from "lucide-react";
+import { usePathname, useRouter } from '@/i18n/routing';
+import { useLocale } from 'next-intl';
 
 export function LanguageToggle() {
-  const { language, setLanguage } = useLanguage();
+  const locale = useLocale();
+  const router = useRouter();
+  const pathname = usePathname();
 
   const toggleLanguage = () => {
-    setLanguage(language === "ar" ? "en" : "ar");
+    const nextLocale = locale === 'ar' ? 'en' : 'ar';
+    router.replace(pathname, { locale: nextLocale });
   };
 
   return (
@@ -17,7 +21,7 @@ export function LanguageToggle() {
       className="gap-2"
     >
       <Languages className="h-4 w-4" />
-      <span className="font-medium">{language === "ar" ? "English" : "العربية"}</span>
+      <span className="font-medium">{locale === 'ar' ? "English" : "العربية"}</span>
     </Button>
   );
 }

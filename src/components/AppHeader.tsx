@@ -116,6 +116,7 @@ export function AppHeader({
 }: AppHeaderProps) {
   const { logout } = useAuth();
   const router = useRouter();
+  const { t } = useLanguage();
   const { targetDestination } = useUserProfile();
 
   const handleLogout = async () => {
@@ -146,6 +147,11 @@ export function AppHeader({
             customActions
           ) : (
             <>
+              <Link href="/pricing" className="hidden md:block">
+                <Button variant="ghost" size="sm">
+                  {t("nav.pricing")}
+                </Button>
+              </Link>
               {showUsage && <UsageDisplay targetDestination={targetDestination} />}
               {showLanguageToggle && <LanguageToggle />}
               {showProfile && (

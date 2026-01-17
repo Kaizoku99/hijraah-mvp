@@ -1,172 +1,186 @@
 export const en = {
-    // Navigation
-    "nav.home": "Home",
-    "nav.dashboard": "Dashboard",
-    "nav.chat": "AI Assistant",
-    "nav.calculator": "Score Calculator",
-    "nav.documents": "Documents",
-    "nav.sop": "SOP Writer",
-    "nav.guides": "Guides",
-    "nav.support": "Support",
-    "nav.profile": "Profile",
-    "nav.logout": "Logout",
-    "nav.login": "Login",
-
-    // Home page (destination-agnostic)
-    "home.hero.title": "Your AI-Powered Immigration Partner",
-    "home.hero.subtitle": "Get expert guidance for immigrating to Canada, Australia, or Portugal with our AI assistant, designed specifically for Arabic-speaking communities.",
-    "home.hero.cta": "Get Started for Free",
-    "home.hero.secondary": "Learn More",
-
-    // Destinations
-    "dest.canada": "Canada",
-    "dest.australia": "Australia",
-    "dest.portugal": "Portugal",
-    "dest.journey": "Your immigration journey",
-    "dest.journeyTo": "Your journey to {destination}",
-
-    // Portugal specific
-    "portugal.visaChecker": "Visa Eligibility Checker",
-    "portugal.d2": "D2 - Independent Work / Entrepreneur",
-    "portugal.d7": "D7 - Passive Income / Retirement",
-    "portugal.d8": "D8 - Digital Nomad (Remote Work)",
-    "portugal.d1": "D1 - Subordinate Work",
-    "portugal.jobSeeker": "Job Seeker Visa",
-    "portugal.visaMatcher": "Smart Visa Matcher",
-    "portugal.checkEligibility": "Check Eligibility",
-
-    // Features
-    "features.chat.title": "AI Immigration Assistant",
-    "features.chat.description": "Chat with our AI assistant in Arabic or English for personalized immigration guidance.",
-    "features.calculator.title": "CRS Score Calculator",
-    "features.calculator.description": "Calculate your Express Entry score and get improvement recommendations.",
-    "features.calculator.title_au": "Points Calculator",
-    "features.calculator.description_au": "Calculate your points for Australia PR with our SkillSelect calculator.",
-    "features.calculator.title_pt": "Visa Eligibility",
-    "features.calculator.description_pt": "Check eligibility for D2, D7, and D8 visas with our smart tool.",
-    "features.documents.title": "Document Checklist",
-    "features.documents.description": "Get a personalized checklist based on your country and immigration pathway.",
-    "features.sop.title": "SOP Writer",
-    "features.sop.description": "Generate professional Statement of Purpose with AI assistance.",
-
-    // Pricing
-    "pricing.title": "Choose Your Plan",
-    "pricing.free": "Free",
-    "pricing.essential": "Essential",
-    "pricing.premium": "Premium",
-    "pricing.vip": "VIP",
-    "pricing.perMonth": "/month",
-    "pricing.oneTime": "one-time",
-    "pricing.selectPlan": "Select Plan",
-    "pricing.currentPlan": "Current Plan",
-
-    // Common
-    "common.loading": "Loading...",
-    "common.error": "An error occurred",
-    "common.save": "Save",
-    "common.cancel": "Cancel",
-    "common.continue": "Continue",
-    "common.back": "Back",
-    "common.previous": "Previous",
-    "common.next": "Next",
-    "common.submit": "Submit",
-    "common.close": "Close",
-    "common.edit": "Edit",
-    "common.delete": "Delete",
-    "common.download": "Download",
-    "common.upload": "Upload",
-    "common.search": "Search",
-    "common.filter": "Filter",
-    "common.sort": "Sort",
-    "common.view": "View",
-    "common.language": "Language",
-    "common.send": "Send",
-
-    // Dashboard
-    "dashboard.welcome": "Welcome back",
-    "dashboard.progress": "Your Progress",
-    "dashboard.nextSteps": "Next Steps",
-    "dashboard.documents": "Documents",
-    "dashboard.crsScore": "CRS Score",
-    "dashboard.timeline": "Timeline",
-
-    // Chat (destination-agnostic)
-    "chat.title": "AI Immigration Assistant",
-    "chat.placeholder": "Ask me anything about immigration...",
-    "chat.placeholderCanada": "Ask me anything about immigrating to Canada...",
-    "chat.placeholderAustralia": "Ask me anything about immigrating to Australia...",
-    "chat.placeholderPortugal": "Ask me anything about Portuguese visas...",
-    "chat.newChat": "New Chat",
-    "chat.history": "Chat History",
-
-    // Calculator
-    "calculator.title": "CRS Score Calculator",
-    "calculator.subtitle": "Calculate your Comprehensive Ranking System score for Express Entry",
-    "calculator.yourScore": "Your Score",
-    "calculator.calculate": "Calculate Score",
-    "calculator.recommendations": "Recommendations",
-
-    // Documents
-    "documents.title": "Document Checklist",
-    "documents.upload": "Upload Document",
-    "documents.status.uploaded": "Uploaded",
-    "documents.status.processing": "Processing",
-    "documents.status.completed": "Completed",
-    "documents.status.failed": "Failed",
-
-    // SOP
-    "sop.title": "Statement of Purpose Writer",
-    "sop.generate": "Generate SOP",
-    "sop.revise": "Revise",
-    "sop.export": "Export PDF",
-
-    // Profile
-    "profile.title": "Profile",
-    "profile.personalInfo": "Personal Information",
-    "profile.education": "Education",
-    "profile.workExperience": "Work Experience",
-    "profile.languageSkills": "Language Skills",
-    "profile.subscription": "Subscription",
-
-    // Auth
-    "auth.signIn": "Sign In",
-    "auth.signUp": "Sign Up",
-    "auth.signOut": "Sign Out",
-    "auth.welcome": "Welcome to Hijraah",
-    "auth.welcomeBack": "Welcome back",
-    "auth.createAccount": "Create an account",
-    "auth.loginSubtitle": "Login to your Hijraah account",
-    "auth.signupSubtitle": "Enter your details below to create your account",
-    "auth.email": "Email",
-    "auth.password": "Password",
-    "auth.confirmPassword": "Confirm Password",
-    "auth.name": "Name",
-    "auth.submitLogin": "Login",
-    "auth.submitSignup": "Sign Up",
-    "auth.orContinue": "Or continue with",
-    "auth.continueGoogle": "Continue with Google",
-    "auth.continueApple": "Continue with Apple",
-    "auth.noAccount": "Don't have an account?",
-    "auth.hasAccount": "Already have an account?",
-    "auth.signUpLink": "Sign up",
-    "auth.loginLink": "Login",
-    "auth.bannerTitle": "Start your journey to your dream destination",
-    "auth.bannerSubtitle": "Join thousands of others realizing their dream with Hijraah.",
-    "auth.goBack": "Go back",
-
-    // OTP
-    "otp.title": "Verify your email",
-    "otp.subtitle": "Enter the 6-digit code sent to",
-    "otp.verify": "Verify",
-    "otp.resend": "Resend code",
-    "otp.resendIn": "Resend in",
-    "otp.sent": "Verification code sent to your email",
-    "otp.newCodeSent": "New code sent",
-    "otp.errorLength": "Please enter the 6-digit code",
-
-    // Validation
-    "val.email": "Invalid email address",
-    "val.passwordMin": "Password must be at least 6 characters",
-    "val.nameMin": "Name must be at least 2 characters",
-    "val.passwordMatch": "Passwords don't match",
+    "nav": {
+        "home": "Home",
+        "dashboard": "Dashboard",
+        "chat": "AI Assistant",
+        "calculator": "Score Calculator",
+        "documents": "Documents",
+        "sop": "SOP Writer",
+        "guides": "Guides",
+        "support": "Support",
+        "profile": "Profile",
+        "logout": "Logout",
+        "login": "Login",
+        "pricing": "Pricing"
+    },
+    "home": {
+        "hero": {
+            "title": "Your AI-Powered Immigration Partner",
+            "subtitle": "Get expert guidance for immigrating to Canada, Australia, or Portugal with our AI assistant, designed specifically for Arabic-speaking communities.",
+            "cta": "Get Started for Free",
+            "secondary": "Learn More"
+        }
+    },
+    "dest": {
+        "canada": "Canada",
+        "australia": "Australia",
+        "portugal": "Portugal",
+        "journey": "Your immigration journey",
+        "journeyTo": "Your journey to {destination}"
+    },
+    "portugal": {
+        "visaChecker": "Visa Eligibility Checker",
+        "d2": "D2 - Independent Work / Entrepreneur",
+        "d7": "D7 - Passive Income / Retirement",
+        "d8": "D8 - Digital Nomad (Remote Work)",
+        "d1": "D1 - Subordinate Work",
+        "jobSeeker": "Job Seeker Visa",
+        "visaMatcher": "Smart Visa Matcher",
+        "checkEligibility": "Check Eligibility"
+    },
+    "features": {
+        "chat": {
+            "title": "AI Immigration Assistant",
+            "description": "Chat with our AI assistant in Arabic or English for personalized immigration guidance."
+        },
+        "calculator": {
+            "title": "CRS Score Calculator",
+            "description": "Calculate your Express Entry score and get improvement recommendations.",
+            "title_au": "Points Calculator",
+            "description_au": "Calculate your points for Australia PR with our SkillSelect calculator.",
+            "title_pt": "Visa Eligibility",
+            "description_pt": "Check eligibility for D2, D7, and D8 visas with our smart tool."
+        },
+        "documents": {
+            "title": "Document Checklist",
+            "description": "Get a personalized checklist based on your country and immigration pathway."
+        },
+        "sop": {
+            "title": "SOP Writer",
+            "description": "Generate professional Statement of Purpose with AI assistance."
+        }
+    },
+    "pricing": {
+        "title": "Choose Your Plan",
+        "free": "Free",
+        "essential": "Essential",
+        "premium": "Premium",
+        "vip": "VIP",
+        "perMonth": "/month",
+        "oneTime": "one-time",
+        "selectPlan": "Select Plan",
+        "currentPlan": "Current Plan"
+    },
+    "common": {
+        "loading": "Loading...",
+        "error": "An error occurred",
+        "save": "Save",
+        "cancel": "Cancel",
+        "continue": "Continue",
+        "back": "Back",
+        "previous": "Previous",
+        "next": "Next",
+        "submit": "Submit",
+        "close": "Close",
+        "edit": "Edit",
+        "delete": "Delete",
+        "download": "Download",
+        "upload": "Upload",
+        "search": "Search",
+        "filter": "Filter",
+        "sort": "Sort",
+        "view": "View",
+        "language": "Language",
+        "send": "Send"
+    },
+    "dashboard": {
+        "welcome": "Welcome back",
+        "progress": "Your Progress",
+        "nextSteps": "Next Steps",
+        "documents": "Documents",
+        "crsScore": "CRS Score",
+        "timeline": "Timeline"
+    },
+    "chat": {
+        "title": "AI Immigration Assistant",
+        "placeholder": "Ask me anything about immigration...",
+        "placeholderCanada": "Ask me anything about immigrating to Canada...",
+        "placeholderAustralia": "Ask me anything about immigrating to Australia...",
+        "placeholderPortugal": "Ask me anything about Portuguese visas...",
+        "newChat": "New Chat",
+        "history": "Chat History"
+    },
+    "calculator": {
+        "title": "CRS Score Calculator",
+        "subtitle": "Calculate your Comprehensive Ranking System score for Express Entry",
+        "yourScore": "Your Score",
+        "calculate": "Calculate Score",
+        "recommendations": "Recommendations"
+    },
+    "documents": {
+        "title": "Document Checklist",
+        "upload": "Upload Document",
+        "status": {
+            "uploaded": "Uploaded",
+            "processing": "Processing",
+            "completed": "Completed",
+            "failed": "Failed"
+        }
+    },
+    "sop": {
+        "title": "Statement of Purpose Writer",
+        "generate": "Generate SOP",
+        "revise": "Revise",
+        "export": "Export PDF"
+    },
+    "profile": {
+        "title": "Profile",
+        "personalInfo": "Personal Information",
+        "education": "Education",
+        "workExperience": "Work Experience",
+        "languageSkills": "Language Skills",
+        "subscription": "Subscription"
+    },
+    "auth": {
+        "signIn": "Sign In",
+        "signUp": "Sign Up",
+        "signOut": "Sign Out",
+        "welcome": "Welcome to Hijraah",
+        "welcomeBack": "Welcome back",
+        "createAccount": "Create an account",
+        "loginSubtitle": "Login to your Hijraah account",
+        "signupSubtitle": "Enter your details below to create your account",
+        "email": "Email",
+        "password": "Password",
+        "confirmPassword": "Confirm Password",
+        "name": "Name",
+        "submitLogin": "Login",
+        "submitSignup": "Sign Up",
+        "orContinue": "Or continue with",
+        "continueGoogle": "Continue with Google",
+        "continueApple": "Continue with Apple",
+        "noAccount": "Don't have an account?",
+        "hasAccount": "Already have an account?",
+        "signUpLink": "Sign up",
+        "loginLink": "Login",
+        "bannerTitle": "Start your journey to your dream destination",
+        "bannerSubtitle": "Join thousands of others realizing their dream with Hijraah.",
+        "goBack": "Go back"
+    },
+    "otp": {
+        "title": "Verify your email",
+        "subtitle": "Enter the 6-digit code sent to",
+        "verify": "Verify",
+        "resend": "Resend code",
+        "resendIn": "Resend in",
+        "sent": "Verification code sent to your email",
+        "newCodeSent": "New code sent",
+        "errorLength": "Please enter the 6-digit code"
+    },
+    "val": {
+        "email": "Invalid email address",
+        "passwordMin": "Password must be at least 6 characters",
+        "nameMin": "Name must be at least 2 characters",
+        "passwordMatch": "Passwords don't match"
+    }
 };

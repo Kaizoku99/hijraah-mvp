@@ -39,7 +39,7 @@ import { en } from "@/locales/en";
 import { ar } from "@/locales/ar";
 
 // Translation dictionary
-const translations: Record<Language, Record<string, string>> = {
+const translations: Record<Language, any> = {
   en,
   ar,
 };
@@ -97,7 +97,18 @@ export function LanguageProvider({ children, initialLanguage }: LanguageProvider
 
   // Memoize the translation function - only recreate when language changes
   const t = useCallback((key: string): string => {
-    return translations[language][key] || key
+    const keys = key.split('.');
+    let value: any = translations[language];
+
+    for (const k of keys) {
+      if (value && typeof value === 'object' && k in value) {
+        value = value[k];
+      } else {
+        return key;
+      }
+    }
+
+    return typeof value === 'string' ? value : key;
   }, [language])
 
   // Derive direction from language

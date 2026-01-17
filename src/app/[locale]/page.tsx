@@ -1,20 +1,21 @@
-'use client'
+'use client';
 
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { MessageSquare, Calculator, FileText, BookOpen, ArrowRight, CheckCircle, Globe } from "lucide-react";
 import { getLoginUrl } from "@/const";
-import Link from "next/link";
+import { Link } from '@/i18n/routing';
 import Image from "next/image";
 import CountUp from "react-countup";
+import { useTranslations, useLocale } from 'next-intl';
 
 export default function Home() {
   const { user, isAuthenticated } = useAuth();
-  const { t, language } = useLanguage();
+  const t = useTranslations();
+  const language = useLocale();
   const [selectedDestination, setSelectedDestination] = useState<'canada' | 'australia' | 'portugal'>('canada');
 
   const features = [
@@ -74,6 +75,9 @@ export default function Home() {
             </Link>
           </div>
           <div className="flex items-center gap-4">
+            <Link href="/pricing" className="text-sm font-medium hover:text-primary transition-colors hidden md:block">
+              {t("nav.pricing")}
+            </Link>
             <LanguageToggle />
             {isAuthenticated ? (
               <Link href="/dashboard">
@@ -311,6 +315,9 @@ export default function Home() {
               </p>
             </div>
             <div className="flex gap-6 text-sm text-muted-foreground">
+              <Link href="/pricing" className="hover:text-foreground transition-colors">
+                {t("nav.pricing")}
+              </Link>
               <Link href="/guides" className="hover:text-foreground transition-colors">
                 {t("nav.guides")}
               </Link>

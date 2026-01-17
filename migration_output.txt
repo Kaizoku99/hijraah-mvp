@@ -1,0 +1,376 @@
+JSON_START_EN
+{
+  "nav": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "chat": "AI Assistant",
+    "calculator": "Score Calculator",
+    "documents": "Documents",
+    "sop": "SOP Writer",
+    "guides": "Guides",
+    "support": "Support",
+    "profile": "Profile",
+    "logout": "Logout",
+    "login": "Login",
+    "pricing": "Pricing"
+  },
+  "home": {
+    "hero": {
+      "title": "Your AI-Powered Immigration Partner",
+      "subtitle": "Get expert guidance for immigrating to Canada, Australia, or Portugal with our AI assistant, designed specifically for Arabic-speaking communities.",
+      "cta": "Get Started for Free",
+      "secondary": "Learn More"
+    }
+  },
+  "dest": {
+    "canada": "Canada",
+    "australia": "Australia",
+    "portugal": "Portugal",
+    "journey": "Your immigration journey",
+    "journeyTo": "Your journey to {destination}"
+  },
+  "portugal": {
+    "visaChecker": "Visa Eligibility Checker",
+    "d2": "D2 - Independent Work / Entrepreneur",
+    "d7": "D7 - Passive Income / Retirement",
+    "d8": "D8 - Digital Nomad (Remote Work)",
+    "d1": "D1 - Subordinate Work",
+    "jobSeeker": "Job Seeker Visa",
+    "visaMatcher": "Smart Visa Matcher",
+    "checkEligibility": "Check Eligibility"
+  },
+  "features": {
+    "chat": {
+      "title": "AI Immigration Assistant",
+      "description": "Chat with our AI assistant in Arabic or English for personalized immigration guidance."
+    },
+    "calculator": {
+      "title": "CRS Score Calculator",
+      "description": "Calculate your Express Entry score and get improvement recommendations.",
+      "title_au": "Points Calculator",
+      "description_au": "Calculate your points for Australia PR with our SkillSelect calculator.",
+      "title_pt": "Visa Eligibility",
+      "description_pt": "Check eligibility for D2, D7, and D8 visas with our smart tool."
+    },
+    "documents": {
+      "title": "Document Checklist",
+      "description": "Get a personalized checklist based on your country and immigration pathway."
+    },
+    "sop": {
+      "title": "SOP Writer",
+      "description": "Generate professional Statement of Purpose with AI assistance."
+    }
+  },
+  "pricing": {
+    "title": "Choose Your Plan",
+    "free": "Free",
+    "essential": "Essential",
+    "premium": "Premium",
+    "vip": "VIP",
+    "perMonth": "/month",
+    "oneTime": "one-time",
+    "selectPlan": "Select Plan",
+    "currentPlan": "Current Plan"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "save": "Save",
+    "cancel": "Cancel",
+    "continue": "Continue",
+    "back": "Back",
+    "previous": "Previous",
+    "next": "Next",
+    "submit": "Submit",
+    "close": "Close",
+    "edit": "Edit",
+    "delete": "Delete",
+    "download": "Download",
+    "upload": "Upload",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "view": "View",
+    "language": "Language",
+    "send": "Send"
+  },
+  "dashboard": {
+    "welcome": "Welcome back",
+    "progress": "Your Progress",
+    "nextSteps": "Next Steps",
+    "documents": "Documents",
+    "crsScore": "CRS Score",
+    "timeline": "Timeline"
+  },
+  "chat": {
+    "title": "AI Immigration Assistant",
+    "placeholder": "Ask me anything about immigration...",
+    "placeholderCanada": "Ask me anything about immigrating to Canada...",
+    "placeholderAustralia": "Ask me anything about immigrating to Australia...",
+    "placeholderPortugal": "Ask me anything about Portuguese visas...",
+    "newChat": "New Chat",
+    "history": "Chat History"
+  },
+  "calculator": {
+    "title": "CRS Score Calculator",
+    "subtitle": "Calculate your Comprehensive Ranking System score for Express Entry",
+    "yourScore": "Your Score",
+    "calculate": "Calculate Score",
+    "recommendations": "Recommendations"
+  },
+  "documents": {
+    "title": "Document Checklist",
+    "upload": "Upload Document",
+    "status": {
+      "uploaded": "Uploaded",
+      "processing": "Processing",
+      "completed": "Completed",
+      "failed": "Failed"
+    }
+  },
+  "sop": {
+    "title": "Statement of Purpose Writer",
+    "generate": "Generate SOP",
+    "revise": "Revise",
+    "export": "Export PDF"
+  },
+  "profile": {
+    "title": "Profile",
+    "personalInfo": "Personal Information",
+    "education": "Education",
+    "workExperience": "Work Experience",
+    "languageSkills": "Language Skills",
+    "subscription": "Subscription"
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "signOut": "Sign Out",
+    "welcome": "Welcome to Hijraah",
+    "welcomeBack": "Welcome back",
+    "createAccount": "Create an account",
+    "loginSubtitle": "Login to your Hijraah account",
+    "signupSubtitle": "Enter your details below to create your account",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "name": "Name",
+    "submitLogin": "Login",
+    "submitSignup": "Sign Up",
+    "orContinue": "Or continue with",
+    "continueGoogle": "Continue with Google",
+    "continueApple": "Continue with Apple",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "signUpLink": "Sign up",
+    "loginLink": "Login",
+    "bannerTitle": "Start your journey to your dream destination",
+    "bannerSubtitle": "Join thousands of others realizing their dream with Hijraah.",
+    "goBack": "Go back"
+  },
+  "otp": {
+    "title": "Verify your email",
+    "subtitle": "Enter the 6-digit code sent to",
+    "verify": "Verify",
+    "resend": "Resend code",
+    "resendIn": "Resend in",
+    "sent": "Verification code sent to your email",
+    "newCodeSent": "New code sent",
+    "errorLength": "Please enter the 6-digit code"
+  },
+  "val": {
+    "email": "Invalid email address",
+    "passwordMin": "Password must be at least 6 characters",
+    "nameMin": "Name must be at least 2 characters",
+    "passwordMatch": "Passwords don't match"
+  }
+}
+JSON_END_EN
+JSON_START_AR
+{
+  "nav": {
+    "home": "╪º┘ä╪▒╪ª┘è╪│┘è╪⌐",
+    "dashboard": "┘ä┘ê╪¡╪⌐ ╪º┘ä╪¬╪¡┘â┘à",
+    "chat": "╪º┘ä┘à╪│╪º╪╣╪» ╪º┘ä╪░┘â┘è",
+    "calculator": "╪¡╪º╪│╪¿╪⌐ ╪º┘ä┘å┘é╪º╪╖",
+    "documents": "╪º┘ä┘à╪│╪¬┘å╪»╪º╪¬",
+    "sop": "┘â╪¬╪º╪¿╪⌐ ╪«╪╖╪º╪¿ ╪º┘ä┘å┘ê╪º┘è╪º",
+    "guides": "╪º┘ä╪ú╪»┘ä╪⌐",
+    "support": "╪º┘ä╪»╪╣┘à",
+    "profile": "╪º┘ä┘à┘ä┘ü ╪º┘ä╪┤╪«╪╡┘è",
+    "logout": "╪¬╪│╪¼┘è┘ä ╪º┘ä╪«╪▒┘ê╪¼",
+    "login": "╪¬╪│╪¼┘è┘ä ╪º┘ä╪»╪«┘ê┘ä",
+    "pricing": "╪º┘ä╪ú╪│╪╣╪º╪▒"
+  },
+  "home": {
+    "hero": {
+      "title": "╪┤╪▒┘è┘â┘â ┘ü┘è ╪º┘ä┘ç╪¼╪▒╪⌐ ╪¿╪¬┘é┘å┘è╪⌐ ╪º┘ä╪░┘â╪º╪í ╪º┘ä╪º╪╡╪╖┘å╪º╪╣┘è",
+      "subtitle": "╪º╪¡╪╡┘ä ╪╣┘ä┘ë ╪Ñ╪▒╪┤╪º╪»╪º╪¬ ╪º┘ä╪«╪¿╪▒╪º╪í ┘ä┘ä┘ç╪¼╪▒╪⌐ ╪Ñ┘ä┘ë ┘â┘å╪»╪º ╪ú┘ê ╪ú╪│╪¬╪▒╪º┘ä┘è╪º ╪ú┘ê ╪º┘ä╪¿╪▒╪¬╪║╪º┘ä ┘à╪╣ ┘à╪│╪º╪╣╪»┘å╪º ╪º┘ä╪░┘â┘è╪î ╪º┘ä┘à╪╡┘à┘à ╪«╪╡┘è╪╡┘ï╪º ┘ä┘ä┘à╪¼╪¬┘à╪╣╪º╪¬ ╪º┘ä┘å╪º╪╖┘é╪⌐ ╪¿╪º┘ä╪╣╪▒╪¿┘è╪⌐.",
+      "cta": "╪º╪¿╪»╪ú ┘à╪¼╪º┘å┘ï╪º",
+      "secondary": "╪º╪╣╪▒┘ü ╪º┘ä┘à╪▓┘è╪»"
+    }
+  },
+  "dest": {
+    "canada": "┘â┘å╪»╪º",
+    "australia": "╪ú╪│╪¬╪▒╪º┘ä┘è╪º",
+    "portugal": "╪º┘ä╪¿╪▒╪¬╪║╪º┘ä",
+    "journey": "╪▒╪¡┘ä╪⌐ ┘ç╪¼╪▒╪¬┘â",
+    "journeyTo": "╪▒╪¡┘ä╪¬┘â ╪Ñ┘ä┘ë {destination}"
+  },
+  "portugal": {
+    "visaChecker": "┘ü╪º╪¡╪╡ ╪ú┘ç┘ä┘è╪⌐ ╪º┘ä╪¬╪ú╪┤┘è╪▒╪⌐",
+    "d2": "D2 - ╪╣┘à┘ä ┘à╪│╪¬┘é┘ä / ╪▒╪º╪ª╪» ╪ú╪╣┘à╪º┘ä",
+    "d7": "D7 - ╪»╪«┘ä ╪│┘ä╪¿┘è / ╪¬┘é╪º╪╣╪»",
+    "d8": "D8 - ╪▒╪¡╪º┘ä╪⌐ ╪▒┘é┘à┘è (╪╣┘à┘ä ╪╣┘å ╪¿┘Å╪╣╪»)",
+    "d1": "D1 - ╪╣┘à┘ä ╪¬╪º╪¿╪╣",
+    "jobSeeker": "╪¬╪ú╪┤┘è╪▒╪⌐ ╪º┘ä╪¿╪¡╪½ ╪╣┘å ╪╣┘à┘ä",
+    "visaMatcher": "┘à╪╖╪º╪¿┘é ╪º┘ä╪¬╪ú╪┤┘è╪▒╪⌐ ╪º┘ä╪░┘â┘è",
+    "checkEligibility": "╪¬╪¡┘é┘é ┘à┘å ╪º┘ä╪ú┘ç┘ä┘è╪⌐"
+  },
+  "features": {
+    "chat": {
+      "title": "╪º┘ä┘à╪│╪º╪╣╪» ╪º┘ä╪░┘â┘è ┘ä┘ä┘ç╪¼╪▒╪⌐",
+      "description": "╪¬╪¡╪»╪½ ┘à╪╣ ┘à╪│╪º╪╣╪»┘å╪º ╪º┘ä╪░┘â┘è ╪¿╪º┘ä╪╣╪▒╪¿┘è╪⌐ ╪ú┘ê ╪º┘ä╪Ñ┘å╪¼┘ä┘è╪▓┘è╪⌐ ┘ä┘ä╪¡╪╡┘ê┘ä ╪╣┘ä┘ë ╪Ñ╪▒╪┤╪º╪»╪º╪¬ ┘à╪«╪╡╪╡╪⌐ ┘ä┘ä┘ç╪¼╪▒╪⌐."
+    },
+    "calculator": {
+      "title": "╪¡╪º╪│╪¿╪⌐ ┘å┘é╪º╪╖ CRS",
+      "description": "╪º╪¡╪│╪¿ ┘å┘é╪º╪╖┘â ┘ü┘è ┘å╪╕╪º┘à ╪º┘ä╪»╪«┘ê┘ä ╪º┘ä╪│╪▒┘è╪╣ ┘ê╪º╪¡╪╡┘ä ╪╣┘ä┘ë ╪¬┘ê╪╡┘è╪º╪¬ ┘ä┘ä╪¬╪¡╪│┘è┘å.",
+      "title_au": "╪¡╪º╪│╪¿╪⌐ ╪º┘ä┘å┘é╪º╪╖ skillselect",
+      "description_au": "╪º╪¡╪│╪¿ ┘å┘é╪º╪╖┘â ┘ä┘ä┘ç╪¼╪▒╪⌐ ╪Ñ┘ä┘ë ╪ú╪│╪¬╪▒╪º┘ä┘è╪º ╪╣╪¿╪▒ ┘å╪╕╪º┘à SkillSelect.",
+      "title_pt": "┘ü╪º╪¡╪╡ ╪ú┘ç┘ä┘è╪⌐ ╪º┘ä╪¬╪ú╪┤┘è╪▒╪⌐",
+      "description_pt": "╪¬╪¡┘é┘é ┘à┘å ╪ú┘ç┘ä┘è╪¬┘â ┘ä╪¬╪ú╪┤┘è╪▒╪º╪¬ D2 ┘ê D7 ┘ê D8."
+    },
+    "documents": {
+      "title": "┘é╪º╪ª┘à╪⌐ ╪º┘ä┘à╪│╪¬┘å╪»╪º╪¬",
+      "description": "╪º╪¡╪╡┘ä ╪╣┘ä┘ë ┘é╪º╪ª┘à╪⌐ ┘à╪«╪╡╪╡╪⌐ ╪¿┘å╪º╪í┘ï ╪╣┘ä┘ë ╪¿┘ä╪»┘â ┘ê┘à╪│╪º╪▒ ╪º┘ä┘ç╪¼╪▒╪⌐ ╪º┘ä╪«╪º╪╡ ╪¿┘â."
+    },
+    "sop": {
+      "title": "┘â╪º╪¬╪¿ ╪«╪╖╪º╪¿ ╪º┘ä┘å┘ê╪º┘è╪º",
+      "description": "╪ú┘å╪┤╪ª ╪«╪╖╪º╪¿ ┘å┘ê╪º┘è╪º ╪º╪¡╪¬╪▒╪º┘ü┘è ╪¿┘à╪│╪º╪╣╪»╪⌐ ╪º┘ä╪░┘â╪º╪í ╪º┘ä╪º╪╡╪╖┘å╪º╪╣┘è."
+    }
+  },
+  "pricing": {
+    "title": "╪º╪«╪¬╪▒ ╪«╪╖╪¬┘â",
+    "free": "┘à╪¼╪º┘å┘è",
+    "essential": "╪ú╪│╪º╪│┘è",
+    "premium": "┘à┘à┘è╪▓",
+    "vip": "┘ü┘è ╪ó┘è ╪¿┘è",
+    "perMonth": "/╪┤┘ç╪▒",
+    "oneTime": "╪»┘ü╪╣╪⌐ ┘ê╪º╪¡╪»╪⌐",
+    "selectPlan": "╪º╪«╪¬╪▒ ╪º┘ä╪«╪╖╪⌐",
+    "currentPlan": "╪º┘ä╪«╪╖╪⌐ ╪º┘ä╪¡╪º┘ä┘è╪⌐"
+  },
+  "common": {
+    "loading": "╪¼╪º╪▒┘è ╪º┘ä╪¬╪¡┘à┘è┘ä...",
+    "error": "╪¡╪»╪½ ╪«╪╖╪ú",
+    "save": "╪¡┘ü╪╕",
+    "cancel": "╪Ñ┘ä╪║╪º╪í",
+    "continue": "┘à╪¬╪º╪¿╪╣╪⌐",
+    "back": "╪▒╪¼┘ê╪╣",
+    "previous": "╪º┘ä╪│╪º╪¿┘é",
+    "next": "╪º┘ä╪¬╪º┘ä┘è",
+    "submit": "╪Ñ╪▒╪│╪º┘ä",
+    "close": "╪Ñ╪║┘ä╪º┘é",
+    "edit": "╪¬╪╣╪»┘è┘ä",
+    "delete": "╪¡╪░┘ü",
+    "download": "╪¬╪¡┘à┘è┘ä",
+    "upload": "╪▒┘ü╪╣",
+    "search": "╪¿╪¡╪½",
+    "filter": "╪¬╪╡┘ü┘è╪⌐",
+    "sort": "╪¬╪▒╪¬┘è╪¿",
+    "view": "╪╣╪▒╪╢",
+    "language": "╪º┘ä┘ä╪║╪⌐",
+    "send": "╪Ñ╪▒╪│╪º┘ä"
+  },
+  "dashboard": {
+    "welcome": "┘à╪▒╪¡╪¿┘ï╪º ╪¿╪╣┘ê╪»╪¬┘â",
+    "progress": "╪¬┘é╪»┘à┘â",
+    "nextSteps": "╪º┘ä╪«╪╖┘ê╪º╪¬ ╪º┘ä╪¬╪º┘ä┘è╪⌐",
+    "documents": "╪º┘ä┘à╪│╪¬┘å╪»╪º╪¬",
+    "crsScore": "┘å┘é╪º╪╖ CRS",
+    "timeline": "╪º┘ä╪¼╪»┘ê┘ä ╪º┘ä╪▓┘à┘å┘è"
+  },
+  "chat": {
+    "title": "╪º┘ä┘à╪│╪º╪╣╪» ╪º┘ä╪░┘â┘è ┘ä┘ä┘ç╪¼╪▒╪⌐",
+    "placeholder": "╪º╪│╪ú┘ä┘å┘è ╪ú┘è ╪┤┘è╪í ╪╣┘å ╪º┘ä┘ç╪¼╪▒╪⌐...",
+    "placeholderCanada": "╪º╪│╪ú┘ä┘å┘è ╪ú┘è ╪┤┘è╪í ╪╣┘å ╪º┘ä┘ç╪¼╪▒╪⌐ ╪Ñ┘ä┘ë ┘â┘å╪»╪º...",
+    "placeholderAustralia": "╪º╪│╪ú┘ä┘å┘è ╪ú┘è ╪┤┘è╪í ╪╣┘å ╪º┘ä┘ç╪¼╪▒╪⌐ ╪Ñ┘ä┘ë ╪ú╪│╪¬╪▒╪º┘ä┘è╪º...",
+    "placeholderPortugal": "╪º╪│╪ú┘ä┘å┘è ╪ú┘è ╪┤┘è╪í ╪╣┘å ╪¬╪ú╪┤┘è╪▒╪º╪¬ ╪º┘ä╪¿╪▒╪¬╪║╪º┘ä...",
+    "newChat": "┘à╪¡╪º╪»╪½╪⌐ ╪¼╪»┘è╪»╪⌐",
+    "history": "╪│╪¼┘ä ╪º┘ä┘à╪¡╪º╪»╪½╪º╪¬"
+  },
+  "calculator": {
+    "title": "╪¡╪º╪│╪¿╪⌐ ┘å┘é╪º╪╖ CRS",
+    "subtitle": "╪º╪¡╪│╪¿ ┘å┘é╪º╪╖┘â ┘ü┘è ┘å╪╕╪º┘à ╪º┘ä╪¬╪╡┘å┘è┘ü ╪º┘ä╪┤╪º┘à┘ä ┘ä┘ä╪»╪«┘ê┘ä ╪º┘ä╪│╪▒┘è╪╣",
+    "yourScore": "┘å┘é╪º╪╖┘â",
+    "calculate": "╪º╪¡╪│╪¿ ╪º┘ä┘å┘é╪º╪╖",
+    "recommendations": "╪º┘ä╪¬┘ê╪╡┘è╪º╪¬"
+  },
+  "documents": {
+    "title": "┘é╪º╪ª┘à╪⌐ ╪º┘ä┘à╪│╪¬┘å╪»╪º╪¬",
+    "upload": "╪▒┘ü╪╣ ┘à╪│╪¬┘å╪»",
+    "status": {
+      "uploaded": "╪¬┘à ╪º┘ä╪▒┘ü╪╣",
+      "processing": "┘é┘è╪» ╪º┘ä┘à╪╣╪º┘ä╪¼╪⌐",
+      "completed": "┘à┘â╪¬┘à┘ä",
+      "failed": "┘ü╪┤┘ä"
+    }
+  },
+  "sop": {
+    "title": "┘â╪º╪¬╪¿ ╪«╪╖╪º╪¿ ╪º┘ä┘å┘ê╪º┘è╪º",
+    "generate": "╪Ñ┘å╪┤╪º╪í ╪«╪╖╪º╪¿ ╪º┘ä┘å┘ê╪º┘è╪º",
+    "revise": "┘à╪▒╪º╪¼╪╣╪⌐",
+    "export": "╪¬╪╡╪»┘è╪▒ PDF"
+  },
+  "profile": {
+    "title": "╪º┘ä┘à┘ä┘ü ╪º┘ä╪┤╪«╪╡┘è",
+    "personalInfo": "╪º┘ä┘à╪╣┘ä┘ê┘à╪º╪¬ ╪º┘ä╪┤╪«╪╡┘è╪⌐",
+    "education": "╪º┘ä╪¬╪╣┘ä┘è┘à",
+    "workExperience": "╪º┘ä╪«╪¿╪▒╪⌐ ╪º┘ä╪╣┘à┘ä┘è╪⌐",
+    "languageSkills": "╪º┘ä┘à┘ç╪º╪▒╪º╪¬ ╪º┘ä┘ä╪║┘ê┘è╪⌐",
+    "subscription": "╪º┘ä╪º╪┤╪¬╪▒╪º┘â"
+  },
+  "auth": {
+    "signIn": "╪¬╪│╪¼┘è┘ä ╪º┘ä╪»╪«┘ê┘ä",
+    "signUp": "╪Ñ┘å╪┤╪º╪í ╪¡╪│╪º╪¿ ╪¼╪»┘è╪»",
+    "signOut": "╪¬╪│╪¼┘è┘ä ╪º┘ä╪«╪▒┘ê╪¼",
+    "welcome": "╪ú┘ç┘ä╪º┘ï ╪¿┘â ┘ü┘è ┘ç╪¼╪▒╪⌐",
+    "welcomeBack": "┘à╪▒╪¡╪¿┘ï╪º ╪¿╪╣┘ê╪»╪¬┘â",
+    "createAccount": "╪Ñ┘å╪┤╪º╪í ╪¡╪│╪º╪¿ ╪¼╪»┘è╪»",
+    "loginSubtitle": "╪¬╪│╪¼┘è┘ä ╪º┘ä╪»╪«┘ê┘ä ╪Ñ┘ä┘ë ╪¡╪│╪º╪¿┘â",
+    "signupSubtitle": "╪ú╪»╪«┘ä ╪¿┘è╪º┘å╪º╪¬┘â ┘ä╪Ñ┘å╪┤╪º╪í ╪¡╪│╪º╪¿ ╪¼╪»┘è╪»",
+    "email": "╪º┘ä╪¿╪▒┘è╪» ╪º┘ä╪Ñ┘ä┘â╪¬╪▒┘ê┘å┘è",
+    "password": "┘â┘ä┘à╪⌐ ╪º┘ä┘à╪▒┘ê╪▒",
+    "confirmPassword": "╪¬╪ú┘â┘è╪» ┘â┘ä┘à╪⌐ ╪º┘ä┘à╪▒┘ê╪▒",
+    "name": "╪º┘ä╪º╪│┘à ╪º┘ä┘â╪º┘à┘ä",
+    "submitLogin": "╪¬╪│╪¼┘è┘ä ╪º┘ä╪»╪«┘ê┘ä",
+    "submitSignup": "╪Ñ┘å╪┤╪º╪í ╪¡╪│╪º╪¿ ╪¼╪»┘è╪»",
+    "orContinue": "╪ú┘ê ╪│╪¼┘ä ╪º┘ä╪»╪«┘ê┘ä ╪╣╪¿╪▒",
+    "continueGoogle": "╪º┘ä┘à╪¬╪º╪¿╪╣╪⌐ ┘à╪╣ Google",
+    "continueApple": "╪º┘ä┘à╪¬╪º╪¿╪╣╪⌐ ┘à╪╣ Apple",
+    "noAccount": "┘ä┘è╪│ ┘ä╪»┘è┘â ╪¡╪│╪º╪¿ ╪¿╪╣╪»╪ƒ",
+    "hasAccount": "┘ä╪»┘è┘â ╪¡╪│╪º╪¿ ╪¿╪º┘ä┘ü╪╣┘ä╪ƒ",
+    "signUpLink": "╪Ñ┘å╪┤╪º╪í ╪¡╪│╪º╪¿ ╪¼╪»┘è╪»",
+    "loginLink": "╪¬╪│╪¼┘è┘ä ╪º┘ä╪»╪«┘ê┘ä",
+    "bannerTitle": "╪º╪¿╪»╪ú ╪▒╪¡┘ä╪⌐ ╪º┘ä┘ç╪¼╪▒╪⌐ ╪Ñ┘ä┘ë ┘ê╪¼┘ç╪¬┘â ╪º┘ä┘à╪½╪º┘ä┘è╪⌐",
+    "bannerSubtitle": "╪º┘å╪╢┘à ╪Ñ┘ä┘ë ╪ó┘ä╪º┘ü ╪º┘ä╪ó╪«╪▒┘è┘å ╪º┘ä╪░┘è┘å ┘è╪¡┘é┘é┘ê┘å ╪ú╪¡┘ä╪º┘à┘ç┘à ┘à╪╣ ┘ç╪¼╪▒╪⌐.",
+    "goBack": "╪º┘ä╪╣┘ê╪»╪⌐"
+  },
+  "otp": {
+    "title": "╪¬╪¡┘é┘é ┘à┘å ╪¿╪▒┘è╪»┘â ╪º┘ä╪Ñ┘ä┘â╪¬╪▒┘ê┘å┘è",
+    "subtitle": "╪ú╪»╪«┘ä ╪º┘ä╪▒┘à╪▓ ╪º┘ä┘à┘â┘ê┘å ┘à┘å 6 ╪ú╪▒┘é╪º┘à ╪º┘ä┘à╪▒╪│┘ä ╪Ñ┘ä┘ë",
+    "verify": "╪¬╪¡┘é┘é",
+    "resend": "╪Ñ╪╣╪º╪»╪⌐ ╪Ñ╪▒╪│╪º┘ä ╪º┘ä╪▒┘à╪▓",
+    "resendIn": "╪Ñ╪╣╪º╪»╪⌐ ╪º┘ä╪Ñ╪▒╪│╪º┘ä ┘ü┘è",
+    "sent": "╪¬┘à ╪Ñ╪▒╪│╪º┘ä ╪▒┘à╪▓ ╪º┘ä╪¬╪¡┘é┘é ╪Ñ┘ä┘ë ╪¿╪▒┘è╪»┘â ╪º┘ä╪Ñ┘ä┘â╪¬╪▒┘ê┘å┘è",
+    "newCodeSent": "╪¬┘à ╪Ñ╪▒╪│╪º┘ä ╪▒┘à╪▓ ╪¼╪»┘è╪»",
+    "errorLength": "╪ú╪»╪«┘ä ╪º┘ä╪▒┘à╪▓ ╪º┘ä┘à┘â┘ê┘å ┘à┘å 6 ╪ú╪▒┘é╪º┘à"
+  },
+  "val": {
+    "email": "╪¿╪▒┘è╪» ╪Ñ┘ä┘â╪¬╪▒┘ê┘å┘è ╪║┘è╪▒ ╪╡╪º┘ä╪¡",
+    "passwordMin": "┘â┘ä┘à╪⌐ ╪º┘ä┘à╪▒┘ê╪▒ ┘è╪¼╪¿ ╪ú┘å ╪¬┘â┘ê┘å 6 ╪ú╪¡╪▒┘ü ╪╣┘ä┘ë ╪º┘ä╪ú┘é┘ä",
+    "nameMin": "╪º┘ä╪º╪│┘à ┘è╪¼╪¿ ╪ú┘å ┘è┘â┘ê┘å ╪¡╪▒┘ü┘è┘å ╪╣┘ä┘ë ╪º┘ä╪ú┘é┘ä",
+    "passwordMatch": "┘â┘ä┘à╪º╪¬ ╪º┘ä┘à╪▒┘ê╪▒ ╪║┘è╪▒ ┘à╪¬╪╖╪º╪¿┘é╪⌐"
+  }
+}
+JSON_END_AR
