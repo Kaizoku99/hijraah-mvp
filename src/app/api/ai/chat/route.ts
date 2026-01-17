@@ -121,10 +121,10 @@ export async function POST(req: Request) {
         const [ragResults, workingMem, userProfile] = await Promise.all([
             // RAG query
             ragQuery(userQuery, {
-                chunkLimit: 3,
-                entityLimit: 3,
+                chunkLimit: 15, // Increased from 3 to 15 to capture broader context for list-type questions
+                entityLimit: 10, // Increased from 3 to 10 to include more KG entities
                 language: language,
-                includeRelatedEntities: false,
+                includeRelatedEntities: true, // Enable KG connections
             }).catch((error) => {
                 console.error('RAG query failed, continuing without context:', error);
                 return null;
@@ -196,12 +196,27 @@ export async function POST(req: Request) {
             systemInstruction += `\n\n${ragContext}`;
         } else {
             const fallbackWarning = language === 'ar'
-                ? "\n\nتنبيه: لم يتم العثور على معلومات محددة في قاعدة البيانات لهذا السؤال. أجب بناءً على معرفتك العامة، ولكن اذكر بوضوح أن هذه المعلومات قد لا تكون محدثة تماماً ويجب التحقق منها من المصادر الرسمية."
-                : "\n\nNOTE: No specific information found in the knowledge base for this question. Provide an answer based on your general knowledge, but explicitly warn the user that this information might not be fully up-to-date and they should verify with official sources.";
+                ? "\n\nتنبيه: لم يتم العثور على معلومات محددة في قاعدة البيانات لهذا السؤال. يجب عليك إبلاغ المستخدم بذلك بوضوح. لا تقدم إجابات عامة غير مدعومة بالمصادر المتاحة."
+                : "\n\nNOTE: No specific information found in the knowledge base for this question. You must explicitly inform the user of this. Do NOT provide general answers that are not supported by the available sources.";
             systemInstruction += fallbackWarning;
         }
 
         systemInstruction += profileContext + memoryContext;
+
+        // STRICT ANSWERING POLICY
+        const strictPolicy = language === 'ar'
+            ? `\n\nسياسة الإجابة الصارمة:
+            1. اعتمد *فقط* على المعلومات الواردة في <KNOWLEDGE_BASE> و <User Profile> و <User Documents>.
+            2. إذا لم تكن المعلومة موجودة في السياق، قل: "عذراً، لا تتوفر لدي معلومات كافية في قاعدة البيانات الحالية للإجابة على هذا السؤال بدقة."
+            3. لا تستخدم معرفتك العامة للإجابة على أسئلة حول قوانين الهجرة أو الإجراءات ما لم تكن مدعومة بالسياق المرفق.
+            4. إذا كان السؤال عاماً (مثل: من هو رئيس كندا؟)، وضح أنك متخصص فقط في شؤون الهجرة.`
+            : `\n\nSTRICT ANSWERING POLICY:
+            1. Rely *ONLY* on the information provided in <KNOWLEDGE_BASE>, <User Profile>, and <User Documents>.
+            2. If the information is not in the context, say: "I apologize, but I don't have enough information in my current database to answer this question accurately."
+            3. Do NOT use your general knowledge to answer questions about immigration laws or procedures unless supported by the attached context.
+            4. If the question is general (e.g., "Who is the president of Canada?"), clarify that you specialize only in immigration matters.`;
+
+        systemInstruction += strictPolicy;
 
         // Stream the response using Gemini
         const model = google('gemini-2.5-flash');

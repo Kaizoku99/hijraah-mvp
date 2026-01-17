@@ -1,9 +1,9 @@
 'use client'
 
-import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { Link, usePathname } from "@/i18n/routing"
 import { MessageSquare, Calculator, FileText, LayoutDashboard, User, MoreHorizontal } from "lucide-react"
 import { useLanguage } from "@/contexts/LanguageContext"
+import { useAuth } from "@/hooks/useAuth"
 import { cn } from "@/lib/utils"
 import {
     DropdownMenu,
@@ -12,17 +12,18 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-const navItems = [
-    { href: "/dashboard", icon: LayoutDashboard, labelEn: "Home", labelAr: "الرئيسية" },
-    { href: "/chat", icon: MessageSquare, labelEn: "Chat", labelAr: "محادثة" },
-    { href: "/calculator", icon: Calculator, labelEn: "CRS", labelAr: "النقاط" },
-    { href: "/documents", icon: FileText, labelEn: "Docs", labelAr: "المستندات" },
-    { href: "/profile", icon: User, labelEn: "Profile", labelAr: "الملف" },
-]
-
 export function MobileNav() {
     const pathname = usePathname()
     const { language } = useLanguage()
+    const { isAuthenticated } = useAuth()
+
+    const navItems = [
+        { href: isAuthenticated ? "/dashboard" : "/", icon: LayoutDashboard, labelEn: "Home", labelAr: "الرئيسية" },
+        { href: "/chat", icon: MessageSquare, labelEn: "Chat", labelAr: "محادثة" },
+        { href: "/calculator", icon: Calculator, labelEn: "CRS", labelAr: "النقاط" },
+        { href: "/documents", icon: FileText, labelEn: "Docs", labelAr: "المستندات" },
+        { href: "/profile", icon: User, labelEn: "Profile", labelAr: "الملف" },
+    ]
 
     return (
         <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-background border-t safe-area-inset-bottom">

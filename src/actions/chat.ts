@@ -200,7 +200,7 @@ export async function sendMessage(input: SendMessageInput) {
     // System instruction
     // Determine context based on profile
     const targetDest = userProfile?.targetDestination?.toLowerCase() || 'canada'
-    
+
     // Destination-specific context
     const destinationContext: Record<string, { nameAr: string, nameEn: string, contextAr: string, contextEn: string }> = {
         canada: {
@@ -222,7 +222,7 @@ export async function sendMessage(input: SendMessageInput) {
             contextEn: 'D2 (Entrepreneur), D7 (Passive Income), D8 (Digital Nomad) visas, and Job Seeker Visa',
         },
     }
-    
+
     const destConfig = destinationContext[targetDest] || destinationContext.canada
     const countryNameAr = destConfig.nameAr
     const countryNameEn = destConfig.nameEn
@@ -274,12 +274,25 @@ export async function sendMessage(input: SendMessageInput) {
         finalSystemInstructionPart += `\n\n${ragContext}`
     } else {
         const fallbackWarning = conversation.language === 'ar'
-            ? "\n\nتنبيه: لم يتم العثور على معلومات محددة في قاعدة البيانات لهذا السؤال. أجب بناءً على معرفتك العامة، ولكن اذكر بوضوح أن هذه المعلومات قد لا تكون محدثة تماماً ويجب التحقق منها من المصادر الرسمية."
-            : "\n\nNOTE: No specific information found in the knowledge base for this question. Provide an answer based on your general knowledge, but explicitly warn the user that this information might not be fully up-to-date and they should verify with official sources."
+            ? "\n\nتنبيه: لم يتم العثور على معلومات محددة في قاعدة البيانات لهذا السؤال. يجب عليك إبلاغ المستخدم بذلك بوضوح. لا تقدم إجابات عامة غير مدعومة بالمصادر المتاحة."
+            : "\n\nNOTE: No specific information found in the knowledge base for this question. You must explicitly inform the user of this. Do NOT provide general answers that are not supported by the available sources."
         finalSystemInstructionPart += fallbackWarning
     }
 
-    const systemInstruction = finalSystemInstructionPart
+    // STRICT ANSWERING POLICY
+    const strictPolicy = conversation.language === 'ar'
+        ? `\n\nسياسة الإجابة الصارمة:
+        1. اعتمد *فقط* على المعلومات الواردة في <KNOWLEDGE_BASE> و <User Profile> و <User Documents>.
+        2. إذا لم تكن المعلومة موجودة في السياق، قل: "عذراً، لا تتوفر لدي معلومات كافية في قاعدة البيانات الحالية للإجابة على هذا السؤال بدقة."
+        3. لا تستخدم معرفتك العامة للإجابة على أسئلة حول قوانين الهجرة أو الإجراءات ما لم تكن مدعومة بالسياق المرفق.
+        4. إذا كان السؤال عاماً (مثل: من هو رئيس كندا؟)، وضح أنك متخصص فقط في شؤون الهجرة.`
+        : `\n\nSTRICT ANSWERING POLICY:
+        1. Rely *ONLY* on the information provided in <KNOWLEDGE_BASE>, <User Profile>, and <User Documents>.
+        2. If the information is not in the context, say: "I apologize, but I don't have enough information in my current database to answer this question accurately."
+        3. Do NOT use your general knowledge to answer questions about immigration laws or procedures unless supported by the attached context.
+        4. If the question is general (e.g., "Who is the president of Canada?"), clarify that you specialize only in immigration matters.`
+
+    const systemInstruction = finalSystemInstructionPart + strictPolicy
 
     // Fetch Working Memory (persistent AI scratchpad)
     let memoryContext = ''
@@ -312,26 +325,26 @@ export async function sendMessage(input: SendMessageInput) {
     let documentContext = ''
     if (userChecklists && userChecklists.length > 0) {
         const isArabic = conversation.language === 'ar'
-        
+
         documentContext = isArabic
             ? `\n\n📋 مستندات المستخدم ومتطلباته:\n`
             : `\n\n📋 User's Documents & Requirements:\n`
-        
+
         for (const checklist of userChecklists) {
             const items = checklist.items as any[]
             if (!items || !Array.isArray(items)) continue
-            
+
             const pathwayLabel = checklist.immigrationPathway || 'Unknown'
             const sourceLabel = checklist.sourceCountry || 'Unknown'
-            
+
             documentContext += isArabic
                 ? `\nقائمة المستندات (${pathwayLabel} - من ${sourceLabel}):\n`
                 : `\nDocument Checklist (${pathwayLabel} - from ${sourceLabel}):\n`
-            
+
             // Group items by status
             const pending = items.filter((item: any) => item.status === 'pending')
             const uploaded = items.filter((item: any) => item.status === 'uploaded' || item.status === 'completed' || item.status === 'verified')
-            
+
             if (uploaded.length > 0) {
                 documentContext += isArabic ? `  ✅ المستندات المرفوعة (${uploaded.length}):\n` : `  ✅ Uploaded Documents (${uploaded.length}):\n`
                 for (const item of uploaded) {
@@ -341,7 +354,7 @@ export async function sendMessage(input: SendMessageInput) {
                     if (desc) documentContext += `      ${desc}\n`
                 }
             }
-            
+
             if (pending.length > 0) {
                 documentContext += isArabic ? `  ⏳ المستندات المعلقة (${pending.length}):\n` : `  ⏳ Pending Documents (${pending.length}):\n`
                 for (const item of pending) {
@@ -351,24 +364,24 @@ export async function sendMessage(input: SendMessageInput) {
                     if (desc) documentContext += `      ${desc}\n`
                 }
             }
-            
+
             // Summary
             const completionRate = items.length > 0 ? Math.round((uploaded.length / items.length) * 100) : 0
             documentContext += isArabic
                 ? `  📊 نسبة الاكتمال: ${completionRate}% (${uploaded.length}/${items.length})\n`
                 : `  📊 Completion: ${completionRate}% (${uploaded.length}/${items.length})\n`
         }
-        
+
         // Add uploaded files info
         if (userDocuments && userDocuments.length > 0) {
             documentContext += isArabic
                 ? `\n📁 الملفات المرفوعة:\n`
                 : `\n📁 Uploaded Files:\n`
-            
+
             for (const doc of userDocuments) {
                 const uploadDate = doc.createdAt ? new Date(doc.createdAt).toLocaleDateString() : 'Unknown'
                 documentContext += `  - ${doc.fileName} (${doc.documentType}) - ${isArabic ? 'رفع في' : 'Uploaded'}: ${uploadDate}\n`
-                
+
                 // Include OCR text if available (useful for AI to analyze document content)
                 if (doc.ocrText) {
                     const truncatedText = doc.ocrText.length > 500 ? doc.ocrText.substring(0, 500) + '...' : doc.ocrText
@@ -378,7 +391,7 @@ export async function sendMessage(input: SendMessageInput) {
                 }
             }
         }
-        
+
         // Add helpful instruction for AI
         documentContext += isArabic
             ? `\n💡 يمكنك مساعدة المستخدم في: مراجعة المستندات، التحقق من الاكتمال، اقتراح المستندات الناقصة، أو الإجابة عن أي استفسارات حول متطلبات المستندات.\n`

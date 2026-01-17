@@ -1,0 +1,2733 @@
+{
+  "visa_types": [
+    {
+      "visa_name": "Electronic Travel Authority (subclass 601)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/electronic-travel-authority-601",
+      "eligibility_requirements": [
+        {
+          "value": "You must: apply from outside Australia",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/electronic-travel-authority-601"
+        },
+        {
+          "value": "You must: have an [eligible passport](https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/electronic-travel-authority-601#Eligibility)",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/electronic-travel-authority-601"
+        },
+        {
+          "value": "Be a genuine visitor: You must only intend to stay temporarily in Australia and obey any condition or stay period attached to your visa.",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/electronic-travel-authority-601"
+        },
+        {
+          "value": "Meet our health requirement: You must meet our [health requirement](https://immi.homeaffairs.gov.au/help-support/meeting-our-requirements/health).",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/electronic-travel-authority-601"
+        },
+        {
+          "value": "Meet our character requirement: You must meet our [character requirement](https://immi.homeaffairs.gov.au/help-support/meeting-our-requirements/character).",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/electronic-travel-authority-601"
+        },
+        {
+          "value": "What you must do on an ETA: You must meet all visa conditions and obey Australian laws. See your conditions in your visa grant letter or [VEVO](https://immi.homeaffairs.gov.au/visas/already-have-a-visa/check-visa-details-and-con",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/electronic-travel-authority-601"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/electronic-travel-authority-601",
+          "amount_local": "20",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/electronic-travel-authority-601",
+          "amount_usd": "13.4",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/electronic-travel-authority-601"
+        }
+      ],
+      "processing_timelines": "3 months",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/electronic-travel-authority-601",
+      "contact_information": "limit your financial liability. | -support/meeting-our-requirements/health/adequate-health-insurance). | address.",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/electronic-travel-authority-601",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/electronic-travel-authority-601"
+        }
+      ]
+    },
+    {
+      "visa_name": "eVisitor (subclass 651)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/evisitor-651",
+      "eligibility_requirements": [
+        {
+          "value": "You must: apply from outside Australia",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/evisitor-651"
+        },
+        {
+          "value": "You must: hold a passport from a particular country",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/evisitor-651"
+        },
+        {
+          "value": "Meet our health requirement: You must meet our [health requirement](https://immi.homeaffairs.gov.au/help-support/meeting-our-requirements/health).",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/evisitor-651"
+        },
+        {
+          "value": "Meet our character requirement: You must meet our [character requirement](https://immi.homeaffairs.gov.au/help-support/meeting-our-requirements/character).",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/evisitor-651"
+        },
+        {
+          "value": "What you must do on an eVisitor: You must meet all visa conditions and obey Australian laws. See your conditions in [VEVO](https://immi.homeaffairs.gov.au/visas/already-have-a-visa/check-visa-details-and-conditions/overview) or your ",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/evisitor-651"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/evisitor-651",
+          "amount_local": "200",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/evisitor-651",
+          "amount_usd": "134.0",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/evisitor-651"
+        }
+      ],
+      "processing_timelines": "3 months",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/evisitor-651",
+      "contact_information": "us process your application faster](https://immi.homeaffairs.gov.au/check-twice-submit-once). | us process your application faster](https://immi.homeaffairs.gov.au/check-twice-submit-once). | address has been entered correctly.",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/evisitor-651",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/evisitor-651"
+        }
+      ]
+    },
+    {
+      "visa_name": "Sponsored Parent (Temporary) visa (subclass 870)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/sponsored-parent-temporary-870",
+      "eligibility_requirements": [
+        {
+          "value": "You must: have an approved Parent Sponsor before you can lodge an application for this visa",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/sponsored-parent-temporary-870"
+        },
+        {
+          "value": "You must: apply online for this visa",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/sponsored-parent-temporary-870"
+        },
+        {
+          "value": "What you must do when you have this visa: You must obey all Australian laws.",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/sponsored-parent-temporary-870"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/sponsored-parent-temporary-870",
+          "amount_local": "6070",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/sponsored-parent-temporary-870",
+          "amount_usd": "4066.9",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/sponsored-parent-temporary-870"
+        }
+      ],
+      "processing_timelines": "6 months",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/sponsored-parent-temporary-870",
+      "contact_information": "with your visa** | with your visa, before you pay someone, read information on [who can help with your visa application](https://immi.homeaffairs.gov.au/help-support/who-can-help-with-your-application/overview). | y extended by 18 months under the [COVID-19 visa concessions](https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-concessions). If your visa was extended under this concession, the additional 18 months will not count towards your cumulative 10 year maximum stay.",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/sponsored-parent-temporary-870",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/sponsored-parent-temporary-870"
+        },
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/sponsored-parent-temporary-870"
+        },
+        {
+          "value": "Updated",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/sponsored-parent-temporary-870"
+        }
+      ]
+    },
+    {
+      "visa_name": "Resident Return visa (subclass 155 157)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/resident-return-visa-155-157",
+      "eligibility_requirements": [
+        {
+          "value": "You must be either: an Australian [permanent resident](https://immi.homeaffairs.gov.au/help-support/glossary#Permanent-resident)",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/resident-return-visa-155-157"
+        },
+        {
+          "value": "You must be either: a former Australian permanent resident whose last permanent visa was not cancelled",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/resident-return-visa-155-157"
+        },
+        {
+          "value": "What you must do on this visa: You must obey all Australian laws.",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/resident-return-visa-155-157"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/resident-return-visa-155-157",
+          "amount_local": "490",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/resident-return-visa-155-157",
+          "amount_usd": "328.3",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/resident-return-visa-155-157"
+        },
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/resident-return-visa-155-157",
+          "amount_local": "490",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/resident-return-visa-155-157",
+          "amount_usd": "328.3",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/resident-return-visa-155-157"
+        }
+      ],
+      "processing_timelines": "12 months",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/resident-return-visa-155-157",
+      "contact_information": "-support/glossary#Permanent-resident)\n- a former Australian permanent resident whose last permanent visa was not cancelled\n- a former Australian citizen who lost or renounced Australian citizenship. Australian citizens are not eligible to apply for an RRV. | with your visa | y be processed and the payment returned to you.",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/resident-return-visa-155-157",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/resident-return-visa-155-157"
+        },
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/resident-return-visa-155-157"
+        },
+        {
+          "value": "Changed",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/resident-return-visa-155-157"
+        }
+      ]
+    },
+    {
+      "visa_name": "Contributory Parent visa (subclass 143)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-parent-143",
+      "eligibility_requirements": [
+        {
+          "value": "You must: have an eligible child who is a settled Australian citizen, Permanent resident or Eligible New Zealand citizen",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-parent-143"
+        },
+        {
+          "value": "You must: meet all applicable visa conditions and follow Australian law",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-parent-143"
+        },
+        {
+          "value": "What you must do when you have this visa: You and your family members must meet all visa conditions and obey all Australian laws.",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-parent-143"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-parent-143",
+          "amount_local": "48640",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-parent-143",
+          "amount_usd": "32588.8",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-parent-143"
+        }
+      ],
+      "processing_timelines": "28 days",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-parent-143",
+      "contact_information": "with your visa | with your visa, before you pay someone, read information on [who can help with your visa application](https://immi.homeaffairs.gov.au/help-support/who-can-help-with-your-application/overview). | ed instalments.",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-parent-143",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-parent-143"
+        },
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-parent-143"
+        },
+        {
+          "value": "Changed",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-parent-143"
+        }
+      ]
+    },
+    {
+      "visa_name": "National Innovation visa (subclass 858)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/national-innovation-visa-858",
+      "eligibility_requirements": [
+        {
+          "value": "You must: be invited to apply for this visa and lodge your visa application within 60 days of invitation. For information on Expression of Interest, see [National Innovation visa](https://immi.homeaffairs.gov.au/visas/working-in-australia/visas-for-innovation/national-innovation-visa).",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/national-innovation-visa-858"
+        },
+        {
+          "value": "You must: either be in or outside Australia but not in immigration clearance when you apply and when we grant this visa",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/national-innovation-visa-858"
+        },
+        {
+          "value": "What you must do on this visa: You and your family members must obey all Australian laws.",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/national-innovation-visa-858"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/national-innovation-visa-858",
+          "amount_local": "4985",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/national-innovation-visa-858",
+          "amount_usd": "3339.95",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/national-innovation-visa-858"
+        }
+      ],
+      "processing_timelines": "60 days",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/national-innovation-visa-858",
+      "contact_information": "with your visa | with your visa, before you pay someone, read information on [Who can help with your visa application](https://immi.homeaffairs.gov.au/help-support/who-can-help-with-your-application/overview). | you a unique reference and identifier to use when you apply for a subclass 858 visa.",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/national-innovation-visa-858",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/national-innovation-visa-858"
+        },
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/national-innovation-visa-858"
+        }
+      ]
+    },
+    {
+      "visa_name": "Carer visa (subclass 836)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/carer-836",
+      "eligibility_requirements": [
+        {
+          "value": "You must: be in Australia when you apply for the visa and when we decide your application",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/carer-836"
+        },
+        {
+          "value": "You must: be a carer for your Australian relative who needs care or a member of their family who lives with them and needs care and who has no reasonable access to care in Australia",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/carer-836"
+        },
+        {
+          "value": "What you must do on your visa: You and your family members must obey all Australian laws.",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/carer-836"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/carer-836",
+          "amount_local": "2175",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/carer-836",
+          "amount_usd": "1457.25",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/carer-836"
+        }
+      ],
+      "processing_timelines": "12 months",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/carer-836",
+      "contact_information": "with your visa | with your visa, before you pay someone, read information on [Who can help with your visa application](https://immi.homeaffairs.gov.au/help-support/who-can-help-with-your-application/overview). | ed instalments.",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/carer-836",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/carer-836"
+        },
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/carer-836"
+        }
+      ]
+    },
+    {
+      "visa_name": "Remaining Relative visa (subclass 115)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/remaining-relative-115",
+      "eligibility_requirements": [
+        {
+          "value": "You must: be outside Australia when you apply for this visa and when we decide your application",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/remaining-relative-115"
+        },
+        {
+          "value": "You must: be a remaining relative of an Australian citizen or Permanent resident or an Eligible New Zealand citizen",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/remaining-relative-115"
+        },
+        {
+          "value": "What you must do when you have this visa: You and your family members must meet all visa conditions and obey Australian laws.",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/remaining-relative-115"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/remaining-relative-115",
+          "amount_local": "5280",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/remaining-relative-115",
+          "amount_usd": "3537.6",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/remaining-relative-115"
+        }
+      ],
+      "processing_timelines": "12 months",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/remaining-relative-115",
+      "contact_information": "with your visa | with your visa, before you pay someone, read information on [who can help with your visa application](https://immi.homeaffairs.gov.au/help-support/who-can-help-with-your-application/overview). | ed instalments.",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/remaining-relative-115",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/remaining-relative-115"
+        },
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/remaining-relative-115"
+        }
+      ]
+    },
+    {
+      "visa_name": "Business Talent (Permanent) visa (subclass 132)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/business-talent-permanent-132",
+      "eligibility_requirements": [
+        {
+          "value": "Basic Eligibility: Basic Eligibility**",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/business-talent-permanent-132"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/business-talent-permanent-132",
+          "amount_local": "1",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/business-talent-permanent-132",
+          "amount_usd": "0.67",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/business-talent-permanent-132"
+        }
+      ],
+      "processing_timelines": "Not specified",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/business-talent-permanent-132",
+      "contact_information": "Department of Home Affairs, Global Service Centre",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/business-talent-permanent-132",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/business-talent-permanent-132"
+        }
+      ]
+    },
+    {
+      "visa_name": "Work and Holiday visa (subclass 462)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/work-holiday-462",
+      "eligibility_requirements": [
+        {
+          "value": "Basic Eligibility: Must be 18 to 30 years old (inclusive)",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/work-holiday-462"
+        },
+        {
+          "value": "Basic Eligibility: Must have a passport from an eligible country",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/work-holiday-462"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/work-holiday-462",
+          "amount_local": "670",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/work-holiday-462",
+          "amount_usd": "448.9",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/work-holiday-462"
+        },
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/work-holiday-462",
+          "amount_local": "670",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/work-holiday-462",
+          "amount_usd": "448.9",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/work-holiday-462"
+        }
+      ],
+      "processing_timelines": "12 months",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/work-holiday-462",
+      "contact_information": "fund their trip.",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/work-holiday-462",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/work-holiday-462"
+        },
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/work-holiday-462"
+        }
+      ]
+    },
+    {
+      "visa_name": "Temporary Protection visa (subclass 785)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-protection-785",
+      "eligibility_requirements": [
+        {
+          "value": "You must: engage [Australia's protection obligations](https://immi.homeaffairs.gov.au/what-we-do/refugee-and-humanitarian-program/about-the-program/seek-protection-in-australia/australia-protection-obligations)  (or be a member of the same family unit of someone who does)",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-protection-785"
+        },
+        {
+          "value": "You must: meet all other visa requirements, such as health, character, identity and security.",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-protection-785"
+        },
+        {
+          "value": "Meet our security requirements: As part of the application process, we will assess whether you meet Australia’s security requirements for the grant of a Temporary Protection visa.",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-protection-785"
+        },
+        {
+          "value": "Meet our character requirement: You must meet certain [character requirements](https://immi.homeaffairs.gov.au/help-support/meeting-our-requirements/character).",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-protection-785"
+        },
+        {
+          "value": "Evidentiary requirements: Provide any documents/evidence to support the relationship between each person in the application (eg. birth certificates, notarial certificates, marriage certificates, financial documents and underta",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-protection-785"
+        },
+        {
+          "value": "What you must do on this visa: You and your family members must obey all Australian laws.",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-protection-785"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-protection-785",
+          "amount_local": "50",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-protection-785",
+          "amount_usd": "33.5",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-protection-785"
+        },
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-protection-785",
+          "amount_local": "50",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-protection-785",
+          "amount_usd": "33.5",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-protection-785"
+        }
+      ],
+      "processing_timelines": "35 days",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-protection-785",
+      "contact_information": "with your visa | with your visa, before you pay someone, read information on [Who can help with your visa application](https://immi.homeaffairs.gov.au/help-support/who-can-help-with-your-application/overview). | y granted the same visas their parents hold at the time of the child’s birth.",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-protection-785",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-protection-785"
+        }
+      ]
+    },
+    {
+      "visa_name": "Temporary Work (Short Stay Specialist) visa (subclass 400)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-work-400",
+      "eligibility_requirements": [
+        {
+          "value": "You must: have highly specialised skills, knowledge or experience that can help Australian business and can't reasonably be found in Australia",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-work-400"
+        },
+        {
+          "value": "You must: only do the work or activities for which your visa was granted",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-work-400"
+        },
+        {
+          "value": "Meet our health requirement: You and your family members must meet our [health requirement](https://immi.homeaffairs.gov.au/help-support/meeting-our-requirements/health).",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-work-400"
+        },
+        {
+          "value": "Meet our character requirement: You and family members aged 16 years and over who apply for the visa with you must meet our [character requirement](https://immi.homeaffairs.gov.au/help-support/meeting-our-requirements/character).",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-work-400"
+        },
+        {
+          "value": "What you must do on this visa (your obligations): You and your family members must meet all visa conditions and obey Australian laws.",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-work-400"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-work-400",
+          "amount_local": "430",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-work-400",
+          "amount_usd": "288.1",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-work-400"
+        },
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-work-400",
+          "amount_local": "430",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-work-400",
+          "amount_usd": "288.1",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-work-400"
+        }
+      ],
+      "processing_timelines": "6 months",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-work-400",
+      "contact_information": "Australian business and can't reasonably be found in Australia\n- only do the work or activities for which your visa was granted | with your visa | number",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-work-400",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-work-400"
+        }
+      ]
+    },
+    {
+      "visa_name": "Working Holiday visa (subclass 417)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/work-holiday-417",
+      "eligibility_requirements": [
+        {
+          "value": "Basic Eligibility: Must be 18 to 30 years old (or 35 years old for some countries)",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/work-holiday-417"
+        },
+        {
+          "value": "Basic Eligibility: Must have a passport from an eligible country or jurisdiction",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/work-holiday-417"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/work-holiday-417",
+          "amount_local": "670",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/work-holiday-417",
+          "amount_usd": "448.9",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/work-holiday-417"
+        },
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/work-holiday-417",
+          "amount_local": "670",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/work-holiday-417",
+          "amount_usd": "448.9",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/work-holiday-417"
+        }
+      ],
+      "processing_timelines": "12 months",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/work-holiday-417",
+      "contact_information": "fund their trip.",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/work-holiday-417",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/work-holiday-417"
+        }
+      ]
+    },
+    {
+      "visa_name": "Business Innovation and Investment (permanent) visa (subclass 888)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/business-innovation-and-investment-888/",
+      "eligibility_requirements": [
+        {
+          "value": "Basic Eligibility: hold a relevant stream of the subclass 188 visa or in relation to applications for a subclass 888 visa in the Business Innovation stream, hold a relevant stream of the subclass 188 visa, or a subclass 444 (Special Category) visa, or a subclass 457 (Business (Long Stay)) visa granted in certain circumstances.",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/business-innovation-and-investment-888/"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/business-innovation-and-investment-888/",
+          "amount_local": "3500",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/business-innovation-and-investment-888/",
+          "amount_usd": "2345.0",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/business-innovation-and-investment-888/"
+        }
+      ],
+      "processing_timelines": "12 months",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/business-innovation-and-investment-888/",
+      "contact_information": "Department of Home Affairs, Global Service Centre",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/business-innovation-and-investment-888/",
+      "status_labels": []
+    },
+    {
+      "visa_name": "Skilled Nominated visa (subclass 190)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-nominated-190",
+      "eligibility_requirements": [
+        {
+          "value": "You must: have an occupation on the relevant [skilled list](https://immi.homeaffairs.gov.au/visas/working-in-australia/skill-occupation-list)",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-nominated-190"
+        },
+        {
+          "value": "You must: have a suitable [skills assessment](https://immi.homeaffairs.gov.au/visas/working-in-australia/skills-assessment) for the occupation",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-nominated-190"
+        },
+        {
+          "value": "Check you meet the other eligibility criteria: Check that you meet all other eligibility criteria for the visa.",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-nominated-190"
+        },
+        {
+          "value": "If you can't show you meet the points score or other eligibility criteria: If you can't show you meet the points score on your invitation or the other visa criteria, then do not apply for the visa.",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-nominated-190"
+        },
+        {
+          "value": "What you must do on this visa: You and your family members must obey Australian laws.",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-nominated-190"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-nominated-190",
+          "amount_local": "4910",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-nominated-190",
+          "amount_usd": "3289.7",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-nominated-190"
+        }
+      ],
+      "processing_timelines": "60 day",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-nominated-190",
+      "contact_information": "with your visa | with your visa, before you pay someone, read information on [Who can help with your visa application](https://immi.homeaffairs.gov.au/help-support/who-can-help-with-your-application/overview). | ed the second instalment. Pay it only when we ask you to. We ask for the charge only if we are going to grant the visa.",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-nominated-190",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-nominated-190"
+        },
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-nominated-190"
+        }
+      ]
+    },
+    {
+      "visa_name": "Orphan Relative (subclass 117)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/orphan-relative-117",
+      "eligibility_requirements": [
+        {
+          "value": "Not specified",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/orphan-relative-117"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/orphan-relative-117",
+          "amount_local": "1980",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/orphan-relative-117",
+          "amount_usd": "1326.6",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/orphan-relative-117"
+        }
+      ],
+      "processing_timelines": "12 months",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/orphan-relative-117",
+      "contact_information": "with your visa | with your visa, before you pay someone, read information on [who can help with your visa application](https://immi.homeaffairs.gov.au/help-support/who-can-help-with-your-application/overview). | number",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/orphan-relative-117",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/orphan-relative-117"
+        },
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/orphan-relative-117"
+        }
+      ]
+    },
+    {
+      "visa_name": "Parent visa (subclass 103)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/parent-103",
+      "eligibility_requirements": [
+        {
+          "value": "You must: have an eligible child who is a settled Australian citizen, Australian permanent resident or eligible New Zealand citizen",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/parent-103"
+        },
+        {
+          "value": "You must: meet all applicable visa conditions and follow Australian law",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/parent-103"
+        },
+        {
+          "value": "What you must do when you have this visa: You and your dependants must meet all visa conditions and obey all Australian laws.",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/parent-103"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/parent-103",
+          "amount_local": "Not specified",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/parent-103",
+          "amount_usd": "Not specified",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/parent-103"
+        }
+      ],
+      "processing_timelines": "12 months",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/parent-103",
+      "contact_information": "with your visa | with your visa, before you pay someone, read information on [who can help with your visa application](https://immi.homeaffairs.gov.au/help-support/who-can-help-with-your-application/overview). | ed instalments.",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/parent-103",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/parent-103"
+        },
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/parent-103"
+        }
+      ]
+    },
+    {
+      "visa_name": "Training visa (subclass 407)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/training-407",
+      "eligibility_requirements": [
+        {
+          "value": "You must: be nominated (unless your sponsor is a Commonwealth Government agency)",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/training-407"
+        },
+        {
+          "value": "Meet our health requirement: You and any family members who apply for the visa with you must meet our [health requirement](https://immi.homeaffairs.gov.au/help-support/meeting-our-requirements/health).",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/training-407"
+        },
+        {
+          "value": "Meet our character requirement: You and family members aged 16 years and over who apply for the visa with you must meet our [character requirement](https://immi.homeaffairs.gov.au/help-support/meeting-our-requirements/character).",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/training-407"
+        },
+        {
+          "value": "What you must do on this visa: You and your family members must meet all visa conditions that apply and obey all Australian laws.",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/training-407"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/training-407",
+          "amount_local": "430",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/training-407",
+          "amount_usd": "288.1",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/training-407"
+        }
+      ],
+      "processing_timelines": "28 days",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/training-407",
+      "contact_information": "with your visa | with your visa, before you pay someone, read information on [Who can help with your visa application](https://immi.homeaffairs.gov.au/help-support/who-can-help-with-your-application/overview). | y necessary treatment, including transport.",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/training-407",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/training-407"
+        },
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/training-407"
+        }
+      ]
+    },
+    {
+      "visa_name": "Aged Parent visa (subclass 804)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/aged-parent-804",
+      "eligibility_requirements": [
+        {
+          "value": "You must: have an eligible child who is a settled Australian citizen, Australian permanent resident or eligible New Zealand citizen",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/aged-parent-804"
+        },
+        {
+          "value": "You must: be old enough to receive the age pension in Australia",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/aged-parent-804"
+        },
+        {
+          "value": "What you must do when you have this visa: You and your dependants must meet all visa conditions and obey all Australian laws.",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/aged-parent-804"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/aged-parent-804",
+          "amount_local": "Not specified",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/aged-parent-804",
+          "amount_usd": "Not specified",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/aged-parent-804"
+        }
+      ],
+      "processing_timelines": "12 months",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/aged-parent-804",
+      "contact_information": "with your visa | with your visa, before you pay someone, read information on [who can help with your visa application](https://immi.homeaffairs.gov.au/help-support/who-can-help-with-your-application/overview). | ed instalments.",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/aged-parent-804",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/aged-parent-804"
+        },
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/aged-parent-804"
+        }
+      ]
+    },
+    {
+      "visa_name": "Crew Travel Authority visa (subclass 942)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/crew-travel-authority-942",
+      "eligibility_requirements": [
+        {
+          "value": "You must:: be registered as crew by your air carrier",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/crew-travel-authority-942"
+        },
+        {
+          "value": "You must:: be travelling on a commercial or chartered passenger flight, freight or cargo flight as an airline crew member, airline positioning crew member or aircraft safety inspector",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/crew-travel-authority-942"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/crew-travel-authority-942",
+          "amount_local": "Not specified",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/crew-travel-authority-942",
+          "amount_usd": "Not specified",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/crew-travel-authority-942"
+        }
+      ],
+      "processing_timelines": "30 days",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/crew-travel-authority-942",
+      "contact_information": "-support/meeting-our-requirements/providing-accurate-information). | y granted a [Special Purpose visa](https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/special-purpose-visa) for 5 days, beginning when they disembark from the aircraft, provided they hold a valid passport. | ing [appinfringements@abf.gov.au](mailto:appinfringements@abf.gov.au)",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/crew-travel-authority-942",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/crew-travel-authority-942"
+        },
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/crew-travel-authority-942"
+        }
+      ]
+    },
+    {
+      "visa_name": "Skilled Independent visa (subclass 189)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-independent-189",
+      "eligibility_requirements": [
+        {
+          "value": "Not specified",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-independent-189"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-independent-189",
+          "amount_local": "4910",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-independent-189",
+          "amount_usd": "3289.7",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-independent-189"
+        }
+      ],
+      "processing_timelines": "Not specified",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-independent-189",
+      "contact_information": "ing documents\n- how quickly you respond to any requests for additional information\n- how long it takes to perform required checks on the supporting information provided\n- how long it takes to receive additional information from external agencies, particularly in relation to health, character, and national security requirements\n- how many places are available in the migration program",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-independent-189",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-independent-189"
+        },
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-independent-189"
+        }
+      ]
+    },
+    {
+      "visa_name": "Aged Dependent Relative visa (subclass 114)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/aged-dependent-relative-114",
+      "eligibility_requirements": [
+        {
+          "value": "You must: be outside Australia when you apply for this visa and when we decide your application",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/aged-dependent-relative-114"
+        },
+        {
+          "value": "You must: be sponsored by your relative or relative's partner.",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/aged-dependent-relative-114"
+        },
+        {
+          "value": "What you must do on your visa: You and your family members must meet all visa conditions and obey Australian laws.",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/aged-dependent-relative-114"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/aged-dependent-relative-114",
+          "amount_local": "5280",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/aged-dependent-relative-114",
+          "amount_usd": "3537.6",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/aged-dependent-relative-114"
+        }
+      ],
+      "processing_timelines": "12 months",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/aged-dependent-relative-114",
+      "contact_information": ", move to Australia permanently. | with your visa | ed instalments.",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/aged-dependent-relative-114",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/aged-dependent-relative-114"
+        },
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/aged-dependent-relative-114"
+        }
+      ]
+    },
+    {
+      "visa_name": "Former Resident visa (subclass 151)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/former-resident-151",
+      "eligibility_requirements": [
+        {
+          "value": "You must: meet our age and long residence requirement or defence service requirement",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/former-resident-151"
+        },
+        {
+          "value": "What you must do on this visa (your obligations): You must obey all Australian laws.",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/former-resident-151"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/former-resident-151",
+          "amount_local": "4805",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/former-resident-151",
+          "amount_usd": "3219.35",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/former-resident-151"
+        }
+      ],
+      "processing_timelines": "12 months",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/former-resident-151",
+      "contact_information": "with your visa | with your visa, before you pay someone, read information on [Who can help with your visa application](https://immi.homeaffairs.gov.au/help-support/who-can-help-with-your-application/overview). | y unfit because of your Australian defence service",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/former-resident-151",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/former-resident-151"
+        },
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/former-resident-151"
+        }
+      ]
+    },
+    {
+      "visa_name": "Maritime Crew visa (subclass 988)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/maritime-crew-988",
+      "eligibility_requirements": [
+        {
+          "value": "You must:: be outside Australia when you apply",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/maritime-crew-988"
+        },
+        {
+          "value": "You must:: comply with Australia's health and quarantine requirements",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/maritime-crew-988"
+        },
+        {
+          "value": "Meet our character requirement: You must meet our [character requirement](https://immi.homeaffairs.gov.au/help-support/meeting-our-requirements/character).",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/maritime-crew-988"
+        },
+        {
+          "value": "What you must do on your visa: You must follow all visa conditions and Australian laws.",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/maritime-crew-988"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/maritime-crew-988",
+          "amount_local": "Not specified",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/maritime-crew-988",
+          "amount_usd": "Not specified",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/maritime-crew-988"
+        }
+      ],
+      "processing_timelines": "12 months",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/maritime-crew-988",
+      "contact_information": "with your visa | with your visa, before you pay someone, read information on [Who can help with your visa application](https://immi.homeaffairs.gov.au/help-support/who-can-help-with-your-application/overview). | number",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/maritime-crew-988",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/maritime-crew-988"
+        }
+      ]
+    },
+    {
+      "visa_name": "Bridging visa B – BVB – (subclass 020)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/bridging-visa-b-020",
+      "eligibility_requirements": [
+        {
+          "value": "You must: be in Australia when you apply for this visa",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/bridging-visa-b-020"
+        },
+        {
+          "value": "You must: be the holder of a BVA or a BVB",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/bridging-visa-b-020"
+        },
+        {
+          "value": "What you must do on this visa (your obligations): comply with all Australian laws",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/bridging-visa-b-020"
+        },
+        {
+          "value": "What you must do on this visa (your obligations): comply with the conditions of your current visa",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/bridging-visa-b-020"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/bridging-visa-b-020",
+          "amount_local": "190",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/bridging-visa-b-020",
+          "amount_usd": "127.3",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/bridging-visa-b-020"
+        },
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/bridging-visa-b-020",
+          "amount_local": "190",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/bridging-visa-b-020",
+          "amount_usd": "127.3",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/bridging-visa-b-020"
+        }
+      ],
+      "processing_timelines": "28 days",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/bridging-visa-b-020",
+      "contact_information": "-support/departmental-forms/online-forms/bridging-a-b-c-visa-application-online) ​.​ | with your visa | number",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/bridging-visa-b-020",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/bridging-visa-b-020"
+        },
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/bridging-visa-b-020"
+        }
+      ]
+    },
+    {
+      "visa_name": "Remaining Relative visa (subclass 835)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/remaining-relative-835",
+      "eligibility_requirements": [
+        {
+          "value": "You must: be in Australia when you apply for this visa and when we decide your application",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/remaining-relative-835"
+        },
+        {
+          "value": "You must: be a remaining relative of an Australian citizen or Permanent resident or Eligible New Zealand citizen",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/remaining-relative-835"
+        },
+        {
+          "value": "What you must do when you have this visa: You and your family members must obey all Australian laws.",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/remaining-relative-835"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/remaining-relative-835",
+          "amount_local": "5280",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/remaining-relative-835",
+          "amount_usd": "3537.6",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/remaining-relative-835"
+        }
+      ],
+      "processing_timelines": "12 months",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/remaining-relative-835",
+      "contact_information": "with your visa | with your visa, before you pay someone, read information on [Who can help with your visa application](https://immi.homeaffairs.gov.au/help-support/who-can-help-with-your-application/overview). | ed instalments. Pay the first instalment when you apply and the second instalment when we ask you to.",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/remaining-relative-835",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/remaining-relative-835"
+        },
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/remaining-relative-835"
+        }
+      ]
+    },
+    {
+      "visa_name": "Refugee visas (subclass 200, 201, 203 and 204)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/refugee-200",
+      "eligibility_requirements": [
+        {
+          "value": "You must: enter Australia by the date on your visa",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/refugee-200"
+        },
+        {
+          "value": "You must: you and your family members must obey all Australian laws",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/refugee-200"
+        },
+        {
+          "value": "Meet our health requirement: You and any family members who apply for the visa with you must meet our [health requirement](https://immi.homeaffairs.gov.au/help-support/meeting-our-requirements/health).",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/refugee-200"
+        },
+        {
+          "value": "Meet our character requirement: You and any family members who apply for the visa with you must meet our [character requirement](https://immi.homeaffairs.gov.au/help-support/meeting-our-requirements/character).",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/refugee-200"
+        },
+        {
+          "value": "What you must do on your visa: You and your family members must obey all Australian laws.",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/refugee-200"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/refugee-200",
+          "amount_local": "Not specified",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/refugee-200",
+          "amount_usd": "Not specified",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/refugee-200"
+        }
+      ],
+      "processing_timelines": "s\n\nThe decision process could take many months",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/refugee-200",
+      "contact_information": "Program. | with your visa | number",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/refugee-200",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/refugee-200"
+        },
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/refugee-200"
+        }
+      ]
+    },
+    {
+      "visa_name": "Transit visa (subclass 771)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/transit-771",
+      "eligibility_requirements": [
+        {
+          "value": "You must: be outside Australia",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/transit-771"
+        },
+        {
+          "value": "You must: be transiting Australia, have evidence of a confirmed booking to travel to another country within 72 hours of arriving in Australia with the correct documents to enter that country",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/transit-771"
+        },
+        {
+          "value": "Meet our health requirement: You must meet our [health requirement](https://immi.homeaffairs.gov.au/help-support/meeting-our-requirements/health).",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/transit-771"
+        },
+        {
+          "value": "Meet our character requirement: You must meet our [character requirement](https://immi.homeaffairs.gov.au/help-support/meeting-our-requirements/character).",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/transit-771"
+        },
+        {
+          "value": "Meet our biometrics requirement: You must meet our [biometrics requirement](https://immi.homeaffairs.gov.au/help-support/meeting-our-requirements/biometrics).",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/transit-771"
+        },
+        {
+          "value": "What you must do on this visa: You must meet all visa conditions and obey Australian laws. See your visa grant letter or your conditions in [VEVO](https://immi.homeaffairs.gov.au/visas/already-have-a-visa/check-visa-details-and-con",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/transit-771"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/transit-771",
+          "amount_local": "Not specified",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/transit-771",
+          "amount_usd": "Not specified",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/transit-771"
+        }
+      ],
+      "processing_timelines": "72 hours",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/transit-771",
+      "contact_information": "with your visa | with your visa, before you pay someone, read information on [Who can help with your visa application](https://immi.homeaffairs.gov.au/help-support/who-can-help-with-your-application/overview). | y necessary treatment, including transport.",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/transit-771",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/transit-771"
+        }
+      ]
+    },
+    {
+      "visa_name": "Adoption visa (subclass 102)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/adoption-102",
+      "eligibility_requirements": [
+        {
+          "value": "Eligibility requirements for expatriate adoptees entering Australia: If the child is adopted through an expatriate adoption, and you (the adoptive parent) are considering bringing them to Australia, then, amongst other criteria, all of the following must be met:",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/adoption-102"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/adoption-102",
+          "amount_local": "3235",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/adoption-102",
+          "amount_usd": "2167.45",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/adoption-102"
+        }
+      ],
+      "processing_timelines": "12 months",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/adoption-102",
+      "contact_information": "with your visa | with your visa, before you pay someone, read information on [who can help with your visa application](https://immi.homeaffairs.gov.au/help-support/who-can-help-with-your-application/overview). | [info@intercountryadoption.gov.au](mailto:info@intercountryadoption.gov.au)",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/adoption-102",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/adoption-102"
+        },
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/adoption-102"
+        }
+      ]
+    },
+    {
+      "visa_name": "Bridging visa C – BVC – (subclass 030)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/bridging-visa-c-030",
+      "eligibility_requirements": [
+        {
+          "value": "You must:: be in Australia when you apply",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/bridging-visa-c-030"
+        },
+        {
+          "value": "You must:: if you meet all the eligibility requirements, be in Australia at time of grant",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/bridging-visa-c-030"
+        },
+        {
+          "value": "What you must do on this visa (your obligations): comply with all Australian laws including all visa conditions applied to your visa",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/bridging-visa-c-030"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/bridging-visa-c-030",
+          "amount_local": "Not specified",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/bridging-visa-c-030",
+          "amount_usd": "Not specified",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/bridging-visa-c-030"
+        }
+      ],
+      "processing_timelines": "28 days",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/bridging-visa-c-030",
+      "contact_information": "-support/departmental-forms/online-forms/bridging-a-b-c-visa-application-online) ​.​ | with your visa | y as part of applying for a substantive visa. We may grant you a BVC if you have made a valid application in Australia for a substantive visa but you do not already hold a substantive visa.",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/bridging-visa-c-030",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/bridging-visa-c-030"
+        }
+      ]
+    },
+    {
+      "visa_name": "Student visa (subclass 500)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/student-500",
+      "eligibility_requirements": [
+        {
+          "value": "You must: apply online in or outside Australia",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/student-500"
+        },
+        {
+          "value": "You must: be enrolled in a course of study in Australia and hold a valid Confirmation of Enrolment (CoE) when we decide your visa",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/student-500"
+        },
+        {
+          "value": "Student visa English language requirements: If required, provide evidence that you have either:",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/student-500"
+        },
+        {
+          "value": "What you must do when you have this visa: You and your family members who apply with you must meet all visa conditions and obey Australian laws.",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/student-500"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/student-500",
+          "amount_local": "2000",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/student-500",
+          "amount_usd": "1340.0",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/student-500"
+        }
+      ],
+      "processing_timelines": "48 hours",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/student-500",
+      "contact_information": "us process your application faster - [Applying for a student visa](https://immi.homeaffairs.gov.au/check-twice-submit-once/student-visa). | -subsite/files/ministerial-direction-111.pdf), and applications lodged on or after 14 November 2025 are processed according to [Ministerial Direction 115 (851KB PDF)](https://immi.homeaffairs.gov.au/support-subsite/files/ministerial-direction-115.pdf). For more information about visa processing times for applications lodged by students outside Australia, visit [Student visa processing priorities](https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-processing-times/visa-processing-priorities/student-visa). | y as the fee exemption must be checked first. You do not need to contact the department if you have applied for a fee waiver in Australia and have not been issued a Bridging visa immediately.",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/student-500",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/student-500"
+        },
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/student-500"
+        },
+        {
+          "value": "Changed",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/student-500"
+        },
+        {
+          "value": "Updated",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/student-500"
+        }
+      ]
+    },
+    {
+      "visa_name": "Partner visa (subclass 820 801)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/partner-onshore",
+      "eligibility_requirements": [
+        {
+          "value": "Basic Eligibility: In most circumstances, you must be the spouse (married) or de facto partner of an:",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/partner-onshore"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/partner-onshore",
+          "amount_local": "9365",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/partner-onshore",
+          "amount_usd": "6274.55",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/partner-onshore"
+        }
+      ],
+      "processing_timelines": "Not specified",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/partner-onshore",
+      "contact_information": "Department of Home Affairs, Global Service Centre",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/partner-onshore",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/partner-onshore"
+        }
+      ]
+    },
+    {
+      "visa_name": "Child visa (subclass 101)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/child-101",
+      "eligibility_requirements": [
+        {
+          "value": "Not specified",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/child-101"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/child-101",
+          "amount_local": "3235",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/child-101",
+          "amount_usd": "2167.45",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/child-101"
+        }
+      ],
+      "processing_timelines": "12 months",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/child-101",
+      "contact_information": "with your visa | with your visa, before you pay someone, read information on [who can help with your visa application](https://immi.homeaffairs.gov.au/help-support/who-can-help-with-your-application/overview). | number",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/child-101",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/child-101"
+        },
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/child-101"
+        }
+      ]
+    },
+    {
+      "visa_name": "Pacific Engagement Visa (subclass 192)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/pacific-engagement",
+      "eligibility_requirements": [
+        {
+          "value": "Not specified",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/pacific-engagement"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/pacific-engagement",
+          "amount_local": "Not specified",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/pacific-engagement",
+          "amount_usd": "Not specified",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/pacific-engagement"
+        }
+      ],
+      "processing_timelines": "Not specified",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/pacific-engagement",
+      "contact_information": "Department of Home Affairs, Global Service Centre",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/pacific-engagement",
+      "status_labels": []
+    },
+    {
+      "visa_name": "Prospective Marriage visa (subclass 300)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/prospective-marriage-300",
+      "eligibility_requirements": [
+        {
+          "value": "You must: be 18 years old or older",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/prospective-marriage-300"
+        },
+        {
+          "value": "You must: have a sponsor who is an Australian citizen, permanent resident or eligible New Zealand citizen",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/prospective-marriage-300"
+        },
+        {
+          "value": "Meet relationship requirements: In most cases, your prospective spouse must be an:",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/prospective-marriage-300"
+        },
+        {
+          "value": "Meet our health requirement: You and any family members who apply for the visa with you must meet our [health requirement](https://immi.homeaffairs.gov.au/help-support/meeting-our-requirements/health). We might ask for health inf",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/prospective-marriage-300"
+        },
+        {
+          "value": "Meet our character requirement: You and any family members aged 16 years and over who apply for the visa with you must meet our [character requirements](https://immi.homeaffairs.gov.au/help-support/meeting-our-requirements/character",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/prospective-marriage-300"
+        },
+        {
+          "value": "What you must do on this visa: You and your family members must meet all visa conditions and obey Australian laws.",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/prospective-marriage-300"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/prospective-marriage-300",
+          "amount_local": "9365",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/prospective-marriage-300",
+          "amount_usd": "6274.55",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/prospective-marriage-300"
+        }
+      ],
+      "processing_timelines": "15 months",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/prospective-marriage-300",
+      "contact_information": "with your visa | with your visa, make sure you read information on [Who can help with your visa application](https://immi.homeaffairs.gov.au/help-support/who-can-help-with-your-application/overview). | number",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/prospective-marriage-300",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/prospective-marriage-300"
+        },
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/prospective-marriage-300"
+        },
+        {
+          "value": "Changed",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/prospective-marriage-300"
+        },
+        {
+          "value": "Updated",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/prospective-marriage-300"
+        }
+      ]
+    },
+    {
+      "visa_name": "Bridging visa E – BVE – (subclass 050 and 051)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/bridging-visa-e-050-051",
+      "eligibility_requirements": [
+        {
+          "value": "Basic Eligibility: comply with all Australian laws",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/bridging-visa-e-050-051"
+        },
+        {
+          "value": "Basic Eligibility: be in Australia when the application is decided (this also applies to anyone included in your application)",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/bridging-visa-e-050-051"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/bridging-visa-e-050-051",
+          "amount_local": "Not specified",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/bridging-visa-e-050-051",
+          "amount_usd": "Not specified",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/bridging-visa-e-050-051"
+        }
+      ],
+      "processing_timelines": "Not specified",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/bridging-visa-e-050-051",
+      "contact_information": "Department of Home Affairs, Global Service Centre",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/bridging-visa-e-050-051",
+      "status_labels": []
+    },
+    {
+      "visa_name": "Temporary Graduate visa (subclass 485)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-graduate-485/",
+      "eligibility_requirements": [
+        {
+          "value": "Not specified",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-graduate-485/"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-graduate-485/",
+          "amount_local": "2300",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-graduate-485/",
+          "amount_usd": "1541.0",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-graduate-485/"
+        }
+      ],
+      "processing_timelines": "6 months",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-graduate-485/",
+      "contact_information": "Department of Home Affairs, Global Service Centre",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-graduate-485/",
+      "status_labels": [
+        {
+          "value": "Changed",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-graduate-485/"
+        }
+      ]
+    },
+    {
+      "visa_name": "Contributory Aged Parent visa (subclass 864)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-aged-parent-864",
+      "eligibility_requirements": [
+        {
+          "value": "You must: have an eligible child who is a settled Australian citizen, Australian permanent resident or eligible New Zealand citizen",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-aged-parent-864"
+        },
+        {
+          "value": "You must: be old enough to receive the age pension in Australia",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-aged-parent-864"
+        },
+        {
+          "value": "What you must do when you have this visa: You and your dependants must meet all visa conditions and obey all Australian laws.",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-aged-parent-864"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-aged-parent-864",
+          "amount_local": "48640",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-aged-parent-864",
+          "amount_usd": "32588.8",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-aged-parent-864"
+        }
+      ],
+      "processing_timelines": "28 days",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-aged-parent-864",
+      "contact_information": "with your visa | with your visa, before you pay someone, read information on [who can help with your visa application](https://immi.homeaffairs.gov.au/help-support/who-can-help-with-your-application/overview). | ed instalments. Pay the first instalment when you apply. Pay the second instalment when we ask you to.",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-aged-parent-864",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-aged-parent-864"
+        },
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-aged-parent-864"
+        },
+        {
+          "value": "Changed",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-aged-parent-864"
+        }
+      ]
+    },
+    {
+      "visa_name": "Partner (Provisional and Migrant) visa (subclass 309 100)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/partner-offshore",
+      "eligibility_requirements": [
+        {
+          "value": "Basic Eligibility: You must be in a genuine relationship with your spouse or de facto partner who is:",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/partner-offshore"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/partner-offshore",
+          "amount_local": "9365",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/partner-offshore",
+          "amount_usd": "6274.55",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/partner-offshore"
+        }
+      ],
+      "processing_timelines": "Not specified",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/partner-offshore",
+      "contact_information": "Department of Home Affairs, Global Service Centre",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/partner-offshore",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/partner-offshore"
+        }
+      ]
+    },
+    {
+      "visa_name": "Carer visa (subclass 116)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/carer-116",
+      "eligibility_requirements": [
+        {
+          "value": "You must: be outside Australia when you apply and when we decide your application",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/carer-116"
+        },
+        {
+          "value": "You must: be sponsored by your relative or their partner for your first 2 years in Australia",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/carer-116"
+        },
+        {
+          "value": "What you must do on your visa: You and your family members must meet all visa conditions and obey Australian laws.",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/carer-116"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/carer-116",
+          "amount_local": "2175",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/carer-116",
+          "amount_usd": "1457.25",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/carer-116"
+        }
+      ],
+      "processing_timelines": "12 months",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/carer-116",
+      "contact_information": "with your visa | with your visa, before you pay someone, read information on [who can help with your visa application](https://immi.homeaffairs.gov.au/help-support/who-can-help-with-your-application/overview). | ed instalments.",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/carer-116",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/carer-116"
+        },
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/carer-116"
+        }
+      ]
+    },
+    {
+      "visa_name": "New Zealand Citizen Family Relationship (temporary) visa (subclass 461)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/new-zealand-citizen-family-relationship-temporary-461",
+      "eligibility_requirements": [
+        {
+          "value": "You must: not be a New Zealand citizen at the time of application",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/new-zealand-citizen-family-relationship-temporary-461"
+        },
+        {
+          "value": "You must: meet certain [eligibility criteria](https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/new-zealand-citizen-family-relationship-temporary-461#Eligibility)",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/new-zealand-citizen-family-relationship-temporary-461"
+        },
+        {
+          "value": "What you must do on your visa: You and your family members must meet all visa conditions and follow Australian laws. See your conditions in your grant letter or in [VEVO](https://immi.homeaffairs.gov.au/visas/already-have-a-visa/ch",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/new-zealand-citizen-family-relationship-temporary-461"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/new-zealand-citizen-family-relationship-temporary-461",
+          "amount_local": "445",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/new-zealand-citizen-family-relationship-temporary-461",
+          "amount_usd": "298.15",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/new-zealand-citizen-family-relationship-temporary-461"
+        }
+      ],
+      "processing_timelines": "12 months",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/new-zealand-citizen-family-relationship-temporary-461",
+      "contact_information": "with your visa | with your visa, before you pay someone, read information on [Who can help with your visa application](https://immi.homeaffairs.gov.au/help-support/who-can-help-with-your-application/overview). | y granted a [Subclass 444 visa](https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/special-category-visa-subclass-444).",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/new-zealand-citizen-family-relationship-temporary-461",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/new-zealand-citizen-family-relationship-temporary-461"
+        },
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/new-zealand-citizen-family-relationship-temporary-461"
+        },
+        {
+          "value": "Changed",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/new-zealand-citizen-family-relationship-temporary-461"
+        }
+      ]
+    },
+    {
+      "visa_name": "Skilled Employer Sponsored Regional (provisional) visa (subclass 494)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-employer-sponsored-regional-494",
+      "eligibility_requirements": [
+        {
+          "value": "Not specified",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-employer-sponsored-regional-494"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-employer-sponsored-regional-494",
+          "amount_local": "4910",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-employer-sponsored-regional-494",
+          "amount_usd": "3289.7",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-employer-sponsored-regional-494"
+        }
+      ],
+      "processing_timelines": "Not specified",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-employer-sponsored-regional-494",
+      "contact_information": "Department of Home Affairs, Global Service Centre",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-employer-sponsored-regional-494",
+      "status_labels": []
+    },
+    {
+      "visa_name": "Contributory Aged Parent (Temporary) visa (subclass 884)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-aged-parent-temporary-884",
+      "eligibility_requirements": [
+        {
+          "value": "You must: have an eligible child who is a settled Australian citizen, Australian permanent resident or eligible New Zealand citizen",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-aged-parent-temporary-884"
+        },
+        {
+          "value": "You must: be old enough to receive the age pension in Australia",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-aged-parent-temporary-884"
+        },
+        {
+          "value": "What you must do when you have this visa: You and your family members must meet all visa conditions and obey all Australian laws.",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-aged-parent-temporary-884"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-aged-parent-temporary-884",
+          "amount_local": "34170",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-aged-parent-temporary-884",
+          "amount_usd": "22893.9",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-aged-parent-temporary-884"
+        }
+      ],
+      "processing_timelines": "12 months",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-aged-parent-temporary-884",
+      "contact_information": ")\n- apply for a permanent [Contributory Aged Parent (subclass 864) visa](https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-aged-parent-864). | with your visa | ed instalments. Pay the first instalment when you apply. Pay the second instalment when we ask you to.",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-aged-parent-temporary-884",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-aged-parent-temporary-884"
+        },
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-aged-parent-temporary-884"
+        }
+      ]
+    },
+    {
+      "visa_name": "Skilled Regional visa (subclass 887)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-regional-887",
+      "eligibility_requirements": [
+        {
+          "value": "You must: hold an [eligible visa](https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-regional-887#Eligibility) or have held an eligible visa that expired outside Australia during the concession period",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-regional-887"
+        },
+        {
+          "value": "You must: have lived for at least 2 years and worked full time for at least 1 year in a specified regional area, unless [COVID-19 concessions](https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-regional-887#Eligibility) apply",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-regional-887"
+        },
+        {
+          "value": "What you must do on this visa: You and your family members must obey Australian laws.",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-regional-887"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-regional-887",
+          "amount_local": "505",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-regional-887",
+          "amount_usd": "338.35",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-regional-887"
+        }
+      ],
+      "processing_timelines": "9 months",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-regional-887",
+      "contact_information": "with your visa | with your visa, before you pay someone, read information on [Who can help with your visa application](https://immi.homeaffairs.gov.au/help-support/who-can-help-with-your-application/overview). | ed the second instalment charge. Pay it only when we ask you to. We ask for the charge only if we are going to grant the visa.",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-regional-887",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-regional-887"
+        },
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-regional-887"
+        }
+      ]
+    },
+    {
+      "visa_name": "Regional Sponsored Migration Scheme (subclass 187)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/regional-sponsor-migration-scheme-187",
+      "eligibility_requirements": [
+        {
+          "value": "Not specified",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/regional-sponsor-migration-scheme-187"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/regional-sponsor-migration-scheme-187",
+          "amount_local": "Not specified",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/regional-sponsor-migration-scheme-187",
+          "amount_usd": "Not specified",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/regional-sponsor-migration-scheme-187"
+        }
+      ],
+      "processing_timelines": "Not specified",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/regional-sponsor-migration-scheme-187",
+      "contact_information": "Department of Home Affairs, Global Service Centre",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/regional-sponsor-migration-scheme-187",
+      "status_labels": []
+    },
+    {
+      "visa_name": "Orphan Relative (subclass 837)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/orphan-relative-837",
+      "eligibility_requirements": [
+        {
+          "value": "Not specified",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/orphan-relative-837"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/orphan-relative-837",
+          "amount_local": "1980",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/orphan-relative-837",
+          "amount_usd": "1326.6",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/orphan-relative-837"
+        }
+      ],
+      "processing_timelines": "12 months",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/orphan-relative-837",
+      "contact_information": "with your visa | with your visa, before you pay someone, read information on [Who can help with your visa application](https://immi.homeaffairs.gov.au/help-support/who-can-help-with-your-application/overview). | number",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/orphan-relative-837",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/orphan-relative-837"
+        },
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/orphan-relative-837"
+        }
+      ]
+    },
+    {
+      "visa_name": "Visitor (subclass 600)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/visitor-600",
+      "eligibility_requirements": [
+        {
+          "value": "Basic Eligibility: be a genuine visitor",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/visitor-600"
+        },
+        {
+          "value": "Basic Eligibility: have enough funds to support your stay and leave",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/visitor-600"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/visitor-600",
+          "amount_local": "200",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/visitor-600",
+          "amount_usd": "134.0",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/visitor-600"
+        },
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/visitor-600",
+          "amount_local": "200",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/visitor-600",
+          "amount_usd": "134.0",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/visitor-600"
+        }
+      ],
+      "processing_timelines": "12 months",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/visitor-600",
+      "contact_information": "your stay and leave | us process your application faster](https://immi.homeaffairs.gov.au/check-twice-submit-once).",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/visitor-600",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/visitor-600"
+        }
+      ]
+    },
+    {
+      "visa_name": "Skilled Regional (provisional) visa (subclass 489)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-regional-provisional-489",
+      "eligibility_requirements": [
+        {
+          "value": "Not specified",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-regional-provisional-489"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-regional-provisional-489",
+          "amount_local": "4770",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-regional-provisional-489",
+          "amount_usd": "3195.9",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-regional-provisional-489"
+        }
+      ],
+      "processing_timelines": "Not specified",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-regional-provisional-489",
+      "contact_information": "Department of Home Affairs, Global Service Centre",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-regional-provisional-489",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-regional-provisional-489"
+        }
+      ]
+    },
+    {
+      "visa_name": "Skilled Work Regional (Provisional) visa (subclass 491)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-work-regional-provisional-491",
+      "eligibility_requirements": [
+        {
+          "value": "Not specified",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-work-regional-provisional-491"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-work-regional-provisional-491",
+          "amount_local": "4910",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-work-regional-provisional-491",
+          "amount_usd": "3289.7",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-work-regional-provisional-491"
+        }
+      ],
+      "processing_timelines": "Not specified",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-work-regional-provisional-491",
+      "contact_information": "Department of Home Affairs, Global Service Centre",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-work-regional-provisional-491",
+      "status_labels": []
+    },
+    {
+      "visa_name": "Dependent Child visa (subclass 445)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/dependent-child-445",
+      "eligibility_requirements": [
+        {
+          "value": "What you must do when you have this visa: Once we grant the child this visa, they must apply for the same permanent Partner visa as their parent.",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/dependent-child-445"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/dependent-child-445",
+          "amount_local": "3235",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/dependent-child-445",
+          "amount_usd": "2167.45",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/dependent-child-445"
+        }
+      ],
+      "processing_timelines": "12 months",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/dependent-child-445",
+      "contact_information": "with your visa | with your visa, before you pay someone, read information on [who can help with your visa application](https://immi.homeaffairs.gov.au/help-support/who-can-help-with-your-application/overview). | number",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/dependent-child-445",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/dependent-child-445"
+        },
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/dependent-child-445"
+        }
+      ]
+    },
+    {
+      "visa_name": "Business Innovation and Investment (provisional) visa (subclass 188)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/business-innovation-and-investment-188",
+      "eligibility_requirements": [
+        {
+          "value": "Basic Eligibility: Submit expression of interest (EOI) in SkillSelect",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/business-innovation-and-investment-188"
+        },
+        {
+          "value": "Basic Eligibility: Nominated by a State or Territory government agency or Austrade",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/business-innovation-and-investment-188"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/business-innovation-and-investment-188",
+          "amount_local": "10000",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/business-innovation-and-investment-188",
+          "amount_usd": "6700.0",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/business-innovation-and-investment-188"
+        }
+      ],
+      "processing_timelines": "3 months",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/business-innovation-and-investment-188",
+      "contact_information": "Department of Home Affairs, Global Service Centre",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/business-innovation-and-investment-188",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/business-innovation-and-investment-188"
+        }
+      ]
+    },
+    {
+      "visa_name": "Permanent Residence (Skilled Regional) visa (subclass 191)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-regional-191",
+      "eligibility_requirements": [
+        {
+          "value": "Not specified",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-regional-191"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-regional-191",
+          "amount_local": "505",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-regional-191",
+          "amount_usd": "338.35",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-regional-191"
+        }
+      ],
+      "processing_timelines": "Not specified",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-regional-191",
+      "contact_information": "ing documents\n- how quickly you respond to requests for more information\n- how long it takes to perform required checks on the supporting information provided\n- how long it takes to receive information from external agencies, particularly for health, character, and national security requirements\n- how many places are available in the migration program. | ing documents\n- how quickly you respond to requests for more information\n- how long it takes to perform required checks on the supporting information provided\n- how long it takes to receive information from external agencies, particularly for health, character, and national security requirements\n- how many places are available in the migration program.",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-regional-191",
+      "status_labels": []
+    },
+    {
+      "visa_name": "Resolution of Status visa (subclass 851)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/resolution-of-status-851#Overview",
+      "eligibility_requirements": [
+        {
+          "value": "You must: be in Australia at time of application lodgement",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/resolution-of-status-851#Overview"
+        },
+        {
+          "value": "You must: be in Australia at time of visa grant",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/resolution-of-status-851#Overview"
+        },
+        {
+          "value": "Requirements: All applicants need to meet health, character and security requirements. Any applicants aged 18 or over must sign the Australian Values Statement.",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/resolution-of-status-851#Overview"
+        },
+        {
+          "value": "What you must do on this visa: You and your family members must obey all Australian laws.",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/resolution-of-status-851#Overview"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/resolution-of-status-851#Overview",
+          "amount_local": "Not specified",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/resolution-of-status-851#Overview",
+          "amount_usd": "Not specified",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/resolution-of-status-851#Overview"
+        }
+      ],
+      "processing_timelines": "12 months",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/resolution-of-status-851#Overview",
+      "contact_information": "the legal service provider in your state or territory. For more information see the | specialist community legal service providers (listed in the [Factsheet](https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/resolution-of-status-851#About)). They can also contact the Department’s [Status Resolution Service](https://immi.homeaffairs.gov.au/what-we-do/status-resolution-service) for assistance. | y converted to a RoS visa application. This includes subsequent TPV or SHEV applications.",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/resolution-of-status-851#Overview",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/resolution-of-status-851#Overview"
+        },
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/resolution-of-status-851#Overview"
+        }
+      ]
+    },
+    {
+      "visa_name": "Medical Treatment visa (subclass 602)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/medical-treatment-602",
+      "eligibility_requirements": [
+        {
+          "value": "You must: comply with all visa conditions and follow Australian laws",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/medical-treatment-602"
+        },
+        {
+          "value": "You must: leave before your visa ends",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/medical-treatment-602"
+        },
+        {
+          "value": "Meet our health requirement: You must meet our [health requirement](https://immi.homeaffairs.gov.au/help-support/meeting-our-requirements/health).",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/medical-treatment-602"
+        },
+        {
+          "value": "Meet our character requirement: You must meet our [character requirement](https://immi.homeaffairs.gov.au/help-support/meeting-our-requirements/character).",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/medical-treatment-602"
+        },
+        {
+          "value": "What you must do on this visa: You must meet all visa conditions and obey all Australian laws.",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/medical-treatment-602"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/medical-treatment-602",
+          "amount_local": "380",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/medical-treatment-602",
+          "amount_usd": "254.6",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/medical-treatment-602"
+        }
+      ],
+      "processing_timelines": "3 months",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/medical-treatment-602",
+      "contact_information": "someone needing medical treatment who holds this visa. It is also for people who are donating an organ. | someone who holds this visa, if they are an organ donor or having medical treatment\n- be granted single entry or multiple entries to Australia depending on your situation\n- study for up to 3 months (or longer if you meet the exemption criteria). | number",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/medical-treatment-602",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/medical-treatment-602"
+        },
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/medical-treatment-602"
+        }
+      ]
+    },
+    {
+      "visa_name": "Contributory Parent (Temporary) visa (subclass 173)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-parent-temporary-173",
+      "eligibility_requirements": [
+        {
+          "value": "You must: have an eligible child who is a settled Australian citizen, Australian Permanent resident or eligible New Zealand citizen",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-parent-temporary-173"
+        },
+        {
+          "value": "You must: meet all applicable visa conditions and follow Australian law",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-parent-temporary-173"
+        },
+        {
+          "value": "What you must do when you have this visa: You and your family members must meet all visa conditions and obey all Australian laws.",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-parent-temporary-173"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-parent-temporary-173",
+          "amount_local": "32525",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-parent-temporary-173",
+          "amount_usd": "21791.75",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-parent-temporary-173"
+        }
+      ],
+      "processing_timelines": "12 months",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-parent-temporary-173",
+      "contact_information": ")\n- apply for a permanent [Contributory Parent visa (subclass 143)](https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-parent-143). | with your visa | ed instalments. Pay the first instalment when you apply. Pay the second instalment when we ask you to.",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-parent-temporary-173",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-parent-temporary-173"
+        },
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/contributory-parent-temporary-173"
+        }
+      ]
+    },
+    {
+      "visa_name": "Global Special Humanitarian (subclass 202)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/global-special-humanitarian-202",
+      "eligibility_requirements": [
+        {
+          "value": "You must: enter Australia by the date on your visa",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/global-special-humanitarian-202"
+        },
+        {
+          "value": "What you must do on your visa: You and your family members must obey all Australian laws.",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/global-special-humanitarian-202"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/global-special-humanitarian-202",
+          "amount_local": "Not specified",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/global-special-humanitarian-202",
+          "amount_usd": "Not specified",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/global-special-humanitarian-202"
+        }
+      ],
+      "processing_timelines": "60 days",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/global-special-humanitarian-202",
+      "contact_information": "Program](https://immi.homeaffairs.gov.au/what-we-do/refugee-and-humanitarian-program/community-support-program). | with your visa | number",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/global-special-humanitarian-202",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/global-special-humanitarian-202"
+        },
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/global-special-humanitarian-202"
+        }
+      ]
+    },
+    {
+      "visa_name": "Protection visa (subclass 866)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/protection-866",
+      "eligibility_requirements": [
+        {
+          "value": "You must: engage [Australia’s protection obligations](https://immi.homeaffairs.gov.au/what-we-do/refugee-and-humanitarian-program/about-the-program/seek-protection-in-australia/australia-protection-obligations) (or be a member of the same family unit of someone who does)",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/protection-866"
+        },
+        {
+          "value": "You must: have arrived legally in Australia on a valid visa",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/protection-866"
+        },
+        {
+          "value": "Meet our security requirements: As part of the application process, we will assess if you meet Australia’s security requirements for the grant of a protection visa.",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/protection-866"
+        },
+        {
+          "value": "Meet our character requirements: You must meet certain [character requirements](https://immi.homeaffairs.gov.au/help-support/meeting-our-requirements/character).",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/protection-866"
+        },
+        {
+          "value": "Evidentiary requirements: Provide any documents/evidence to support the relationship between each person in the application (eg. birth certificates, notarial certificates, marriage certificates, financial documents and underta",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/protection-866"
+        },
+        {
+          "value": "What you must do on this visa: You and your family members must obey all Australian laws.",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/protection-866"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/protection-866",
+          "amount_local": "50",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/protection-866",
+          "amount_usd": "33.5",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/protection-866"
+        },
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/protection-866",
+          "amount_local": "50",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/protection-866",
+          "amount_usd": "33.5",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/protection-866"
+        }
+      ],
+      "processing_timelines": "12 months",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/protection-866",
+      "contact_information": "with your visa | with your visa, before you pay someone, read information on [Who can help with your visa application](https://immi.homeaffairs.gov.au/help-support/who-can-help-with-your-application/overview). | y grant them the same visas their parents hold at the time of the child’s birth.",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/protection-866",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/protection-866"
+        }
+      ]
+    },
+    {
+      "visa_name": "Distinguished Talent visa (subclass 124)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/distinguished-talent-124",
+      "eligibility_requirements": [
+        {
+          "value": "You must: be outside Australia when this visa is granted",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/distinguished-talent-124"
+        },
+        {
+          "value": "You must: have an internationally recognised record of exceptional and outstanding achievement in one of the following areas (and still be prominent in the area):",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/distinguished-talent-124"
+        },
+        {
+          "value": "What you must do on this visa: You and your family members must obey all Australian laws.",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/distinguished-talent-124"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/distinguished-talent-124",
+          "amount_local": "4110",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/distinguished-talent-124",
+          "amount_usd": "2753.7",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/distinguished-talent-124"
+        }
+      ],
+      "processing_timelines": "12 months",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/distinguished-talent-124",
+      "contact_information": "-support/meeting-our-requirements/health) and [character](https://immi.homeaffairs.gov.au/help-support/meeting-our-requirements/character) requirements. | -support/meeting-our-requirements/english-language/functional-english). This charge is called the second instalment. We will tell you when to pay the second instalment. | ed the second instalment. We will tell you when to pay the second instalment.",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/distinguished-talent-124",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/distinguished-talent-124"
+        },
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/distinguished-talent-124"
+        }
+      ]
+    },
+    {
+      "visa_name": "Special Category visa (subclass 444)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/special-category-visa-subclass-444",
+      "eligibility_requirements": [
+        {
+          "value": "You must: remain a [New Zealand citizen](https://immi.homeaffairs.gov.au/entering-and-leaving-australia/new-zealand-citizens)",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/special-category-visa-subclass-444"
+        },
+        {
+          "value": "You must: continue to meet the [character](https://immi.homeaffairs.gov.au/help-support/meeting-our-requirements/character) requirements.",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/special-category-visa-subclass-444"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/special-category-visa-subclass-444",
+          "amount_local": "Not specified",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/special-category-visa-subclass-444",
+          "amount_usd": "Not specified",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/special-category-visa-subclass-444"
+        }
+      ],
+      "processing_timelines": "Not specified",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/special-category-visa-subclass-444",
+      "contact_information": "-support/meeting-our-requirements/character) requirements. | -support/departmental-forms/online-forms/special-category-visa). If we grant you the SCV after you have entered Australia the grant date will be the date of the decision. We can't backdate it to your original entry date. | y by operation of law at the time of their birth. Children who meet these circumstances can apply for their [proof of citizenship](https://immi.homeaffairs.gov.au/citizenship/certificate).",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/special-category-visa-subclass-444",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/special-category-visa-subclass-444"
+        },
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/special-category-visa-subclass-444"
+        }
+      ]
+    },
+    {
+      "visa_name": "Skills in Demand (subclass 482)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skills-in-demand-visa-subclass-482",
+      "eligibility_requirements": [
+        {
+          "value": "Not specified",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skills-in-demand-visa-subclass-482"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skills-in-demand-visa-subclass-482",
+          "amount_local": "3210",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skills-in-demand-visa-subclass-482",
+          "amount_usd": "2150.7",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skills-in-demand-visa-subclass-482"
+        }
+      ],
+      "processing_timelines": "Not specified",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skills-in-demand-visa-subclass-482",
+      "contact_information": "Department of Home Affairs, Global Service Centre",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skills-in-demand-visa-subclass-482",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skills-in-demand-visa-subclass-482"
+        },
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skills-in-demand-visa-subclass-482"
+        }
+      ]
+    },
+    {
+      "visa_name": "Bridging visa A – BVA - (subclass 010)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/bridging-visa-a-010",
+      "eligibility_requirements": [
+        {
+          "value": "You must:: be in Australia when you apply",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/bridging-visa-a-010"
+        },
+        {
+          "value": "You must:: if you meet all the eligibility requirements, be in Australia at time of grant",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/bridging-visa-a-010"
+        },
+        {
+          "value": "What you must do on this visa (your obligations): comply with all Australian laws including all visa conditions applied to your visa",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/bridging-visa-a-010"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/bridging-visa-a-010",
+          "amount_local": "Not specified",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/bridging-visa-a-010",
+          "amount_usd": "Not specified",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/bridging-visa-a-010"
+        }
+      ],
+      "processing_timelines": "28 days",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/bridging-visa-a-010",
+      "contact_information": "-support/departmental-forms/online-forms/bridging-a-b-c-visa-application-online) ​.​ | with your visa | y as part of applying for a substantive visa. We will tell you if this happens. Check if you already hold a Bridging visa A (BVA) with [VEVO](https://immi.homeaffairs.gov.au/visas/already-have-a-visa/check-visa-details-and-conditions/check-conditions-online).",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/bridging-visa-a-010",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/bridging-visa-a-010"
+        }
+      ]
+    },
+    {
+      "visa_name": "Child visa (subclass 802)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/child-802",
+      "eligibility_requirements": [
+        {
+          "value": "Not specified",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/child-802"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/child-802",
+          "amount_local": "3235",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/child-802",
+          "amount_usd": "2167.45",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/child-802"
+        }
+      ],
+      "processing_timelines": "12 months",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/child-802",
+      "contact_information": "with your visa | with your visa, before you pay someone, read information on [Who can help with your visa application](https://immi.homeaffairs.gov.au/help-support/who-can-help-with-your-application/overview). | number",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/child-802",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/child-802"
+        },
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/child-802"
+        }
+      ]
+    },
+    {
+      "visa_name": "Safe Haven Enterprise visa (subclass 790)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/safe-haven-enterprise-790",
+      "eligibility_requirements": [
+        {
+          "value": "You must: engage [Australia’s protection obligations](https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/protection-866/australias-protection-obligations) (or be a member of the same family unit of someone who does)",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/safe-haven-enterprise-790"
+        },
+        {
+          "value": "You must: meet all other visa requirements, such as health, character, identity and security",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/safe-haven-enterprise-790"
+        },
+        {
+          "value": "Meet our security requirements: As part of the application process, we will assess whether you meet Australia’s security requirements for the grant of a SHEV.",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/safe-haven-enterprise-790"
+        },
+        {
+          "value": "Meet our character requirement: You must meet certain [character requirements](https://immi.homeaffairs.gov.au/help-support/meeting-our-requirements/character).",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/safe-haven-enterprise-790"
+        },
+        {
+          "value": "Evidentiary requirements: Provide any documents/evidence to support the relationship between each person in the application (e.g. birth certificates, notarial certificates, marriage certificates, financial documents and undert",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/safe-haven-enterprise-790"
+        },
+        {
+          "value": "What you must do on this visa: You and your family members must obey all Australian laws.",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/safe-haven-enterprise-790"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/safe-haven-enterprise-790",
+          "amount_local": "50",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/safe-haven-enterprise-790",
+          "amount_usd": "33.5",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/safe-haven-enterprise-790"
+        },
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/safe-haven-enterprise-790",
+          "amount_local": "50",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/safe-haven-enterprise-790",
+          "amount_usd": "33.5",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/safe-haven-enterprise-790"
+        }
+      ],
+      "processing_timelines": "35 days",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/safe-haven-enterprise-790",
+      "contact_information": "with your visa | with your visa, before you pay someone, read information on [Who can help with your visa application](https://immi.homeaffairs.gov.au/help-support/who-can-help-with-your-application/overview). | y granted the same visas their parents hold at the time of the child’s birth.",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/safe-haven-enterprise-790",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/safe-haven-enterprise-790"
+        },
+        {
+          "value": "Changed",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/safe-haven-enterprise-790"
+        },
+        {
+          "value": "Updated",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/safe-haven-enterprise-790"
+        }
+      ]
+    },
+    {
+      "visa_name": "Employer Nomination Scheme (subclass 186)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/employer-nomination-scheme-186",
+      "eligibility_requirements": [
+        {
+          "value": "Basic Eligibility: You must have the necessary skills for the job",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/employer-nomination-scheme-186"
+        },
+        {
+          "value": "Basic Eligibility: You must be nominated by an Australian employer",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/employer-nomination-scheme-186"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/employer-nomination-scheme-186",
+          "amount_local": "4910",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/employer-nomination-scheme-186",
+          "amount_usd": "3289.7",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/employer-nomination-scheme-186"
+        }
+      ],
+      "processing_timelines": "Not specified",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/employer-nomination-scheme-186",
+      "contact_information": "Department of Home Affairs, Global Service Centre",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/employer-nomination-scheme-186",
+      "status_labels": []
+    },
+    {
+      "visa_name": "Temporary Work (International Relations) visa (subclass 403)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-work-403",
+      "eligibility_requirements": [
+        {
+          "value": "Basic Eligibility: Each stream has specific eligibility requirements.",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-work-403"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-work-403",
+          "amount_local": "375",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-work-403",
+          "amount_usd": "251.25",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-work-403"
+        }
+      ],
+      "processing_timelines": "12 months",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-work-403",
+      "contact_information": "letter. | of the Department of Foreign Affairs and Trade (DFAT).",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-work-403",
+      "status_labels": []
+    },
+    {
+      "visa_name": "Special Purpose visa",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/special-purpose-visa",
+      "eligibility_requirements": [
+        {
+          "value": "You must: have a 'prescribed status'. This includes but is not limited to being:",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/special-purpose-visa"
+        },
+        {
+          "value": "What you must do on your visa: The Special Purpose visa is a temporary visa that is only valid as long as you have a 'prescribed status'. If your prescribed status ends, the visa will cease.",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/special-purpose-visa"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/special-purpose-visa",
+          "amount_local": "Not specified",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/special-purpose-visa",
+          "amount_usd": "Not specified",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/special-purpose-visa"
+        }
+      ],
+      "processing_timelines": "Not specified",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/special-purpose-visa",
+      "contact_information": "limit your financial liability. | -support/meeting-our-requirements/health/adequate-health-insurance). | y to people who have a 'prescribed status'.",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/special-purpose-visa",
+      "status_labels": []
+    },
+    {
+      "visa_name": "Temporary Activity visa (subclass 408)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-activity-408",
+      "eligibility_requirements": [
+        {
+          "value": "Not specified",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-activity-408"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-activity-408",
+          "amount_local": "430",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-activity-408",
+          "amount_usd": "288.1",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-activity-408"
+        },
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-activity-408",
+          "amount_local": "430",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-activity-408",
+          "amount_usd": "288.1",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-activity-408"
+        }
+      ],
+      "processing_timelines": "12 months",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-activity-408",
+      "contact_information": "ed or sponsored\n- meet additional requirements of the relevant stream | staff. You can include family members in your visa application.",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-activity-408",
+      "status_labels": []
+    },
+    {
+      "visa_name": "Student Guardian visa (subclass 590)",
+      "visa_name_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/student-590",
+      "eligibility_requirements": [
+        {
+          "value": "You must: be the student's parent, custodian or relative who is 21 years or older",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/student-590"
+        },
+        {
+          "value": "You must: have and show evidence of sufficient funds to support yourself and the student during your stay",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/student-590"
+        },
+        {
+          "value": "What you must do on this visa: You, and your family members, must comply with all visa conditions and Australian laws. Check your conditions in your grant letter or in [VEVO](https://immi.homeaffairs.gov.au/visas/already-have-a-vis",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/student-590"
+        }
+      ],
+      "application_fees": [
+        {
+          "currency": "AUD",
+          "currency_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/student-590",
+          "amount_local": "2000",
+          "amount_local_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/student-590",
+          "amount_usd": "1340.0",
+          "amount_usd_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/student-590"
+        }
+      ],
+      "processing_timelines": "20 hours",
+      "processing_timelines_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/student-590",
+      "contact_information": "a child who holds a student visa. | for a student visa holder who is under 18 years of age or older due to exceptional circumstances | y necessary treatment, including transport.",
+      "contact_information_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/student-590",
+      "status_labels": [
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/student-590"
+        },
+        {
+          "value": "New",
+          "value_citation": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/student-590"
+        }
+      ]
+    }
+  ]
+}

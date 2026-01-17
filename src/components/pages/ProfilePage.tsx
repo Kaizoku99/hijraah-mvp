@@ -7,14 +7,15 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { AppHeader } from "@/components/AppHeader";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getProfile, createProfile, updateProfile } from "@/actions/profile";
-import { User, LogOut, Loader2, Save, CheckCircle, ArrowLeft, ArrowRight } from "lucide-react";
+import { User, LogOut, Loader2, Save, CheckCircle, ArrowLeft, ArrowRight, Info } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { toast } from "sonner";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { useProfileCompleteness } from "@/hooks/useProfileCompleteness";
 
 const PROFILE_DRAFT_KEY = "hijraah_profile_draft";
 import {
@@ -251,25 +252,7 @@ export default function Profile() {
 
 
 
-  const completionPercentage = () => {
-    // Weighted completion: Basic (10%), Education (30%), Work (30%), Language (30%)
-    const basicFields = ['dateOfBirth', 'nationality', 'currentCountry', 'maritalStatus'];
-    const educationFields = ['educationLevel', 'fieldOfStudy'];
-    const workFields = ['yearsOfExperience', 'currentOccupation', 'nocCode'];
-    const languageFields = ['englishLevel', 'frenchLevel', 'ieltsScore', 'tefScore'];
-
-    const calcSectionScore = (fields: string[]) => {
-      const filled = fields.filter(f => formData[f as keyof typeof formData] !== "").length;
-      return fields.length > 0 ? filled / fields.length : 0;
-    };
-
-    const basicScore = calcSectionScore(basicFields) * 10;
-    const eduScore = calcSectionScore(educationFields) * 30;
-    const workScore = calcSectionScore(workFields) * 30;
-    const langScore = calcSectionScore(languageFields) * 30;
-
-    return Math.round(basicScore + eduScore + workScore + langScore);
-  };
+  const profileCompleteness = useProfileCompleteness(formData, language);
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -300,11 +283,33 @@ export default function Profile() {
 
           {/* Progress Bar */}
           <div className="space-y-2 mb-8">
-            <div className="flex justify-between text-sm text-muted-foreground">
+            <div className="flex justify-between text-sm text-muted-foreground items-center">
               <span>{language === "ar" ? `الخطوة ${step} من ${totalSteps}` : `Step ${step} of ${totalSteps}`}</span>
-              <span>{completionPercentage()}% {language === "ar" ? "مكتمل" : "Complete"}</span>
+              <div className="flex items-center gap-2">
+                <span>{profileCompleteness.percentage}% {language === "ar" ? "مكتمل" : "Complete"}</span>
+                {profileCompleteness.percentage < 100 && (
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button variant="ghost" size="icon" className="h-6 w-6 rounded-full hover:bg-muted">
+                        <Info className="h-4 w-4 text-amber-500" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-64 p-4" align="end">
+                      <h4 className="font-semibold mb-2 text-sm">{language === "ar" ? "تحسين ملفك" : "Improve your profile"}</h4>
+                      <p className="text-xs text-muted-foreground mb-3">
+                        {language === "ar" ? "أكمل هذه الحقول للوصول إلى 100%:" : "Complete these fields to reach 100%:"}
+                      </p>
+                      <ul className="text-xs space-y-1 list-disc list-inside">
+                        {profileCompleteness.missing.map((item, i) => (
+                          <li key={i}>{item}</li>
+                        ))}
+                      </ul>
+                    </PopoverContent>
+                  </Popover>
+                )}
+              </div>
             </div>
-            <Progress value={(step / totalSteps) * 100} className="h-2" />
+            <Progress value={(profileCompleteness.percentage)} className="h-2" />
           </div>
 
           {profileLoading ? (

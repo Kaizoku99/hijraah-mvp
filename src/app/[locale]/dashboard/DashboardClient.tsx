@@ -11,6 +11,7 @@ import { useQueries } from "@tanstack/react-query"
 import { queryKeys } from "@/lib/query-keys"
 import { getProfile } from "@/actions/profile"
 import { getLatestAustraliaPoints } from "@/actions/points-test"
+import { useProfileCompleteness } from "@/hooks/useProfileCompleteness"
 
 import { getLatestCrs, getCrsHistory } from "@/actions/crs"
 import { getChecklists, getDocuments } from "@/actions/documents"
@@ -164,24 +165,8 @@ export default function DashboardClient({ initialData }: DashboardClientProps) {
     }, [profile, profileLoading])
 
     // Calculate profile completion percentage
-    const profileCompletion = useMemo(() => {
-        if (!profile) return 0
-        const fields = [
-            profile.dateOfBirth,
-            profile.nationality,
-            profile.sourceCountry,
-            profile.currentCountry,
-            profile.maritalStatus,
-            profile.educationLevel,
-            profile.fieldOfStudy,
-            profile.yearsOfExperience,
-            profile.currentOccupation,
-            profile.englishLevel,
-            profile.immigrationPathway,
-        ]
-        const filledFields = fields.filter(Boolean).length
-        return Math.round((filledFields / fields.length) * 100)
-    }, [profile])
+    // @ts-ignore
+    const { percentage: profileCompletion } = useProfileCompleteness(profile, language)
 
     // Calculate document completion
     const docCompletion = useMemo(() => {

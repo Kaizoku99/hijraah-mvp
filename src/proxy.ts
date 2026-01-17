@@ -51,6 +51,31 @@ export async function proxy(request: NextRequest) {
         console.log('[Proxy] No user session found')
     }
 
+    // Protect routes
+    if (!data?.claims) {
+        const { pathname } = request.nextUrl
+        // Check if path starts with a locale (e.g. /en/dashboard) 
+        // We match against commonly protected paths
+        const isProtected = pathname.includes('/dashboard') ||
+            pathname.includes('/profile') ||
+            pathname.includes('/documents') ||
+            pathname.includes('/chat') ||
+            pathname.includes('/calculator')
+
+        if (isProtected) {
+            // Extract locale to preserve it in redirect, default to 'en' if not found
+            // This regex looks for /xx/ at the start
+            const localeMatch = pathname.match(/^\/([a-z]{2})(\/|$)/);
+            const locale = localeMatch ? localeMatch[1] : 'en';
+
+            const loginUrl = new URL(`/${locale}/login`, request.url)
+            // Optional: Add strict redirect to avoid loops? 
+            // Logic seems safe as /login is not in isProtected list provided we don't protect /login
+
+            return NextResponse.redirect(loginUrl);
+        }
+    }
+
     return response
 }
 

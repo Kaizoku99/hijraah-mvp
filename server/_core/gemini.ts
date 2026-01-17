@@ -27,7 +27,7 @@ export async function generateChatResponse({
     temperature,
     maxOutputTokens
 }: GenerateChatResponseOptions) {
-    const model = google('gemini-2.5-flash');
+    const model = google('gemini-3-flash-preview');
 
     const result = await generateText({
         model,

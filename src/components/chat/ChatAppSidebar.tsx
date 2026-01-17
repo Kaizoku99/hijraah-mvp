@@ -19,6 +19,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import {
+  MoreHorizontal,
   MessageSquare,
   Plus,
   Trash2,
@@ -31,6 +32,12 @@ import { cn } from "@/lib/utils";
 import { Loader } from "@/components/ai-elements/loader";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { TargetDestination, destinationConfig } from "@/hooks/useUserProfile";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface Conversation {
   id: number;
@@ -254,15 +261,15 @@ export function ChatAppSidebar({
                             tooltip={
                               isCollapsed
                                 ? conv.title ||
-                                  (language === "ar"
-                                    ? "محادثة جديدة"
-                                    : "New Chat")
+                                (language === "ar"
+                                  ? "محادثة جديدة"
+                                  : "New Chat")
                                 : undefined
                             }
                             className={cn(
                               "rounded-lg transition-all",
                               selectedConversationId === conv.id &&
-                                "bg-primary/10"
+                              "bg-primary/10"
                             )}
                           >
                             <MessageSquare className="h-4 w-4 shrink-0" />
@@ -275,28 +282,47 @@ export function ChatAppSidebar({
                           </SidebarMenuButton>
 
                           {!isCollapsed && (
-                            <div className="flex opacity-0 group-hover/item:opacity-100 transition-opacity">
-                              <SidebarMenuAction
-                                onClick={e =>
-                                  onRenameConversation(
-                                    e,
-                                    conv.id,
-                                    conv.title || ""
-                                  )
-                                }
-                                className="h-7 w-7"
-                                showOnHover
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <SidebarMenuAction showOnHover>
+                                  <MoreHorizontal className="h-4 w-4" />
+                                  <span className="sr-only">More</span>
+                                </SidebarMenuAction>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent
+                                side="right"
+                                align="start"
+                                className="w-48"
                               >
-                                <Pencil className="h-3.5 w-3.5" />
-                              </SidebarMenuAction>
-                              <SidebarMenuAction
-                                onClick={e => onDeleteConversation(e, conv.id)}
-                                className="h-7 w-7 hover:text-destructive"
-                                showOnHover
-                              >
-                                <Trash2 className="h-3.5 w-3.5" />
-                              </SidebarMenuAction>
-                            </div>
+                                <DropdownMenuItem
+                                  onClick={e =>
+                                    onRenameConversation(
+                                      e,
+                                      conv.id,
+                                      conv.title || ""
+                                    )
+                                  }
+                                >
+                                  <Pencil className="mr-2 h-4 w-4 text-muted-foreground" />
+                                  <span>
+                                    {language === "ar"
+                                      ? "إعادة تسمية"
+                                      : "Rename"}
+                                  </span>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={e =>
+                                    onDeleteConversation(e, conv.id)
+                                  }
+                                  className="text-destructive focus:text-destructive"
+                                >
+                                  <Trash2 className="mr-2 h-4 w-4" />
+                                  <span>
+                                    {language === "ar" ? "حذف" : "Delete"}
+                                  </span>
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
                           )}
                         </>
                       )}
