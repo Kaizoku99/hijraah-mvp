@@ -61,7 +61,7 @@ export const SUBSCRIPTION_TIERS: Record<string, SubscriptionTier> = {
     id: "essential",
     name: "Essential",
     nameAr: "أساسي",
-    price: 29,
+    price: 9.99,
     currency: "usd",
     interval: "month",
     stripePriceId: process.env.STRIPE_PRICE_ESSENTIAL, // Set in environment
@@ -93,7 +93,7 @@ export const SUBSCRIPTION_TIERS: Record<string, SubscriptionTier> = {
     id: "premium",
     name: "Premium",
     nameAr: "متميز",
-    price: 59,
+    price: 19,
     currency: "usd",
     interval: "month",
     stripePriceId: process.env.STRIPE_PRICE_PREMIUM, // Set in environment
@@ -127,9 +127,9 @@ export const SUBSCRIPTION_TIERS: Record<string, SubscriptionTier> = {
     id: "vip",
     name: "VIP Package",
     nameAr: "باقة VIP",
-    price: 299,
+    price: 29,
     currency: "usd",
-    interval: "one_time",
+    interval: "month",
     stripePriceId: process.env.STRIPE_PRICE_VIP, // Set in environment
     features: [
       "Everything in Premium (3 months access)",

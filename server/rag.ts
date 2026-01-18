@@ -257,23 +257,23 @@ export async function ragQuery(
 
   // Determine if we should use re-ranking
   const shouldRerank = enableReranking && isCohereConfigured();
-  
+
   // Fetch more results initially if re-ranking is enabled (oversampling strategy)
   const searchLimit = shouldRerank ? chunkLimit * oversampleFactor : chunkLimit;
   const searchThreshold = shouldRerank ? 0.3 : 0.5; // Lower threshold when oversampling
 
   // Parallel search for documents and entities
   const [chunks, entities] = await Promise.all([
-    semanticSearch(query, { 
-      limit: searchLimit, 
+    semanticSearch(query, {
+      limit: searchLimit,
       threshold: searchThreshold,
-      language 
+      language
     }),
     searchEntities(query, { limit: entityLimit }),
   ]);
 
   // Re-rank the chunks if enabled
-  const finalChunks = shouldRerank 
+  const finalChunks = shouldRerank
     ? await rerankResults(query, chunks, chunkLimit)
     : chunks;
 

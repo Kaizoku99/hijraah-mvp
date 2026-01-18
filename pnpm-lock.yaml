@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@ai-sdk-tools/agents':
+        specifier: 2.0.0-beta.0
+        version: 2.0.0-beta.0(@ai-sdk-tools/artifacts@2.0.0-beta.0(ai@6.0.28(zod@4.3.5))(react@19.2.1))(ai@6.0.28(zod@4.3.5))(zod@4.3.5)
       '@ai-sdk-tools/artifacts':
         specifier: 2.0.0-beta.0
         version: 2.0.0-beta.0(ai@6.0.28(zod@4.3.5))(react@19.2.1)
@@ -368,6 +371,19 @@ importers:
         version: 2.1.9(@types/node@24.7.0)(lightningcss@1.30.2)
 
 packages:
+
+  '@ai-sdk-tools/agents@2.0.0-beta.0':
+    resolution: {integrity: sha512-aBsFBxwKog5dRiMTjdpQYi0PX6TKNH8wxpyls/uxYoqiVnS4Y9NPqNecSi6jVCMFNriGQVbP8ukjnxD3VDNCtA==}
+    peerDependencies:
+      '@ai-sdk-tools/artifacts': '*'
+      '@ai-sdk-tools/cache': '*'
+      ai: '>=6.0.0'
+      zod: ^3.25.76 || ^4.1.8
+    peerDependenciesMeta:
+      '@ai-sdk-tools/artifacts':
+        optional: true
+      '@ai-sdk-tools/cache':
+        optional: true
 
   '@ai-sdk-tools/artifacts@2.0.0-beta.0':
     resolution: {integrity: sha512-i6s4rF4UN9vpppxULGU4oWkw100pBQsC24NCH8kYBjdP+SfOO55XV8YQxpVonOH7dBB4BBo6UjWQA1hZUuKsAw==}
@@ -7020,6 +7036,13 @@ packages:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
 
 snapshots:
+
+  '@ai-sdk-tools/agents@2.0.0-beta.0(@ai-sdk-tools/artifacts@2.0.0-beta.0(ai@6.0.28(zod@4.3.5))(react@19.2.1))(ai@6.0.28(zod@4.3.5))(zod@4.3.5)':
+    dependencies:
+      ai: 6.0.28(zod@4.3.5)
+      zod: 4.3.5
+    optionalDependencies:
+      '@ai-sdk-tools/artifacts': 2.0.0-beta.0(ai@6.0.28(zod@4.3.5))(react@19.2.1)
 
   '@ai-sdk-tools/artifacts@2.0.0-beta.0(ai@6.0.28(zod@4.3.5))(react@19.2.1)':
     dependencies:

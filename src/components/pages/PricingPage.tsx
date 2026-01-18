@@ -88,8 +88,8 @@ export default function Pricing() {
     {
       tierId: "essential",
       name: language === "ar" ? "أساسي" : "Essential",
-      price: language === "ar" ? "$19/شهر" : "$19/month",
-      priceValue: 19,
+      price: language === "ar" ? "$9.99/شهر" : "$9.99/month",
+      priceValue: 9.99,
       description: language === "ar"
         ? "للمتقدمين الجادين للهجرة"
         : "For serious immigration applicants",
@@ -119,8 +119,8 @@ export default function Pricing() {
     {
       tierId: "premium",
       name: language === "ar" ? "مميز" : "Premium",
-      price: language === "ar" ? "$49/شهر" : "$49/month",
-      priceValue: 49,
+      price: language === "ar" ? "$19/شهر" : "$19/month",
+      priceValue: 19,
       description: language === "ar"
         ? "أدوات متقدمة للنجاح"
         : "Advanced tools for success",
@@ -151,8 +151,8 @@ export default function Pricing() {
     {
       tierId: "vip",
       name: language === "ar" ? "في آي بي" : "VIP",
-      price: language === "ar" ? "$99/شهر" : "$99/month",
-      priceValue: 99,
+      price: language === "ar" ? "$29/شهر" : "$29/month",
+      priceValue: 29,
       description: language === "ar"
         ? "الدعم الكامل لرحلتك"
         : "Complete support for your journey",

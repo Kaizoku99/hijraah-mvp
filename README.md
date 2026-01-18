@@ -1,6 +1,6 @@
 # Hijraah MVP
 
-Hijraah is a comprehensive, AI-powered immigration platform designed to simplify the migration journey for users in the MENA region targeting countries like Canada, Australia, and Portugal. It combines advanced tools like CRS calculators, application tracking, and document management with localized support to empower users to navigate complex immigration processes with confidence.
+Hijraah is the premier AI-powered immigration platform for the MENA region, now supporting **Canada, Australia, and Portugal**. Featuring a bilingual (English/Arabic) interface, multi-model AI assistant, real-time application tracking, and advanced eligibility calculators, Hijraah empowers users to navigate their global migration journey with confidence.
 
 ## 🚀 Features
 

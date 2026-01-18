@@ -9,18 +9,37 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useUserProfile, TargetDestination } from "@/hooks/useUserProfile";
 
 // Destination-aware default follow-up suggestions
-const defaultFollowUps: Record<TargetDestination, { ar: string[]; en: string[] }> = {
+const defaultFollowUps: Record<
+  TargetDestination,
+  { ar: string[]; en: string[] }
+> = {
   canada: {
     ar: ["المزيد من التفاصيل", "كيف أحسب نقاطي؟", "ما الخطوة التالية؟"],
-    en: ["More details", "How do I calculate my score?", "What's the next step?"],
+    en: [
+      "More details",
+      "How do I calculate my score?",
+      "What's the next step?",
+    ],
   },
   australia: {
-    ar: ["المزيد من التفاصيل", "كيف أقدم للـ SkillSelect؟", "ما الخطوة التالية؟"],
-    en: ["More details", "How do I apply to SkillSelect?", "What's the next step?"],
+    ar: [
+      "المزيد من التفاصيل",
+      "كيف أقدم للـ SkillSelect؟",
+      "ما الخطوة التالية؟",
+    ],
+    en: [
+      "More details",
+      "How do I apply to SkillSelect?",
+      "What's the next step?",
+    ],
   },
   portugal: {
     ar: ["المزيد من التفاصيل", "ما المتطلبات المالية؟", "ما الخطوة التالية؟"],
-    en: ["More details", "What are the financial requirements?", "What's the next step?"],
+    en: [
+      "More details",
+      "What are the financial requirements?",
+      "What's the next step?",
+    ],
   },
   other: {
     ar: ["المزيد من التفاصيل", "كيف أبدأ؟", "ما الخطوة التالية؟"],
@@ -28,8 +47,14 @@ const defaultFollowUps: Record<TargetDestination, { ar: string[]; en: string[] }
   },
 };
 
-function getDefaultFollowUpSuggestions(destination: TargetDestination, language: 'ar' | 'en'): string[] {
-  return defaultFollowUps[destination]?.[language] || defaultFollowUps.other[language];
+function getDefaultFollowUpSuggestions(
+  destination: TargetDestination,
+  language: "ar" | "en"
+): string[] {
+  return (
+    defaultFollowUps[destination]?.[language] ||
+    defaultFollowUps.other[language]
+  );
 }
 import {
   listConversations,
@@ -119,6 +144,8 @@ import { ChatLiveRegion } from "@/components/accessibility/ChatLiveRegion";
 import { CRSScoreDisplay } from "@/components/artifacts/CRSScoreDisplay";
 import { DocumentValidator } from "@/components/artifacts/DocumentValidator";
 import { ComparisonTable } from "@/components/artifacts/ComparisonTable";
+import { FeeCalculatorDisplay } from "@/components/artifacts/FeeCalculatorDisplay";
+import { SOPGeneratorDisplay } from "@/components/artifacts/SOPGeneratorDisplay";
 
 // Conversation scroll components
 function ConversationScrollButton() {
@@ -165,7 +192,11 @@ export default function ChatPage() {
   const queryClient = useQueryClient();
 
   // Fetch conversations list from Server Action
-  const { data: conversations, refetch: refetchConversations, isLoading: conversationsLoading } = useQuery({
+  const {
+    data: conversations,
+    refetch: refetchConversations,
+    isLoading: conversationsLoading,
+  } = useQuery({
     queryKey: ["chat", "list"],
     queryFn: listConversations,
   });
@@ -461,7 +492,7 @@ export default function ChatPage() {
         editTitle={editTitle}
         isCreating={createConversationMutation.isPending}
         targetDestination={targetDestination}
-        onSelectConversation={(id) => {
+        onSelectConversation={id => {
           setSelectedConversationId(id);
           router.push(`/chat?id=${id}`);
         }}
@@ -595,6 +626,8 @@ export default function ChatPage() {
                                   <CRSScoreDisplay />
                                   <DocumentValidator />
                                   <ComparisonTable />
+                                  <FeeCalculatorDisplay />
+                                  <SOPGeneratorDisplay />
 
                                   {/* Inline Citations - show if message has sources with URLs */}
                                   {message.sources &&
@@ -715,7 +748,9 @@ export default function ChatPage() {
                                       <MessageActions>
                                         <MessageAction
                                           tooltip={
-                                            language === "ar" ? "مفيد" : "Helpful"
+                                            language === "ar"
+                                              ? "مفيد"
+                                              : "Helpful"
                                           }
                                           onClick={() =>
                                             handleFeedback(message.id, "up")
@@ -781,7 +816,7 @@ export default function ChatPage() {
                         {isStreaming &&
                           (allMessages.length === 0 ||
                             allMessages[allMessages.length - 1]?.role ===
-                            "user") && <ChatTypingIndicator />}
+                              "user") && <ChatTypingIndicator />}
                       </>
                     )}
                   </StickToBottom.Content>
@@ -793,17 +828,21 @@ export default function ChatPage() {
                   <div className="px-4 pb-2">
                     <Suggestions>
                       {// Use suggestions from the last assistant message if available
-                        (allMessages[allMessages.length - 1].role === "assistant" &&
-                          allMessages[allMessages.length - 1].suggestions
-                          ? allMessages[allMessages.length - 1].suggestions
-                          : getDefaultFollowUpSuggestions(targetDestination, language as 'ar' | 'en')
-                        )?.map(suggestion => (
-                          <Suggestion
-                            key={suggestion}
-                            suggestion={suggestion}
-                            onClick={() => handleSuggestionClick(suggestion)}
-                          />
-                        ))}
+                      (allMessages[allMessages.length - 1].role ===
+                        "assistant" &&
+                      allMessages[allMessages.length - 1].suggestions
+                        ? allMessages[allMessages.length - 1].suggestions
+                        : getDefaultFollowUpSuggestions(
+                            targetDestination,
+                            language as "ar" | "en"
+                          )
+                      )?.map(suggestion => (
+                        <Suggestion
+                          key={suggestion}
+                          suggestion={suggestion}
+                          onClick={() => handleSuggestionClick(suggestion)}
+                        />
+                      ))}
                     </Suggestions>
                   </div>
                 )}
@@ -840,7 +879,7 @@ export default function ChatPage() {
                             className={cn(
                               "h-10 w-10 touch-manipulation",
                               responseLanguage === "ar" &&
-                              "text-primary bg-primary/10"
+                                "text-primary bg-primary/10"
                             )}
                             onClick={() =>
                               setResponseLanguage(
@@ -859,7 +898,7 @@ export default function ChatPage() {
                             className={cn(
                               "h-10 w-10 touch-manipulation",
                               responseLanguage === "en" &&
-                              "text-primary bg-primary/10"
+                                "text-primary bg-primary/10"
                             )}
                             onClick={() =>
                               setResponseLanguage(

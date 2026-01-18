@@ -17,6 +17,7 @@
     "db:push": "drizzle-kit generate && drizzle-kit migrate"
   },
   "dependencies": {
+    "@ai-sdk-tools/agents": "2.0.0-beta.0",
     "@ai-sdk-tools/artifacts": "2.0.0-beta.0",
     "@ai-sdk-tools/memory": "2.0.0-beta.0",
     "@ai-sdk-tools/store": "2.0.0-beta.0",
