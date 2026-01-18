@@ -24,10 +24,10 @@ export interface VisaMatcherInput {
   isRemoteWorker: boolean;
   hasPassiveIncome: boolean;
   planningBusiness: boolean;
-  
+
   // Income
   monthlyIncome: number;
-  
+
   // Additional context
   employerCountry?: string;
   incomeSource?: D7IncomeSource;
@@ -121,7 +121,7 @@ export function matchVisas(input: VisaMatcherInput): VisaRecommendation[] {
   if (input.isRemoteWorker && input.employerCountry !== 'portugal') {
     const meetsIncome = input.monthlyIncome >= D8_MINIMUM_INCOME_EUR;
     const score = meetsIncome ? 90 : 60;
-    
+
     recommendations.push({
       visaType: 'd8',
       score,
@@ -133,22 +133,22 @@ export function matchVisas(input: VisaMatcherInput): VisaRecommendation[] {
         },
         meetsIncome
           ? {
-              en: `Your income (€${input.monthlyIncome.toLocaleString()}) meets the €${D8_MINIMUM_INCOME_EUR.toLocaleString()}/month requirement`,
-              ar: `دخلك (${input.monthlyIncome.toLocaleString()}€) يفي بمتطلبات ${D8_MINIMUM_INCOME_EUR.toLocaleString()}€/شهر`,
-            }
+            en: `Your income (€${input.monthlyIncome.toLocaleString()}) meets the €${D8_MINIMUM_INCOME_EUR.toLocaleString()}/month requirement`,
+            ar: `دخلك (${input.monthlyIncome.toLocaleString()}€) يفي بمتطلبات ${D8_MINIMUM_INCOME_EUR.toLocaleString()}€/شهر`,
+          }
           : {
-              en: `Your income (€${input.monthlyIncome.toLocaleString()}) is below the €${D8_MINIMUM_INCOME_EUR.toLocaleString()}/month requirement`,
-              ar: `دخلك (${input.monthlyIncome.toLocaleString()}€) أقل من متطلبات ${D8_MINIMUM_INCOME_EUR.toLocaleString()}€/شهر`,
-            },
+            en: `Your income (€${input.monthlyIncome.toLocaleString()}) is below the €${D8_MINIMUM_INCOME_EUR.toLocaleString()}/month requirement`,
+            ar: `دخلك (${input.monthlyIncome.toLocaleString()}€) أقل من متطلبات ${D8_MINIMUM_INCOME_EUR.toLocaleString()}€/شهر`,
+          },
       ],
       warnings: meetsIncome
         ? undefined
         : [
-            {
-              en: `You need €${(D8_MINIMUM_INCOME_EUR - input.monthlyIncome).toLocaleString()} more monthly income`,
-              ar: `تحتاج ${(D8_MINIMUM_INCOME_EUR - input.monthlyIncome).toLocaleString()}€ إضافية شهرياً`,
-            },
-          ],
+          {
+            en: `You need €${(D8_MINIMUM_INCOME_EUR - input.monthlyIncome).toLocaleString()} more monthly income`,
+            ar: `تحتاج ${(D8_MINIMUM_INCOME_EUR - input.monthlyIncome).toLocaleString()}€ إضافية شهرياً`,
+          },
+        ],
     });
   }
 
@@ -164,22 +164,22 @@ export function matchVisas(input: VisaMatcherInput): VisaRecommendation[] {
       reasons: [
         input.hasPassiveIncome
           ? {
-              en: 'You have passive income sources',
-              ar: 'لديك مصادر دخل سلبي',
-            }
+            en: 'You have passive income sources',
+            ar: 'لديك مصادر دخل سلبي',
+          }
           : {
-              en: 'D7 visa allows you to live in Portugal with passive income',
-              ar: 'تأشيرة D7 تتيح لك العيش في البرتغال بدخل سلبي',
-            },
+            en: 'D7 visa allows you to live in Portugal with passive income',
+            ar: 'تأشيرة D7 تتيح لك العيش في البرتغال بدخل سلبي',
+          },
         meetsIncome
           ? {
-              en: `Your income (€${input.monthlyIncome.toLocaleString()}) meets the minimum €${PORTUGAL_MINIMUM_WAGE_EUR}/month`,
-              ar: `دخلك (${input.monthlyIncome.toLocaleString()}€) يفي بالحد الأدنى ${PORTUGAL_MINIMUM_WAGE_EUR}€/شهر`,
-            }
+            en: `Your income (€${input.monthlyIncome.toLocaleString()}) meets the minimum €${PORTUGAL_MINIMUM_WAGE_EUR}/month`,
+            ar: `دخلك (${input.monthlyIncome.toLocaleString()}€) يفي بالحد الأدنى ${PORTUGAL_MINIMUM_WAGE_EUR}€/شهر`,
+          }
           : {
-              en: `Minimum income required: €${PORTUGAL_MINIMUM_WAGE_EUR}/month`,
-              ar: `الحد الأدنى للدخل المطلوب: ${PORTUGAL_MINIMUM_WAGE_EUR}€/شهر`,
-            },
+            en: `Minimum income required: €${PORTUGAL_MINIMUM_WAGE_EUR}/month`,
+            ar: `الحد الأدنى للدخل المطلوب: ${PORTUGAL_MINIMUM_WAGE_EUR}€/شهر`,
+          },
       ],
     });
   }
@@ -250,17 +250,17 @@ export function checkD2Eligibility(input: D2EligibilityInput): EligibilityResult
     met: hasBusinessOrInvestment,
     details: hasBusinessOrInvestment
       ? {
-          en: input.hasInvestment
-            ? `Investment proof available (€${input.investmentAmount?.toLocaleString() || 'N/A'})`
-            : 'Business plan available',
-          ar: input.hasInvestment
-            ? `إثبات الاستثمار متوفر (${input.investmentAmount?.toLocaleString() || 'غير محدد'}€)`
-            : 'خطة العمل متوفرة',
-        }
+        en: input.hasInvestment
+          ? `Investment proof available (€${input.investmentAmount?.toLocaleString() || 'N/A'})`
+          : 'Business plan available',
+        ar: input.hasInvestment
+          ? `إثبات الاستثمار متوفر (${input.investmentAmount?.toLocaleString() || 'غير محدد'}€)`
+          : 'خطة العمل متوفرة',
+      }
       : {
-          en: 'Missing: Business plan OR investment proof required',
-          ar: 'مفقود: خطة العمل أو إثبات الاستثمار مطلوب',
-        },
+        en: 'Missing: Business plan OR investment proof required',
+        ar: 'مفقود: خطة العمل أو إثبات الاستثمار مطلوب',
+      },
   });
   if (hasBusinessOrInvestment) score += 30;
   else {
@@ -278,13 +278,13 @@ export function checkD2Eligibility(input: D2EligibilityInput): EligibilityResult
       met: input.hasServiceContract,
       details: input.hasServiceContract
         ? {
-            en: 'Service contract or proposal available',
-            ar: 'عقد الخدمات أو العرض متوفر',
-          }
+          en: 'Service contract or proposal available',
+          ar: 'عقد الخدمات أو العرض متوفر',
+        }
         : {
-            en: 'Service contract recommended for liberal professions',
-            ar: 'عقد الخدمات موصى به للمهن الحرة',
-          },
+          en: 'Service contract recommended for liberal professions',
+          ar: 'عقد الخدمات موصى به للمهن الحرة',
+        },
     });
     if (input.hasServiceContract) score += 15;
     else {
@@ -314,13 +314,13 @@ export function checkD2Eligibility(input: D2EligibilityInput): EligibilityResult
     met: input.hasFinancialMeansInPortugal,
     details: input.hasFinancialMeansInPortugal
       ? {
-          en: 'Proof of financial means available',
-          ar: 'إثبات الموارد المالية متوفر',
-        }
+        en: 'Proof of financial means available',
+        ar: 'إثبات الموارد المالية متوفر',
+      }
       : {
-          en: 'Proof of financial means required',
-          ar: 'إثبات الموارد المالية مطلوب',
-        },
+        en: 'Proof of financial means required',
+        ar: 'إثبات الموارد المالية مطلوب',
+      },
   });
   if (input.hasFinancialMeansInPortugal) score += 15;
   else {
@@ -424,13 +424,13 @@ export function checkD7Eligibility(input: D7EligibilityInput): EligibilityResult
     met: meetsIncomeRequirement,
     details: meetsIncomeRequirement
       ? {
-          en: `Your income (€${input.monthlyIncome.toLocaleString()}) meets the required €${requiredIncome.toLocaleString()}/month`,
-          ar: `دخلك (${input.monthlyIncome.toLocaleString()}€) يفي بالمطلوب ${requiredIncome.toLocaleString()}€/شهر`,
-        }
+        en: `Your income (€${input.monthlyIncome.toLocaleString()}) meets the required €${requiredIncome.toLocaleString()}/month`,
+        ar: `دخلك (${input.monthlyIncome.toLocaleString()}€) يفي بالمطلوب ${requiredIncome.toLocaleString()}€/شهر`,
+      }
       : {
-          en: `Your income (€${input.monthlyIncome.toLocaleString()}) is below the required €${requiredIncome.toLocaleString()}/month (gap: €${(requiredIncome - input.monthlyIncome).toLocaleString()})`,
-          ar: `دخلك (${input.monthlyIncome.toLocaleString()}€) أقل من المطلوب ${requiredIncome.toLocaleString()}€/شهر (الفجوة: ${(requiredIncome - input.monthlyIncome).toLocaleString()}€)`,
-        },
+        en: `Your income (€${input.monthlyIncome.toLocaleString()}) is below the required €${requiredIncome.toLocaleString()}/month (gap: €${(requiredIncome - input.monthlyIncome).toLocaleString()})`,
+        ar: `دخلك (${input.monthlyIncome.toLocaleString()}€) أقل من المطلوب ${requiredIncome.toLocaleString()}€/شهر (الفجوة: ${(requiredIncome - input.monthlyIncome).toLocaleString()}€)`,
+      },
   });
 
   if (meetsIncomeRequirement) {
@@ -446,7 +446,7 @@ export function checkD7Eligibility(input: D7EligibilityInput): EligibilityResult
   // Income must be PASSIVE
   const passiveIncomeSources: D7IncomeSource[] = ['pension', 'rental_income', 'investments', 'dividends', 'intellectual_property', 'other_passive'];
   const isPassiveIncome = passiveIncomeSources.includes(input.incomeSource);
-  
+
   breakdown.push({
     category: 'Passive Income Type',
     met: isPassiveIncome,
@@ -568,13 +568,13 @@ export function checkD8Eligibility(input: D8EligibilityInput): EligibilityResult
     met: meetsIncomeRequirement,
     details: meetsIncomeRequirement
       ? {
-          en: `Your average income (€${input.averageMonthlyIncome.toLocaleString()}) meets the €${D8_MINIMUM_INCOME_EUR.toLocaleString()}/month requirement`,
-          ar: `متوسط دخلك (${input.averageMonthlyIncome.toLocaleString()}€) يفي بمتطلبات ${D8_MINIMUM_INCOME_EUR.toLocaleString()}€/شهر`,
-        }
+        en: `Your average income (€${input.averageMonthlyIncome.toLocaleString()}) meets the €${D8_MINIMUM_INCOME_EUR.toLocaleString()}/month requirement`,
+        ar: `متوسط دخلك (${input.averageMonthlyIncome.toLocaleString()}€) يفي بمتطلبات ${D8_MINIMUM_INCOME_EUR.toLocaleString()}€/شهر`,
+      }
       : {
-          en: `Your income (€${input.averageMonthlyIncome.toLocaleString()}) is €${incomeGap.toLocaleString()} below the required €${D8_MINIMUM_INCOME_EUR.toLocaleString()}/month`,
-          ar: `دخلك (${input.averageMonthlyIncome.toLocaleString()}€) أقل بـ ${incomeGap.toLocaleString()}€ من المطلوب ${D8_MINIMUM_INCOME_EUR.toLocaleString()}€/شهر`,
-        },
+        en: `Your income (€${input.averageMonthlyIncome.toLocaleString()}) is €${incomeGap.toLocaleString()} below the required €${D8_MINIMUM_INCOME_EUR.toLocaleString()}/month`,
+        ar: `دخلك (${input.averageMonthlyIncome.toLocaleString()}€) أقل بـ ${incomeGap.toLocaleString()}€ من المطلوب ${D8_MINIMUM_INCOME_EUR.toLocaleString()}€/شهر`,
+      },
   });
 
   if (meetsIncomeRequirement) {
@@ -592,20 +592,21 @@ export function checkD8Eligibility(input: D8EligibilityInput): EligibilityResult
   }
 
   // Employer must be outside Portugal (MANDATORY)
-  const employerOutsidePortugal = input.employerCountry.toLowerCase() !== 'portugal' && input.employerCountry.toLowerCase() !== 'pt';
-  
+  const hasEmployerCountry = input.employerCountry.trim().length > 0;
+  const employerOutsidePortugal = hasEmployerCountry && input.employerCountry.toLowerCase() !== 'portugal' && input.employerCountry.toLowerCase() !== 'pt';
+
   breakdown.push({
     category: 'Employer Location',
     met: employerOutsidePortugal,
     details: employerOutsidePortugal
       ? {
-          en: `Employer is based in ${input.employerCountry} (outside Portugal)`,
-          ar: `صاحب العمل موجود في ${input.employerCountry} (خارج البرتغال)`,
-        }
+        en: `Employer is based in ${input.employerCountry} (outside Portugal)`,
+        ar: `صاحب العمل موجود في ${input.employerCountry} (خارج البرتغال)`,
+      }
       : {
-          en: 'D8 visa requires employer to be outside Portugal',
-          ar: 'تأشيرة D8 تتطلب أن يكون صاحب العمل خارج البرتغال',
-        },
+        en: 'D8 visa requires employer to be outside Portugal',
+        ar: 'تأشيرة D8 تتطلب أن يكون صاحب العمل خارج البرتغال',
+      },
   });
 
   if (employerOutsidePortugal) {

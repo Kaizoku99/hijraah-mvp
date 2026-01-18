@@ -1,0 +1,302 @@
+{
+    "type": "object",
+    "description": "Enhanced Visa Data Schema v2.1 for Scalable Immigration Platform",
+    "properties": {
+        "visa_types": {
+            "type": "array",
+            "description": "List of standardized visa types across all countries",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "visa_name": {
+                        "type": "string",
+                        "description": "Official name of the visa"
+                    },
+                    "visa_subclass": {
+                        "type": "string",
+                        "description": "Official code/subclass (e.g., '189', 'H-1B')"
+                    },
+                    "visa_category": {
+                        "type": "string",
+                        "enum": [
+                            "work",
+                            "student",
+                            "family",
+                            "tourist",
+                            "business",
+                            "humanitarian",
+                            "investor",
+                            "skilled",
+                            "temporary",
+                            "permanent",
+                            "other"
+                        ],
+                        "description": "Broad category for filtering"
+                    },
+                    "country_code": {
+                        "type": "string",
+                        "description": "ISO 3166-1 alpha-2 country code (e.g., 'AU', 'AE', 'SG')"
+                    },
+                    "source_url": {
+                        "type": "string",
+                        "description": "URL where this data was scraped from"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "Brief overview of the visa purpose"
+                    },
+                    "duration_of_stay": {
+                        "type": "string",
+                        "description": "How long the visa allows the holder to stay"
+                    },
+                    "is_path_to_permanent_residency": {
+                        "type": "boolean",
+                        "description": "Whether this visa leads to PR"
+                    },
+                    "eligibility_requirements": {
+                        "type": "array",
+                        "description": "Structured eligibility criteria",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "category": {
+                                    "type": "string",
+                                    "enum": [
+                                        "age",
+                                        "education",
+                                        "language",
+                                        "financial",
+                                        "health",
+                                        "character",
+                                        "sponsorship",
+                                        "work_experience",
+                                        "nationality",
+                                        "location",
+                                        "purpose",
+                                        "other"
+                                    ]
+                                },
+                                "requirement": {
+                                    "type": "string",
+                                    "description": "The specific requirement text"
+                                },
+                                "is_mandatory": {
+                                    "type": "boolean",
+                                    "description": "Whether this is a hard requirement"
+                                }
+                            },
+                            "required": [
+                                "requirement"
+                            ]
+                        }
+                    },
+                    "age_restrictions": {
+                        "type": "object",
+                        "description": "Specific age limits",
+                        "properties": {
+                            "min_age": {
+                                "type": "number"
+                            },
+                            "max_age": {
+                                "type": "number"
+                            },
+                            "notes": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "work_rights": {
+                        "type": "object",
+                        "description": "Work permission details",
+                        "properties": {
+                            "can_work": {
+                                "type": "boolean"
+                            },
+                            "hours_per_week": {
+                                "type": "number"
+                            },
+                            "restrictions": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "can_work"
+                        ]
+                    },
+                    "application_fees": {
+                        "type": "array",
+                        "description": "Costs associated with the visa",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "fee_type": {
+                                    "type": "string",
+                                    "description": "e.g., 'Main Applicant', 'Additional Applicant 18+', 'Sponsorship Fee'"
+                                },
+                                "currency": {
+                                    "type": "string"
+                                },
+                                "amount_local_currency": {
+                                    "type": "number"
+                                },
+                                "usd_equivalent": {
+                                    "type": "number"
+                                }
+                            },
+                            "required": [
+                                "currency",
+                                "amount_local_currency"
+                            ]
+                        }
+                    },
+                    "processing_timelines": {
+                        "type": "object",
+                        "description": "Structured processing times",
+                        "properties": {
+                            "summary": {
+                                "type": "string",
+                                "description": "Human readable summary (e.g., '3 to 5 months')"
+                            },
+                            "min_days": {
+                                "type": "integer",
+                                "description": "Minimum processing days (estimate)"
+                            },
+                            "max_days": {
+                                "type": "integer",
+                                "description": "Maximum processing days (estimate)"
+                            },
+                            "percentile_75": {
+                                "type": "integer",
+                                "description": "Days for 75% of applications (common benchmark)"
+                            },
+                            "percentile_90": {
+                                "type": "integer",
+                                "description": "Days for 90% of applications"
+                            }
+                        }
+                    },
+                    "required_documents": {
+                        "type": "array",
+                        "description": "Detailed checklist of required documents for scraping and validation",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "document_name": {
+                                    "type": "string",
+                                    "description": "Standardized name of the document (e.g., 'Passport Biopath Page', 'Police Clearance Certificate')"
+                                },
+                                "category": {
+                                    "type": "string",
+                                    "enum": [
+                                        "identity",
+                                        "education",
+                                        "employment",
+                                        "financial",
+                                        "health",
+                                        "character",
+                                        "relationship",
+                                        "travel",
+                                        "english_language",
+                                        "nomination",
+                                        "other"
+                                    ],
+                                    "description": "Category for grouping in UI"
+                                },
+                                "description": {
+                                    "type": "string",
+                                    "description": "Detailed instructions on what the document must contain (e.g., 'Must show photo and signature')"
+                                },
+                                "is_mandatory": {
+                                    "type": "boolean",
+                                    "description": "True if required for ALL applicants, False if situational"
+                                },
+                                "conditional_rule": {
+                                    "type": "string",
+                                    "description": "Condition when this is required (e.g., 'If applicants are married', 'If claiming skilled partner points')"
+                                },
+                                "issuing_authority": {
+                                    "type": "string",
+                                    "description": "Who usually issues this? (e.g., 'Government', 'University', 'Bank')"
+                                },
+                                "scrapers_context": {
+                                    "type": "string",
+                                    "description": "Context keywords to help scrapers identify this requirement in text"
+                                }
+                            },
+                            "required": [
+                                "document_name",
+                                "category",
+                                "is_mandatory"
+                            ]
+                        }
+                    },
+                    "application_steps": {
+                        "type": "array",
+                        "description": "Step-by-step application process",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "step_number": {
+                                    "type": "integer"
+                                },
+                                "title": {
+                                    "type": "string"
+                                },
+                                "description": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "contact_information": {
+                        "type": "object",
+                        "description": "Official authority contact details",
+                        "properties": {
+                            "authority_name": {
+                                "type": "string"
+                            },
+                            "website": {
+                                "type": "string"
+                            },
+                            "email": {
+                                "type": "string"
+                            },
+                            "phone": {
+                                "type": "string"
+                            },
+                            "address": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "pathway_visas": {
+                        "type": "array",
+                        "description": "Visas this one can transition to",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "policy_flags": {
+                        "type": "array",
+                        "description": "Recent policy changes or alerts",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "last_verified_date": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "visa_name",
+                    "source_url",
+                    "required_documents"
+                ]
+            }
+        }
+    },
+    "required": [
+        "visa_types"
+    ]
+}

@@ -75,16 +75,14 @@ export function D8EligibilityChecker({ onSave, isSaving }: D8EligibilityCheckerP
   // Income calculations
   const meetsIncome = formData.averageMonthlyIncome >= D8_MINIMUM_INCOME_EUR
   const incomeGap = D8_MINIMUM_INCOME_EUR - formData.averageMonthlyIncome
-  const employerOutsidePortugal = formData.employerCountry.toLowerCase() !== 'portugal' && 
-                                   formData.employerCountry.toLowerCase() !== 'pt' &&
-                                   formData.employerCountry !== ''
+  const employerOutsidePortugal = formData.employerCountry.toLowerCase() !== 'portugal' &&
+    formData.employerCountry.toLowerCase() !== 'pt' &&
+    formData.employerCountry !== ''
 
   // Calculate eligibility on form change
   useEffect(() => {
-    if (formData.employerCountry) {
-      const eligibility = checkD8Eligibility(formData)
-      setResult(eligibility)
-    }
+    const eligibility = checkD8Eligibility(formData)
+    setResult(eligibility)
   }, [formData])
 
   const handleSave = async () => {
@@ -224,11 +222,11 @@ export function D8EligibilityChecker({ onSave, isSaving }: D8EligibilityCheckerP
                       <p className="text-sm text-muted-foreground">
                         {meetsIncome
                           ? (language === 'ar'
-                              ? `€${formData.averageMonthlyIncome.toLocaleString()} ≥ €${D8_MINIMUM_INCOME_EUR.toLocaleString()}`
-                              : `€${formData.averageMonthlyIncome.toLocaleString()} ≥ €${D8_MINIMUM_INCOME_EUR.toLocaleString()}`)
+                            ? `€${formData.averageMonthlyIncome.toLocaleString()} ≥ €${D8_MINIMUM_INCOME_EUR.toLocaleString()}`
+                            : `€${formData.averageMonthlyIncome.toLocaleString()} ≥ €${D8_MINIMUM_INCOME_EUR.toLocaleString()}`)
                           : (language === 'ar'
-                              ? `تحتاج €${incomeGap.toLocaleString()} إضافية`
-                              : `You need €${incomeGap.toLocaleString()} more`)}
+                            ? `تحتاج €${incomeGap.toLocaleString()} إضافية`
+                            : `You need €${incomeGap.toLocaleString()} more`)}
                       </p>
                     </div>
                   </div>
@@ -315,7 +313,7 @@ export function D8EligibilityChecker({ onSave, isSaving }: D8EligibilityCheckerP
                 placeholder={language === 'ar' ? 'اختر بلد صاحب العمل' : 'Select employer country'}
                 language={language}
               />
-              
+
               {formData.employerCountry && (
                 <div className="mt-2">
                   {employerOutsidePortugal ? (

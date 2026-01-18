@@ -113,7 +113,7 @@ export async function generateDocumentChecklist(input: GenerateChecklistInput) {
     }
 
     const items = generateChecklist(
-        validated.sourceCountry, 
+        validated.sourceCountry,
         validated.immigrationPathway,
         validated.currentCountry
     )
@@ -138,17 +138,21 @@ export async function generateDocumentChecklist(input: GenerateChecklistInput) {
 /**
  * Get all checklists for the current user
  */
-const getCachedChecklists = unstable_cache(
-    async (userId: number) => {
-        return getUserDocumentChecklists(userId)
-    },
-    ['user-checklists'],
-    { tags: [CACHE_TAGS.CHECKLISTS], revalidate: CACHE_DURATIONS.SHORT }
-)
-
 export async function getChecklists() {
     const user = await getAuthenticatedUser()
-    return getCachedChecklists(user.id)
+
+    const getCached = unstable_cache(
+        async () => {
+            return getUserDocumentChecklists(user.id)
+        },
+        ['user-checklists', user.id.toString()],
+        {
+            tags: [userTag(CACHE_TAGS.CHECKLISTS, user.id)],
+            revalidate: CACHE_DURATIONS.SHORT
+        }
+    )
+
+    return getCached()
 }
 
 /**
@@ -250,17 +254,21 @@ export async function uploadDocument(input: UploadDocumentInput) {
 /**
  * Get all documents for the current user
  */
-const getCachedDocuments = unstable_cache(
-    async (userId: number) => {
-        return getUserDocuments(userId)
-    },
-    ['user-documents'],
-    { tags: [CACHE_TAGS.DOCUMENTS], revalidate: CACHE_DURATIONS.SHORT }
-)
-
 export async function getDocuments() {
     const user = await getAuthenticatedUser()
-    return getCachedDocuments(user.id)
+
+    const getCached = unstable_cache(
+        async () => {
+            return getUserDocuments(user.id)
+        },
+        ['user-documents', user.id.toString()],
+        {
+            tags: [userTag(CACHE_TAGS.DOCUMENTS, user.id)],
+            revalidate: CACHE_DURATIONS.SHORT
+        }
+    )
+
+    return getCached()
 }
 
 /**
